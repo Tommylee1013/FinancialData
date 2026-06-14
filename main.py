@@ -6,6 +6,16 @@ from src.jobs_xlsx.get_macro_data import save_macro_data
 from src.jobs_api.get_korea_index_data import collect_korean_index_data
 from src.jobs_api.get_japan_index_data import collect_japan_index_data
 from src.jobs_api.get_china_index_data import collect_china_index_data
+from src.jobs_api.get_nasdaq_index_data import collect_nasdaq_index_data
+from src.jobs_xlsx.get_baltic_freight_index import collect_baltic_freight_data
+from src.jobs_xlsx.get_baltic_air_freight_index import collect_baltic_air_freight_data
+from src.jobs_xlsx.get_drewry_index import collect_drewry_wci_freight_data
+from src.jobs_xlsx.get_kcci_index import collect_kobc_container_freight_data
+from src.jobs_xlsx.get_rail_traffic_index import collect_us_rail_freight_data
+from src.jobs_xlsx.trendforce.get_dx_dram_index import collect_dxi_index_data
+from src.jobs_xlsx.trendforce.get_dx_comp_index import collect_trendforce_industry_data
+from src.jobs_xlsx.cfm.get_cfm_comp_index import collect_cfm_industry_data
+from src.jobs_xlsx.cfm.get_cfm_price_index import collect_cfm_price_index_data
 
 # Project root 지정
 PROJECT_ROOT = Path.cwd()
@@ -86,11 +96,21 @@ def collect_macro_data() -> None:
             sheet_name=job.get("sheet_name", 0),
         )
 
-def market_main() -> None :
-    collect_korean_index_data()
-    collect_japan_index_data()
-    collect_china_index_data()
+# def market_main() -> None :
+    # collect_korean_index_data()
+    # collect_japan_index_data()
+    # collect_china_index_data()
+    # collect_nasdaq_index_data()
 
 if __name__ == "__main__":
     # market_main()
-    collect_macro_data()
+    collect_baltic_freight_data()
+    collect_baltic_air_freight_data()
+    collect_drewry_wci_freight_data()
+    collect_kobc_container_freight_data()
+    collect_us_rail_freight_data()
+    collect_dxi_index_data()
+    collect_trendforce_industry_data()
+    collect_cfm_industry_data()
+    collect_cfm_price_index_data()
+    # collect_macro_data()

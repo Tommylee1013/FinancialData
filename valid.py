@@ -3,7 +3,7 @@ import pandas as pd
 
 import pprint
 
-from src.jobs_xlsx.get_macro_data import collect_us_macro_data
+from src.jobs_api.get_volatility_index import collect_volatility_data
 
 if __name__ == "__main__":
-    collect_us_macro_data()
+    collect_volatility_data()

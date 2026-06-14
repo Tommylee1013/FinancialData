@@ -19,7 +19,7 @@ LOGGER = setup_logger(
     log_path = 'logs/jobs/japan_index.log'
 ) # Logger 설정
 
-N_BARS = 13000
+N_BARS = 13800
 VERBOSE = True
 NUM_TRIALS = 5
 

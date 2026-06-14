@@ -38,6 +38,20 @@ MACRO_DATA_PATH = (
     / "macro"
 )
 
+FREIGHT_DATA_PATH = (
+    PROJECT_ROOT
+    / "data_lake"
+    / "raw"
+    / "freight"
+)
+
+VOLATILITY_DATA_PATH = (
+    PROJECT_ROOT
+    / "data_lake"
+    /"raw"
+    / "risk"
+)
+
 LOGGER = setup_logger(
     name=__name__,
     log_path="logs/jobs/build_duckdb.log",
@@ -51,6 +65,8 @@ LOGGER = setup_logger(
 METADATA_TABLE = "metadata.instrument_master"
 INDEX_TABLE = "market.index_data"
 MACRO_TABLE = "macro.macro_data"
+FREIGHT_TABLE = "freight.freight_data"
+VOLATILITY_TABLE = "market.volatility_data"
 
 
 # ============================================================
@@ -85,6 +101,31 @@ MACRO_COLUMNS = [
     "previous",
 ]
 
+FREIGHT_COLUMNS = [
+    "base_date",
+    "release_date",
+    "time",
+    "time_zone",
+    "symbol",
+    "exchange",
+    "country",
+    "value",
+]
+
+VOLATILITY_COLUMNS = [
+    "base_date",
+    "release_date",
+    "time",
+    "time_zone",
+    "symbol",
+    "exchange",
+    "country",
+    "open",
+    "high",
+    "low",
+    "close",
+    "volume",
+]
 
 # ============================================================
 # Utility functions
@@ -249,9 +290,15 @@ def create_schemas(
         """
     )
 
+    connection.execute(
+        """
+        CREATE SCHEMA IF NOT EXISTS freight
+        """
+    )
+
     LOGGER.info(
         "DuckDB schemas created or verified | "
-        "schemas=metadata,market,macro"
+        "schemas=metadata,market,macro,freight"
     )
 
 
@@ -430,6 +477,106 @@ def create_macro_table(
     return row_count
 
 
+def create_freight_table(
+    connection: duckdb.DuckDBPyConnection,
+    parquet_files: list[Path],
+) -> int:
+    """
+    Combines all Freight Parquet files into freight.freight_data.
+    """
+
+    parquet_paths = build_parquet_path_list(
+        parquet_files
+    )
+
+    query = f"""
+        CREATE OR REPLACE TABLE {FREIGHT_TABLE} AS
+        SELECT
+            CAST(base_date AS DATE) AS base_date,
+            CAST(release_date AS DATE) AS release_date,
+            CAST(time AS TIME) AS time,
+            CAST(time_zone AS VARCHAR) AS time_zone,
+            CAST(symbol AS VARCHAR) AS symbol,
+            CAST(exchange AS VARCHAR) AS exchange,
+            CAST(country AS VARCHAR) AS country,
+            CAST(value AS DOUBLE) AS value
+        FROM read_parquet(
+            {parquet_paths},
+            union_by_name = TRUE
+        )
+    """
+
+    connection.execute(query)
+
+    row_count = connection.execute(
+        f"""
+        SELECT COUNT(*)
+        FROM {FREIGHT_TABLE}
+        """
+    ).fetchone()[0]
+
+    LOGGER.info(
+        "Freight table created | "
+        "table=%s | files=%d | rows=%d",
+        FREIGHT_TABLE,
+        len(parquet_files),
+        row_count,
+    )
+
+    return row_count
+
+def create_volatility_table(
+    connection: duckdb.DuckDBPyConnection,
+    parquet_files: list[Path],
+) -> int:
+    """
+    Combines all volatility Parquet files into market.volatility_data.
+    """
+
+    parquet_paths = build_parquet_path_list(
+        parquet_files
+    )
+
+    query = f"""
+        CREATE OR REPLACE TABLE {VOLATILITY_TABLE} AS
+        SELECT
+            CAST(base_date AS DATE) AS base_date,
+            CAST(release_date AS DATE) AS release_date,
+            CAST(time AS TIME) AS time,
+            CAST(time_zone AS VARCHAR) AS time_zone,
+            CAST(symbol AS VARCHAR) AS symbol,
+            CAST(exchange AS VARCHAR) AS exchange,
+            CAST(country AS VARCHAR) AS country,
+            CAST(open AS DOUBLE) AS open,
+            CAST(high AS DOUBLE) AS high,
+            CAST(low AS DOUBLE) AS low,
+            CAST(close AS DOUBLE) AS close,
+            CAST(volume AS DOUBLE) AS volume
+        FROM read_parquet(
+            {parquet_paths},
+            union_by_name = TRUE
+        )
+    """
+
+    connection.execute(query)
+
+    row_count = connection.execute(
+        f"""
+        SELECT COUNT(*)
+        FROM {INDEX_TABLE}
+        """
+    ).fetchone()[0]
+
+    LOGGER.info(
+        "Index table created | "
+        "table=%s | files=%d | rows=%d",
+        INDEX_TABLE,
+        len(parquet_files),
+        row_count,
+    )
+
+    return row_count
+
 # ============================================================
 # Database validation
 # ============================================================
@@ -458,6 +605,25 @@ def validate_database(
            OR release_date IS NULL
            OR symbol IS NULL
         """
+    ).fetchone()[0]
+
+    freight_null_keys = connection.execute(
+        f"""
+        SELECT COUNT(*)
+        FROM {FREIGHT_TABLE}
+        WHERE base_date IS NULL
+           OR release_date IS NULL
+           OR symbol IS NULL
+        """
+    ).fetchone()[0]
+
+    volatility_null_keys = connection.execute(
+        f"""
+            SELECT COUNT(*)
+            FROM {VOLATILITY_TABLE}
+            WHERE base_date IS NULL
+               OR symbol IS NULL
+            """
     ).fetchone()[0]
 
     index_duplicates = connection.execute(
@@ -500,6 +666,46 @@ def validate_database(
         """
     ).fetchone()[0]
 
+    freight_duplicates = connection.execute(
+        f"""
+        SELECT COUNT(*)
+        FROM (
+            SELECT
+                base_date,
+                release_date,
+                symbol,
+                exchange,
+                COUNT(*) AS row_count
+            FROM {FREIGHT_TABLE}
+            GROUP BY
+                base_date,
+                release_date,
+                symbol,
+                exchange
+            HAVING COUNT(*) > 1
+        )
+        """
+    ).fetchone()[0]
+
+    volatility_duplicates = connection.execute(
+        f"""
+            SELECT COUNT(*)
+            FROM (
+                SELECT
+                    base_date,
+                    symbol,
+                    exchange,
+                    COUNT(*) AS row_count
+                FROM {VOLATILITY_TABLE}
+                GROUP BY
+                    base_date,
+                    symbol,
+                    exchange
+                HAVING COUNT(*) > 1
+            )
+            """
+    ).fetchone()[0]
+
     if index_null_keys > 0:
         raise ValueError(
             "The index table contains "
@@ -512,6 +718,20 @@ def validate_database(
             "The macro table contains "
             f"{macro_null_keys:,} rows with a null "
             "base_date, release_date, or symbol."
+        )
+
+    if freight_null_keys > 0:
+        raise ValueError(
+            "The freight table contains "
+            f"{freight_null_keys:,} rows with a null "
+            "base_date, release_date, or symbol."
+        )
+
+    if volatility_null_keys > 0:
+        raise ValueError(
+            "The index table contains "
+            f"{volatility_null_keys:,} rows with a null "
+            "base_date or symbol."
         )
 
     if index_duplicates > 0:
@@ -528,16 +748,38 @@ def validate_database(
             macro_duplicates,
         )
 
+    if freight_duplicates > 0:
+        LOGGER.warning(
+            "Duplicate freight keys detected | "
+            "duplicate_groups=%d",
+            freight_duplicates,
+        )
+
+    if volatility_duplicates > 0:
+        LOGGER.warning(
+            "Duplicate index keys detected | "
+            "duplicate_groups=%d",
+            index_duplicates,
+        )
+
     LOGGER.info(
         "Database validation completed | "
         "index_null_keys=%d | "
         "macro_null_keys=%d | "
+        "freight_null_keys=%d | "
+        "volatility_null_keys=%d | "
         "index_duplicate_groups=%d | "
-        "macro_duplicate_groups=%d",
+        "macro_duplicate_groups=%d | "
+        "freight_duplicate_groups=%d"
+        "volatility_duplicate_groups=%d | ",
         index_null_keys,
         macro_null_keys,
+        freight_null_keys,
+        volatility_null_keys,
         index_duplicates,
         macro_duplicates,
+        freight_duplicates,
+        volatility_duplicates,
     )
 
 
@@ -547,7 +789,7 @@ def validate_database(
 
 def build_duckdb() -> None:
     """
-    Builds the metadata, market, and macro DuckDB tables.
+    Builds the metadata, market, macro, and freight DuckDB tables.
     """
 
     LOGGER.info(
@@ -571,11 +813,20 @@ def build_duckdb() -> None:
             MACRO_DATA_PATH
         )
 
+        freight_files = get_parquet_files(
+            FREIGHT_DATA_PATH
+        )
+
+        volatility_files = get_parquet_files(
+            VOLATILITY_DATA_PATH
+        )
+
         LOGGER.info(
             "Parquet file discovery completed | "
-            "index_files=%d | macro_files=%d",
+            "index_files=%d | macro_files=%d | freight_files=%d",
             len(index_files),
             len(macro_files),
+            len(freight_files),
         )
 
         validate_parquet_columns(
@@ -588,6 +839,18 @@ def build_duckdb() -> None:
             parquet_files=macro_files,
             required_columns=MACRO_COLUMNS,
             data_type_name="macro",
+        )
+
+        validate_parquet_columns(
+            parquet_files=freight_files,
+            required_columns=FREIGHT_COLUMNS,
+            data_type_name="freight",
+        )
+
+        validate_parquet_columns(
+            parquet_files=volatility_files,
+            required_columns=VOLATILITY_COLUMNS,
+            data_type_name="risk",
         )
 
         connection = duckdb.connect(
@@ -621,6 +884,16 @@ def build_duckdb() -> None:
             parquet_files=macro_files,
         )
 
+        freight_rows = create_freight_table(
+            connection,
+            parquet_files=freight_files,
+        )
+
+        volatility_rows = create_volatility_table(
+            connection,
+            parquet_files=volatility_files,
+        )
+
         validate_database(
             connection
         )
@@ -633,10 +906,14 @@ def build_duckdb() -> None:
             "DuckDB build job completed successfully | "
             "metadata_rows=%d | "
             "index_rows=%d | "
-            "macro_rows=%d",
+            "macro_rows=%d | "
+            "freight_rows=%d"
+            "volatility_rows=%d",
             metadata_rows,
             index_rows,
             macro_rows,
+            freight_rows,
+            volatility_rows
         )
 
     except Exception:

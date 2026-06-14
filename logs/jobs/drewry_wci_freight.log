@@ -1,0 +1,39 @@
+2026-06-13 21:43:36 | INFO | src.jobs_xlsx.get_drewry_index | Drewry WCI freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/world container index.xlsx
+2026-06-13 21:43:36 | INFO | src.jobs_xlsx.get_drewry_index | Excel file loaded | rows=773 | columns=13
+2026-06-13 21:43:36 | INFO | src.jobs_xlsx.get_drewry_index | Drewry WCI freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/drewry_world_container_index.parquet | rows=6957
+2026-06-14 16:30:15 | INFO | src.jobs_xlsx.get_drewry_index | Drewry WCI freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/world container index.xlsx
+2026-06-14 16:30:15 | INFO | src.jobs_xlsx.get_drewry_index | Excel file loaded | rows=773 | columns=13
+2026-06-14 16:30:15 | INFO | src.jobs_xlsx.get_drewry_index | Drewry WCI freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/drewry_world_container_index.parquet | rows=6957
+2026-06-14 16:33:17 | INFO | src.jobs_xlsx.get_drewry_index | Drewry WCI freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/world container index.xlsx
+2026-06-14 16:33:17 | INFO | src.jobs_xlsx.get_drewry_index | Excel file loaded | rows=773 | columns=13
+2026-06-14 16:33:17 | INFO | src.jobs_xlsx.get_drewry_index | Drewry WCI freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/drewry_world_container_index.parquet | rows=6957
+2026-06-14 16:35:56 | INFO | src.jobs_xlsx.get_drewry_index | Drewry WCI freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/world container index.xlsx
+2026-06-14 16:35:56 | INFO | src.jobs_xlsx.get_drewry_index | Excel file loaded | rows=773 | columns=13
+2026-06-14 16:35:56 | INFO | src.jobs_xlsx.get_drewry_index | Drewry WCI freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/drewry_world_container_index.parquet | rows=6957
+2026-06-14 16:49:17 | INFO | src.jobs_xlsx.get_drewry_index | Drewry WCI freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/world container index.xlsx
+2026-06-14 16:49:17 | INFO | src.jobs_xlsx.get_drewry_index | Excel file loaded | rows=773 | columns=13
+2026-06-14 16:49:17 | INFO | src.jobs_xlsx.get_drewry_index | Drewry WCI freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/drewry_world_container_index.parquet | rows=6957
+2026-06-14 16:56:30 | INFO | src.jobs_xlsx.get_drewry_index | Drewry WCI freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/world container index.xlsx
+2026-06-14 16:56:30 | INFO | src.jobs_xlsx.get_drewry_index | Excel file loaded | rows=773 | columns=13
+2026-06-14 16:56:30 | INFO | src.jobs_xlsx.get_drewry_index | Drewry WCI freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/drewry_world_container_index.parquet | rows=6957
+2026-06-14 16:58:23 | INFO | src.jobs_xlsx.get_drewry_index | Drewry WCI freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/world container index.xlsx
+2026-06-14 16:58:23 | INFO | src.jobs_xlsx.get_drewry_index | Excel file loaded | rows=773 | columns=13
+2026-06-14 16:58:23 | INFO | src.jobs_xlsx.get_drewry_index | Drewry WCI freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/drewry_world_container_index.parquet | rows=6957
+2026-06-14 16:58:50 | INFO | src.jobs_xlsx.get_drewry_index | Drewry WCI freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/world container index.xlsx
+2026-06-14 16:58:50 | INFO | src.jobs_xlsx.get_drewry_index | Excel file loaded | rows=773 | columns=13
+2026-06-14 16:58:50 | INFO | src.jobs_xlsx.get_drewry_index | Drewry WCI freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/drewry_world_container_index.parquet | rows=6957
+2026-06-14 17:00:15 | INFO | src.jobs_xlsx.get_drewry_index | Drewry WCI freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/world container index.xlsx
+2026-06-14 17:00:15 | INFO | src.jobs_xlsx.get_drewry_index | Excel file loaded | rows=773 | columns=13
+2026-06-14 17:00:15 | INFO | src.jobs_xlsx.get_drewry_index | Drewry WCI freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/drewry_world_container_index.parquet | rows=6957
+2026-06-14 17:03:19 | INFO | src.jobs_xlsx.get_drewry_index | Drewry WCI freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/world container index.xlsx
+2026-06-14 17:03:19 | INFO | src.jobs_xlsx.get_drewry_index | Excel file loaded | rows=773 | columns=13
+2026-06-14 17:03:19 | INFO | src.jobs_xlsx.get_drewry_index | Drewry WCI freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/drewry_world_container_index.parquet | rows=6957
+2026-06-14 19:40:48 | INFO | src.jobs_xlsx.get_drewry_index | Drewry WCI freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/world container index.xlsx
+2026-06-14 19:40:48 | INFO | src.jobs_xlsx.get_drewry_index | Excel file loaded | rows=773 | columns=13
+2026-06-14 19:40:48 | INFO | src.jobs_xlsx.get_drewry_index | Drewry WCI freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/drewry_world_container_index.parquet | rows=6957
+2026-06-14 19:43:19 | INFO | src.jobs_xlsx.get_drewry_index | Drewry WCI freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/world container index.xlsx
+2026-06-14 19:43:19 | INFO | src.jobs_xlsx.get_drewry_index | Excel file loaded | rows=773 | columns=13
+2026-06-14 19:43:19 | INFO | src.jobs_xlsx.get_drewry_index | Drewry WCI freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/drewry_world_container_index.parquet | rows=6957
+2026-06-14 19:46:31 | INFO | src.jobs_xlsx.get_drewry_index | Drewry WCI freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/world container index.xlsx
+2026-06-14 19:46:31 | INFO | src.jobs_xlsx.get_drewry_index | Excel file loaded | rows=773 | columns=13
+2026-06-14 19:46:31 | INFO | src.jobs_xlsx.get_drewry_index | Drewry WCI freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/drewry_world_container_index.parquet | rows=6957

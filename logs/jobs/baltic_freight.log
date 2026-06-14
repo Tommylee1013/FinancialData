@@ -1,0 +1,42 @@
+2026-06-13 21:20:36 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/baltic dry index.xlsx
+2026-06-13 21:20:36 | INFO | src.jobs_xlsx.get_baltic_freight_index | Excel file loaded | rows=9498 | columns=14
+2026-06-13 21:20:37 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/baltic_index.parquet | rows=48727
+2026-06-13 21:43:36 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/baltic dry index.xlsx
+2026-06-13 21:43:36 | INFO | src.jobs_xlsx.get_baltic_freight_index | Excel file loaded | rows=9498 | columns=14
+2026-06-13 21:43:36 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/baltic_index.parquet | rows=48727
+2026-06-14 16:30:14 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/baltic dry index.xlsx
+2026-06-14 16:30:15 | INFO | src.jobs_xlsx.get_baltic_freight_index | Excel file loaded | rows=9498 | columns=14
+2026-06-14 16:30:15 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/baltic_index.parquet | rows=48727
+2026-06-14 16:33:16 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/baltic dry index.xlsx
+2026-06-14 16:33:17 | INFO | src.jobs_xlsx.get_baltic_freight_index | Excel file loaded | rows=9498 | columns=14
+2026-06-14 16:33:17 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/baltic_index.parquet | rows=48727
+2026-06-14 16:35:56 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/baltic dry index.xlsx
+2026-06-14 16:35:56 | INFO | src.jobs_xlsx.get_baltic_freight_index | Excel file loaded | rows=9498 | columns=14
+2026-06-14 16:35:56 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/baltic_index.parquet | rows=48727
+2026-06-14 16:49:17 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/baltic dry index.xlsx
+2026-06-14 16:49:17 | INFO | src.jobs_xlsx.get_baltic_freight_index | Excel file loaded | rows=9498 | columns=14
+2026-06-14 16:49:17 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/baltic_index.parquet | rows=48727
+2026-06-14 16:56:29 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/baltic dry index.xlsx
+2026-06-14 16:56:30 | INFO | src.jobs_xlsx.get_baltic_freight_index | Excel file loaded | rows=9498 | columns=14
+2026-06-14 16:56:30 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/baltic_index.parquet | rows=48727
+2026-06-14 16:58:22 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/baltic dry index.xlsx
+2026-06-14 16:58:23 | INFO | src.jobs_xlsx.get_baltic_freight_index | Excel file loaded | rows=9498 | columns=14
+2026-06-14 16:58:23 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/baltic_index.parquet | rows=48727
+2026-06-14 16:58:50 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/baltic dry index.xlsx
+2026-06-14 16:58:50 | INFO | src.jobs_xlsx.get_baltic_freight_index | Excel file loaded | rows=9498 | columns=14
+2026-06-14 16:58:50 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/baltic_index.parquet | rows=48727
+2026-06-14 17:00:15 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/baltic dry index.xlsx
+2026-06-14 17:00:15 | INFO | src.jobs_xlsx.get_baltic_freight_index | Excel file loaded | rows=9498 | columns=14
+2026-06-14 17:00:15 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/baltic_index.parquet | rows=48727
+2026-06-14 17:03:18 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/baltic dry index.xlsx
+2026-06-14 17:03:19 | INFO | src.jobs_xlsx.get_baltic_freight_index | Excel file loaded | rows=9498 | columns=14
+2026-06-14 17:03:19 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/baltic_index.parquet | rows=48727
+2026-06-14 19:40:47 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/baltic dry index.xlsx
+2026-06-14 19:40:48 | INFO | src.jobs_xlsx.get_baltic_freight_index | Excel file loaded | rows=9498 | columns=14
+2026-06-14 19:40:48 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/baltic_index.parquet | rows=48727
+2026-06-14 19:43:18 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/baltic dry index.xlsx
+2026-06-14 19:43:18 | INFO | src.jobs_xlsx.get_baltic_freight_index | Excel file loaded | rows=9498 | columns=14
+2026-06-14 19:43:19 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/baltic_index.parquet | rows=48727
+2026-06-14 19:46:31 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/freight/baltic dry index.xlsx
+2026-06-14 19:46:31 | INFO | src.jobs_xlsx.get_baltic_freight_index | Excel file loaded | rows=9498 | columns=14
+2026-06-14 19:46:31 | INFO | src.jobs_xlsx.get_baltic_freight_index | Baltic freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/freight/baltic_index.parquet | rows=48727

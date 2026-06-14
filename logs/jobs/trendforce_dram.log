@@ -1,0 +1,74 @@
+2026-06-14 16:30:15 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce DRAM data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/industry/TrendForce/DRAM.xlsx | metadata_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/metadata.xlsx
+2026-06-14 16:30:15 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce DRAM metadata loaded | symbols=19
+2026-06-14 16:30:15 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=DRAM | rows=283 | columns=25
+2026-06-14 16:33:17 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce DRAM data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/industry/TrendForce/DRAM.xlsx | metadata_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/metadata.xlsx
+2026-06-14 16:33:17 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce DRAM metadata loaded | symbols=19
+2026-06-14 16:33:17 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=DRAM | rows=283 | columns=25
+2026-06-14 16:33:17 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet transformed | sheet=DRAM | rows=1981
+2026-06-14 16:33:17 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=DRAM Contract | rows=6 | columns=25
+2026-06-14 16:35:56 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce DRAM data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/industry/TrendForce/DRAM.xlsx | metadata_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/metadata.xlsx
+2026-06-14 16:35:57 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce DRAM metadata loaded | symbols=19
+2026-06-14 16:35:57 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=DRAM | rows=283 | columns=25
+2026-06-14 16:35:57 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet transformed | sheet=DRAM | rows=1981
+2026-06-14 16:35:57 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=DRAM Contract | rows=6 | columns=25
+2026-06-14 16:35:57 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet transformed | sheet=DRAM Contract | rows=37
+2026-06-14 16:35:57 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=Module | rows=21 | columns=13
+2026-06-14 16:35:57 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet transformed | sheet=Module | rows=63
+2026-06-14 16:35:57 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=GDDR | rows=21 | columns=10
+2026-06-14 16:35:57 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet transformed | sheet=GDDR | rows=42
+2026-06-14 16:35:57 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce DRAM Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/industry/trendforce/dram.parquet | rows=2123
+2026-06-14 16:49:17 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce DRAM data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/industry/TrendForce/DRAM.xlsx | metadata_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/metadata.xlsx
+2026-06-14 16:49:17 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce DRAM metadata loaded | symbols=19
+2026-06-14 16:49:17 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=DRAM | rows=283 | columns=25
+2026-06-14 16:49:17 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet transformed | sheet=DRAM | rows=1981
+2026-06-14 16:49:17 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=DRAM Contract | rows=6 | columns=25
+2026-06-14 16:49:17 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet transformed | sheet=DRAM Contract | rows=37
+2026-06-14 16:49:17 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=Module | rows=21 | columns=13
+2026-06-14 16:49:17 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet transformed | sheet=Module | rows=63
+2026-06-14 16:49:17 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=GDDR | rows=21 | columns=10
+2026-06-14 16:49:17 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet transformed | sheet=GDDR | rows=42
+2026-06-14 16:49:17 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce DRAM Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/industry/trendforce/dram.parquet | rows=2123
+2026-06-14 16:56:30 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce DRAM data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/industry/TrendForce/DRAM.xlsx | metadata_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/metadata.xlsx
+2026-06-14 16:56:30 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce DRAM metadata loaded | symbols=19
+2026-06-14 16:56:30 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=DRAM | rows=283 | columns=25
+2026-06-14 16:56:30 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet transformed | sheet=DRAM | rows=1981
+2026-06-14 16:56:30 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=DRAM Contract | rows=6 | columns=25
+2026-06-14 16:56:30 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet transformed | sheet=DRAM Contract | rows=37
+2026-06-14 16:56:30 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=Module | rows=21 | columns=13
+2026-06-14 16:56:30 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet transformed | sheet=Module | rows=63
+2026-06-14 16:56:30 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=GDDR | rows=21 | columns=10
+2026-06-14 16:56:30 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet transformed | sheet=GDDR | rows=42
+2026-06-14 16:56:30 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce DRAM Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/industry/trendforce/dram.parquet | rows=2123
+2026-06-14 16:58:23 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce DRAM data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/industry/TrendForce/DRAM.xlsx | metadata_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/metadata.xlsx
+2026-06-14 16:58:23 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce DRAM metadata loaded | symbols=19
+2026-06-14 16:58:23 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=DRAM | rows=283 | columns=25
+2026-06-14 16:58:23 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet transformed | sheet=DRAM | rows=1981
+2026-06-14 16:58:23 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=DRAM Contract | rows=6 | columns=25
+2026-06-14 16:58:23 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet transformed | sheet=DRAM Contract | rows=37
+2026-06-14 16:58:23 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=Module | rows=21 | columns=13
+2026-06-14 16:58:23 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet transformed | sheet=Module | rows=63
+2026-06-14 16:58:23 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=GDDR | rows=21 | columns=10
+2026-06-14 16:58:23 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet transformed | sheet=GDDR | rows=42
+2026-06-14 16:58:23 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce DRAM Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/industry/trendforce/dram.parquet | rows=2123
+2026-06-14 16:58:50 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce DRAM data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/industry/TrendForce/DRAM.xlsx | metadata_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/metadata.xlsx
+2026-06-14 16:58:50 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce DRAM metadata loaded | symbols=19
+2026-06-14 16:58:50 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=DRAM | rows=283 | columns=25
+2026-06-14 16:58:50 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet transformed | sheet=DRAM | rows=1981
+2026-06-14 16:58:50 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=DRAM Contract | rows=6 | columns=25
+2026-06-14 16:58:50 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet transformed | sheet=DRAM Contract | rows=37
+2026-06-14 16:58:50 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=Module | rows=21 | columns=13
+2026-06-14 16:58:50 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet transformed | sheet=Module | rows=63
+2026-06-14 16:58:50 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=GDDR | rows=21 | columns=10
+2026-06-14 16:58:50 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet transformed | sheet=GDDR | rows=42
+2026-06-14 16:58:50 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce DRAM Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/industry/trendforce/dram.parquet | rows=2123
+2026-06-14 17:00:16 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce DRAM data job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/industry/TrendForce/DRAM.xlsx | metadata_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/metadata.xlsx
+2026-06-14 17:00:16 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce DRAM metadata loaded | symbols=19
+2026-06-14 17:00:16 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=DRAM | rows=283 | columns=25
+2026-06-14 17:00:16 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet transformed | sheet=DRAM | rows=1981
+2026-06-14 17:00:16 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=DRAM Contract | rows=6 | columns=25
+2026-06-14 17:00:16 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet transformed | sheet=DRAM Contract | rows=37
+2026-06-14 17:00:16 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=Module | rows=21 | columns=13
+2026-06-14 17:00:16 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet transformed | sheet=Module | rows=63
+2026-06-14 17:00:16 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet loaded | sheet=GDDR | rows=21 | columns=10
+2026-06-14 17:00:16 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce sheet transformed | sheet=GDDR | rows=42
+2026-06-14 17:00:16 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | TrendForce DRAM Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/industry/trendforce/dram.parquet | rows=2123

@@ -33,3 +33,169 @@ C:\Program Files\JetBrains\PyCharm 2026.1\jbr\bin\java.exe (PID 23636)
 2026-06-12 17:52:33 | INFO | src.dataloader.build_db | Database validation completed | index_null_keys=0 | macro_null_keys=0 | index_duplicate_groups=0 | macro_duplicate_groups=0
 2026-06-12 17:52:33 | INFO | src.dataloader.build_db | DuckDB build job completed successfully | metadata_rows=644 | index_rows=282229 | macro_rows=5147
 2026-06-12 17:52:33 | INFO | src.dataloader.build_db | DuckDB connection closed.
+2026-06-13 00:07:14 | INFO | src.dataloader.build_db | DuckDB build job started | database=/Users/tommy/Desktop/Pycharm/FinancialData/database/alternative_data.duckdb
+2026-06-13 00:07:14 | INFO | src.dataloader.build_db | Parquet file discovery completed | index_files=3 | macro_files=10
+2026-06-13 00:07:15 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=index | files=3
+2026-06-13 00:07:15 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=macro | files=10
+2026-06-13 00:07:15 | INFO | src.dataloader.build_db | DuckDB connection opened | database=/Users/tommy/Desktop/Pycharm/FinancialData/database/alternative_data.duckdb
+2026-06-13 00:07:15 | INFO | src.dataloader.build_db | DuckDB schemas created or verified | schemas=metadata,market,macro
+2026-06-13 00:07:15 | INFO | src.dataloader.build_db | Loading metadata Excel file | path=/Users/tommy/Desktop/Pycharm/FinancialData/data/metadata.xlsx
+2026-06-13 00:07:15 | INFO | src.dataloader.build_db | Metadata table created | table=metadata.instrument_master | rows=644
+2026-06-13 00:07:15 | INFO | src.dataloader.build_db | Index table created | table=market.index_data | files=3 | rows=282229
+2026-06-13 00:07:15 | INFO | src.dataloader.build_db | Macro table created | table=macro.macro_data | files=10 | rows=5147
+2026-06-13 00:07:15 | INFO | src.dataloader.build_db | Database validation completed | index_null_keys=0 | macro_null_keys=0 | index_duplicate_groups=0 | macro_duplicate_groups=0
+2026-06-13 00:07:15 | INFO | src.dataloader.build_db | DuckDB build job completed successfully | metadata_rows=644 | index_rows=282229 | macro_rows=5147
+2026-06-13 00:07:15 | INFO | src.dataloader.build_db | DuckDB connection closed.
+2026-06-13 01:04:13 | INFO | src.dataloader.build_db | DuckDB build job started | database=/Users/tommy/Desktop/Pycharm/FinancialData/database/alternative_data.duckdb
+2026-06-13 01:04:13 | INFO | src.dataloader.build_db | Parquet file discovery completed | index_files=4 | macro_files=10
+2026-06-13 01:04:13 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=index | files=4
+2026-06-13 01:04:13 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=macro | files=10
+2026-06-13 01:04:13 | INFO | src.dataloader.build_db | DuckDB connection opened | database=/Users/tommy/Desktop/Pycharm/FinancialData/database/alternative_data.duckdb
+2026-06-13 01:04:13 | INFO | src.dataloader.build_db | DuckDB schemas created or verified | schemas=metadata,market,macro
+2026-06-13 01:04:13 | INFO | src.dataloader.build_db | Loading metadata Excel file | path=/Users/tommy/Desktop/Pycharm/FinancialData/data/metadata.xlsx
+2026-06-13 01:04:13 | INFO | src.dataloader.build_db | Metadata table created | table=metadata.instrument_master | rows=652
+2026-06-13 01:04:13 | INFO | src.dataloader.build_db | Index table created | table=market.index_data | files=4 | rows=394855
+2026-06-13 01:04:13 | INFO | src.dataloader.build_db | Macro table created | table=macro.macro_data | files=10 | rows=5147
+2026-06-13 01:04:13 | INFO | src.dataloader.build_db | Database validation completed | index_null_keys=0 | macro_null_keys=0 | index_duplicate_groups=0 | macro_duplicate_groups=0
+2026-06-13 01:04:13 | INFO | src.dataloader.build_db | DuckDB build job completed successfully | metadata_rows=652 | index_rows=394855 | macro_rows=5147
+2026-06-13 01:04:13 | INFO | src.dataloader.build_db | DuckDB connection closed.
+2026-06-13 01:09:35 | INFO | src.dataloader.build_db | DuckDB build job started | database=/Users/tommy/Desktop/Pycharm/FinancialData/database/alternative_data.duckdb
+2026-06-13 01:09:35 | INFO | src.dataloader.build_db | Parquet file discovery completed | index_files=4 | macro_files=10
+2026-06-13 01:09:35 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=index | files=4
+2026-06-13 01:09:35 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=macro | files=10
+2026-06-13 01:09:35 | INFO | src.dataloader.build_db | DuckDB connection opened | database=/Users/tommy/Desktop/Pycharm/FinancialData/database/alternative_data.duckdb
+2026-06-13 01:09:35 | INFO | src.dataloader.build_db | DuckDB schemas created or verified | schemas=metadata,market,macro
+2026-06-13 01:09:35 | INFO | src.dataloader.build_db | Loading metadata Excel file | path=/Users/tommy/Desktop/Pycharm/FinancialData/data/metadata.xlsx
+2026-06-13 01:09:35 | INFO | src.dataloader.build_db | Metadata table created | table=metadata.instrument_master | rows=652
+2026-06-13 01:09:35 | INFO | src.dataloader.build_db | Index table created | table=market.index_data | files=4 | rows=394855
+2026-06-13 01:09:35 | INFO | src.dataloader.build_db | Macro table created | table=macro.macro_data | files=10 | rows=5147
+2026-06-13 01:09:35 | INFO | src.dataloader.build_db | Database validation completed | index_null_keys=0 | macro_null_keys=0 | index_duplicate_groups=0 | macro_duplicate_groups=0
+2026-06-13 01:09:35 | INFO | src.dataloader.build_db | DuckDB build job completed successfully | metadata_rows=652 | index_rows=394855 | macro_rows=5147
+2026-06-13 01:09:35 | INFO | src.dataloader.build_db | DuckDB connection closed.
+2026-06-13 21:46:03 | INFO | src.dataloader.build_db | DuckDB build job started | database=/Users/tommy/Desktop/Pycharm/FinancialData/database/alternative_data.duckdb
+2026-06-13 21:46:03 | INFO | src.dataloader.build_db | Parquet file discovery completed | index_files=4 | macro_files=10 | freight_files=5
+2026-06-13 21:46:03 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=index | files=4
+2026-06-13 21:46:03 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=macro | files=10
+2026-06-13 21:46:03 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=freight | files=5
+2026-06-13 21:46:03 | INFO | src.dataloader.build_db | DuckDB connection opened | database=/Users/tommy/Desktop/Pycharm/FinancialData/database/alternative_data.duckdb
+2026-06-13 21:46:03 | INFO | src.dataloader.build_db | DuckDB schemas created or verified | schemas=metadata,market,macro,freight
+2026-06-13 21:46:03 | INFO | src.dataloader.build_db | Loading metadata Excel file | path=/Users/tommy/Desktop/Pycharm/FinancialData/data/metadata.xlsx
+2026-06-13 21:46:04 | INFO | src.dataloader.build_db | Metadata table created | table=metadata.instrument_master | rows=652
+2026-06-13 21:46:04 | INFO | src.dataloader.build_db | Index table created | table=market.index_data | files=4 | rows=394855
+2026-06-13 21:46:04 | INFO | src.dataloader.build_db | Macro table created | table=macro.macro_data | files=10 | rows=5147
+2026-06-13 21:46:04 | INFO | src.dataloader.build_db | Freight table created | table=freight.freight_data | files=5 | rows=62166
+2026-06-13 21:46:04 | INFO | src.dataloader.build_db | Database validation completed | index_null_keys=0 | macro_null_keys=0 | freight_null_keys=0 | index_duplicate_groups=0 | macro_duplicate_groups=0 | freight_duplicate_groups=0
+2026-06-13 21:46:04 | INFO | src.dataloader.build_db | DuckDB build job completed successfully | metadata_rows=652 | index_rows=394855 | macro_rows=5147 | freight_rows=62166
+2026-06-13 21:46:04 | INFO | src.dataloader.build_db | DuckDB connection closed.
+2026-06-13 22:24:28 | INFO | src.dataloader.build_db | DuckDB build job started | database=/Users/tommy/Desktop/Pycharm/FinancialData/database/alternative_data.duckdb
+2026-06-13 22:24:28 | INFO | src.dataloader.build_db | Parquet file discovery completed | index_files=4 | macro_files=10 | freight_files=5
+2026-06-13 22:24:28 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=index | files=4
+2026-06-13 22:24:28 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=macro | files=10
+2026-06-13 22:24:28 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=freight | files=5
+2026-06-13 22:24:28 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=risk | files=1
+2026-06-13 22:24:28 | ERROR | src.dataloader.build_db | DuckDB build job failed.
+Traceback (most recent call last):
+  File "/Users/tommy/Desktop/Pycharm/FinancialData/src/dataloader/build_db.py", line 856, in build_duckdb
+    connection = duckdb.connect(
+        str(DATABASE_PATH)
+    )
+_duckdb.IOException: IO Error: Could not set lock on file "/Users/tommy/Desktop/Pycharm/FinancialData/database/alternative_data.duckdb": Conflicting lock is held in /Applications/PyCharm.app/Contents/jbr/Contents/Home/bin/java (PID 10481) by user tommy. See also https://duckdb.org/docs/stable/connect/concurrency
+2026-06-13 22:24:49 | INFO | src.dataloader.build_db | DuckDB build job started | database=/Users/tommy/Desktop/Pycharm/FinancialData/database/alternative_data.duckdb
+2026-06-13 22:24:49 | INFO | src.dataloader.build_db | Parquet file discovery completed | index_files=4 | macro_files=10 | freight_files=5
+2026-06-13 22:24:49 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=index | files=4
+2026-06-13 22:24:49 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=macro | files=10
+2026-06-13 22:24:49 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=freight | files=5
+2026-06-13 22:24:49 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=risk | files=1
+2026-06-13 22:24:49 | ERROR | src.dataloader.build_db | DuckDB build job failed.
+Traceback (most recent call last):
+  File "/Users/tommy/Desktop/Pycharm/FinancialData/src/dataloader/build_db.py", line 856, in build_duckdb
+    connection = duckdb.connect(
+        str(DATABASE_PATH)
+    )
+_duckdb.IOException: IO Error: Could not set lock on file "/Users/tommy/Desktop/Pycharm/FinancialData/database/alternative_data.duckdb": Conflicting lock is held in /Applications/PyCharm.app/Contents/jbr/Contents/Home/bin/java (PID 10481) by user tommy. See also https://duckdb.org/docs/stable/connect/concurrency
+2026-06-13 22:25:15 | INFO | src.dataloader.build_db | DuckDB build job started | database=/Users/tommy/Desktop/Pycharm/FinancialData/database/alternative_data.duckdb
+2026-06-13 22:25:15 | INFO | src.dataloader.build_db | Parquet file discovery completed | index_files=4 | macro_files=10 | freight_files=5
+2026-06-13 22:25:15 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=index | files=4
+2026-06-13 22:25:15 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=macro | files=10
+2026-06-13 22:25:15 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=freight | files=5
+2026-06-13 22:25:15 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=risk | files=1
+2026-06-13 22:25:15 | ERROR | src.dataloader.build_db | DuckDB build job failed.
+Traceback (most recent call last):
+  File "/Users/tommy/Desktop/Pycharm/FinancialData/src/dataloader/build_db.py", line 856, in build_duckdb
+    connection = duckdb.connect(
+        str(DATABASE_PATH)
+    )
+_duckdb.IOException: IO Error: Could not set lock on file "/Users/tommy/Desktop/Pycharm/FinancialData/database/alternative_data.duckdb": Conflicting lock is held in /Applications/PyCharm.app/Contents/jbr/Contents/Home/bin/java (PID 10481) by user tommy. See also https://duckdb.org/docs/stable/connect/concurrency
+2026-06-13 22:26:02 | INFO | src.dataloader.build_db | DuckDB build job started | database=/Users/tommy/Desktop/Pycharm/FinancialData/database/alternative_data.duckdb
+2026-06-13 22:26:02 | INFO | src.dataloader.build_db | Parquet file discovery completed | index_files=4 | macro_files=10 | freight_files=5
+2026-06-13 22:26:02 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=index | files=4
+2026-06-13 22:26:02 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=macro | files=10
+2026-06-13 22:26:02 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=freight | files=5
+2026-06-13 22:26:02 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=risk | files=1
+2026-06-13 22:26:02 | INFO | src.dataloader.build_db | DuckDB connection opened | database=/Users/tommy/Desktop/Pycharm/FinancialData/database/alternative_data.duckdb
+2026-06-13 22:26:02 | INFO | src.dataloader.build_db | DuckDB schemas created or verified | schemas=metadata,market,macro,freight
+2026-06-13 22:26:02 | INFO | src.dataloader.build_db | Loading metadata Excel file | path=/Users/tommy/Desktop/Pycharm/FinancialData/data/metadata.xlsx
+2026-06-13 22:26:02 | INFO | src.dataloader.build_db | Metadata table created | table=metadata.instrument_master | rows=652
+2026-06-13 22:26:02 | INFO | src.dataloader.build_db | Index table created | table=market.index_data | files=4 | rows=394855
+2026-06-13 22:26:02 | INFO | src.dataloader.build_db | Macro table created | table=macro.macro_data | files=10 | rows=5147
+2026-06-13 22:26:02 | INFO | src.dataloader.build_db | Freight table created | table=freight.freight_data | files=5 | rows=62166
+2026-06-13 22:26:02 | INFO | src.dataloader.build_db | Index table created | table=market.index_data | files=1 | rows=59834
+2026-06-13 22:26:02 | WARNING | src.dataloader.build_db | DuckDB transaction rolled back.
+2026-06-13 22:26:02 | ERROR | src.dataloader.build_db | DuckDB build job failed.
+Traceback (most recent call last):
+  File "/Users/tommy/Desktop/Pycharm/FinancialData/src/dataloader/build_db.py", line 897, in build_duckdb
+    validate_database(
+    ~~~~~~~~~~~~~~~~~^
+        connection
+        ^^^^^^^^^^
+    )
+    ^
+  File "/Users/tommy/Desktop/Pycharm/FinancialData/src/dataloader/build_db.py", line 620, in validate_database
+    volatility_null_keys = connection.execute(
+                           ~~~~~~~~~~~~~~~~~~^
+        f"""
+        ^^^^
+    ...<4 lines>...
+            """
+            ^^^
+    ).fetchone()[0]
+    ^
+_duckdb.CatalogException: Catalog Error: Table with name volatility_data does not exist!
+Did you mean "index_data"?
+
+LINE 3:             FROM market.volatility_data
+                         ^
+2026-06-13 22:26:02 | INFO | src.dataloader.build_db | DuckDB connection closed.
+2026-06-13 22:28:01 | INFO | src.dataloader.build_db | DuckDB build job started | database=/Users/tommy/Desktop/Pycharm/FinancialData/database/alternative_data.duckdb
+2026-06-13 22:28:01 | INFO | src.dataloader.build_db | Parquet file discovery completed | index_files=4 | macro_files=10 | freight_files=5
+2026-06-13 22:28:01 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=index | files=4
+2026-06-13 22:28:01 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=macro | files=10
+2026-06-13 22:28:01 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=freight | files=5
+2026-06-13 22:28:01 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=risk | files=1
+2026-06-13 22:28:01 | INFO | src.dataloader.build_db | DuckDB connection opened | database=/Users/tommy/Desktop/Pycharm/FinancialData/database/alternative_data.duckdb
+2026-06-13 22:28:01 | INFO | src.dataloader.build_db | DuckDB schemas created or verified | schemas=metadata,market,macro,freight
+2026-06-13 22:28:01 | INFO | src.dataloader.build_db | Loading metadata Excel file | path=/Users/tommy/Desktop/Pycharm/FinancialData/data/metadata.xlsx
+2026-06-13 22:28:02 | INFO | src.dataloader.build_db | Metadata table created | table=metadata.instrument_master | rows=652
+2026-06-13 22:28:02 | INFO | src.dataloader.build_db | Index table created | table=market.index_data | files=4 | rows=394855
+2026-06-13 22:28:02 | INFO | src.dataloader.build_db | Macro table created | table=macro.macro_data | files=10 | rows=5147
+2026-06-13 22:28:02 | INFO | src.dataloader.build_db | Freight table created | table=freight.freight_data | files=5 | rows=62166
+2026-06-13 22:28:02 | INFO | src.dataloader.build_db | Index table created | table=market.index_data | files=1 | rows=394855
+2026-06-13 22:28:02 | INFO | src.dataloader.build_db | Database validation completed | index_null_keys=0 | macro_null_keys=0 | freight_null_keys=0 | volatility_null_keys=0 | index_duplicate_groups=0 | macro_duplicate_groups=0 | freight_duplicate_groups=0volatility_duplicate_groups=0 | 
+2026-06-13 22:28:02 | INFO | src.dataloader.build_db | DuckDB connection closed.
+2026-06-13 22:29:08 | INFO | src.dataloader.build_db | DuckDB build job started | database=/Users/tommy/Desktop/Pycharm/FinancialData/database/alternative_data.duckdb
+2026-06-13 22:29:08 | INFO | src.dataloader.build_db | Parquet file discovery completed | index_files=4 | macro_files=10 | freight_files=5
+2026-06-13 22:29:08 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=index | files=4
+2026-06-13 22:29:08 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=macro | files=10
+2026-06-13 22:29:09 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=freight | files=5
+2026-06-13 22:29:09 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=risk | files=1
+2026-06-13 22:29:09 | INFO | src.dataloader.build_db | DuckDB connection opened | database=/Users/tommy/Desktop/Pycharm/FinancialData/database/alternative_data.duckdb
+2026-06-13 22:29:09 | INFO | src.dataloader.build_db | DuckDB schemas created or verified | schemas=metadata,market,macro,freight
+2026-06-13 22:29:09 | INFO | src.dataloader.build_db | Loading metadata Excel file | path=/Users/tommy/Desktop/Pycharm/FinancialData/data/metadata.xlsx
+2026-06-13 22:29:09 | INFO | src.dataloader.build_db | Metadata table created | table=metadata.instrument_master | rows=652
+2026-06-13 22:29:09 | INFO | src.dataloader.build_db | Index table created | table=market.index_data | files=4 | rows=394855
+2026-06-13 22:29:09 | INFO | src.dataloader.build_db | Macro table created | table=macro.macro_data | files=10 | rows=5147
+2026-06-13 22:29:09 | INFO | src.dataloader.build_db | Freight table created | table=freight.freight_data | files=5 | rows=62166
+2026-06-13 22:29:09 | INFO | src.dataloader.build_db | Index table created | table=market.index_data | files=1 | rows=394855
+2026-06-13 22:29:09 | INFO | src.dataloader.build_db | Database validation completed | index_null_keys=0 | macro_null_keys=0 | freight_null_keys=0 | volatility_null_keys=0 | index_duplicate_groups=0 | macro_duplicate_groups=0 | freight_duplicate_groups=0volatility_duplicate_groups=0 | 
+2026-06-13 22:29:09 | INFO | src.dataloader.build_db | DuckDB build job completed successfully | metadata_rows=652 | index_rows=394855 | macro_rows=5147 | freight_rows=62166volatility_rows=394855
+2026-06-13 22:29:09 | INFO | src.dataloader.build_db | DuckDB connection closed.
