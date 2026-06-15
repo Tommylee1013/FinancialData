@@ -1,0 +1,18 @@
+2026-06-15 09:10:19 | INFO | src.jobs_api.commodity.get_commodity_index | Commodity index data job started | metadata_path=C:\Users\krm\PycharmProjects\AlternativeData\data\metadata.xlsx | output_path=C:\Users\krm\PycharmProjects\AlternativeData\data_lake\raw\commodity\index\commodity_index.parquet
+2026-06-15 09:10:19 | INFO | src.jobs_api.commodity.get_commodity_index | Commodity index metadata loaded | symbols=12 | excluded=['DJCI']
+2026-06-15 09:10:19 | INFO | src.jobs_api.commodity.get_commodity_index | TradingView commodity index download started | symbol=CRB | symbol_raw=TRJEFFCRB | exchange=TVC
+2026-06-15 09:12:42 | INFO | src.jobs_api.commodity.get_commodity_index | Commodity index data job started | metadata_path=C:\Users\krm\PycharmProjects\AlternativeData\data\metadata.xlsx | output_path=C:\Users\krm\PycharmProjects\AlternativeData\data_lake\raw\commodity\index\commodity_index.parquet
+2026-06-15 09:12:42 | INFO | src.jobs_api.commodity.get_commodity_index | Commodity index metadata loaded | symbols=12 | excluded=['DJCI']
+2026-06-15 09:12:42 | INFO | src.jobs_api.commodity.get_commodity_index | TradingView commodity index download started | symbol=CRB | symbol_raw=TRJEFFCRB | exchange=TVC
+2026-06-15 09:15:18 | INFO | commodity_index_job | Starting download commodity index data.
+2026-06-15 09:15:18 | INFO | commodity_index_job | Commodity index metadata loaded | symbols=12 | excluded_symbols=['DJCI']
+2026-06-15 09:15:18 | INFO | commodity_index_job | Commodity index download target prepared | tickers=12 | exchanges=['DJCFD', 'SPCFD', 'TVC']
+2026-06-15 09:15:40 | INFO | commodity_index_job | All commodity index data has been downloaded | output_path=data_lake\raw\commodity\index\commodity_index.parquet | rows=53164 | symbols=12
+2026-06-15 17:36:51 | INFO | commodity_index_job | Starting download commodity index data.
+2026-06-15 17:36:52 | INFO | commodity_index_job | Commodity index metadata loaded | symbols=12 | excluded_symbols=['DJCI']
+2026-06-15 17:36:52 | INFO | commodity_index_job | Commodity index download target prepared | tickers=12 | exchanges=['DJCFD', 'SPCFD', 'TVC']
+2026-06-15 17:37:22 | INFO | commodity_index_job | All commodity index data has been downloaded | output_path=data_lake\raw\commodity\index\commodity_index.parquet | rows=53164 | symbols=12
+2026-06-15 17:40:50 | INFO | commodity_index_job | Starting download commodity index data.
+2026-06-15 17:40:50 | INFO | commodity_index_job | Commodity index metadata loaded | symbols=12 | excluded_symbols=['DJCI']
+2026-06-15 17:40:50 | INFO | commodity_index_job | Commodity index download target prepared | tickers=12 | exchanges=['DJCFD', 'SPCFD', 'TVC']
+2026-06-15 17:41:14 | INFO | commodity_index_job | All commodity index data has been downloaded | output_path=data_lake\raw\commodity\index\commodity_index.parquet | rows=53164 | symbols=12

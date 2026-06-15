@@ -52,6 +52,14 @@ VOLATILITY_DATA_PATH = (
     / "risk"
 )
 
+INDUSTRY_DATA_PATH = (
+    PROJECT_ROOT
+    / "data_lake"
+    /"industry"
+    / "trendforce"
+)
+
+
 LOGGER = setup_logger(
     name=__name__,
     log_path="logs/jobs/build_duckdb.log",
@@ -67,7 +75,7 @@ INDEX_TABLE = "market.index_data"
 MACRO_TABLE = "macro.macro_data"
 FREIGHT_TABLE = "freight.freight_data"
 VOLATILITY_TABLE = "market.volatility_data"
-
+INDUSTRY_TABLE = 'industry.industry_data'
 
 # ============================================================
 # Expected columns
@@ -125,6 +133,19 @@ VOLATILITY_COLUMNS = [
     "low",
     "close",
     "volume",
+]
+
+INDUSTRY_COLUMNS = [
+    "base_date",
+    "release_date",
+    "time",
+    "time_zone",
+    "symbol",
+    "exchange",
+    "country",
+    "high",
+    "low",
+    "average",
 ]
 
 # ============================================================
