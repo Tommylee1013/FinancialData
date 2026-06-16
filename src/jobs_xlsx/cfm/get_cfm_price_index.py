@@ -33,7 +33,7 @@ OUTPUT_PATH = (
     / "data_lake"
     / "raw"
     / "industry"
-    / "cfm"
+    / "index"
     / "cfm_price_index.parquet"
 )
 
@@ -61,12 +61,6 @@ DATE_COLUMNS = [
     "time_zone",
 ]
 
-VALUE_COLUMNS = [
-    "high",
-    "low",
-    "average",
-]
-
 OUTPUT_COLUMNS = [
     "base_date",
     "release_date",
@@ -75,9 +69,7 @@ OUTPUT_COLUMNS = [
     "symbol",
     "exchange",
     "country",
-    "high",
-    "low",
-    "average",
+    "value",
 ]
 
 
@@ -475,8 +467,7 @@ def transform_cfm_price_index_data(
 
     Output:
         base_date, release_date, time, time_zone,
-        symbol, exchange, country,
-        high, low, average
+        symbol, exchange, country, value
     """
 
     data = normalize_date_time_columns(
@@ -511,15 +502,18 @@ def transform_cfm_price_index_data(
             ]
         ].copy()
 
+        part = part.rename(
+            columns={
+                normalized_source_column: "value",
+            }
+        )
+
         part["symbol"] = mapped["symbol"]
         part["exchange"] = mapped["exchange"]
         part["country"] = mapped["country"]
 
-        part["high"] = pd.NA
-        part["low"] = pd.NA
-
-        part["average"] = pd.to_numeric(
-            part[normalized_source_column],
+        part["value"] = pd.to_numeric(
+            part["value"],
             errors="coerce",
         )
 
@@ -538,7 +532,7 @@ def transform_cfm_price_index_data(
 
     result = result.dropna(
         subset=[
-            "average",
+            "value",
         ]
     )
 

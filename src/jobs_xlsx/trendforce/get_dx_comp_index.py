@@ -7,6 +7,7 @@ import pandas as pd
 
 from src.utils.log import setup_logger
 
+
 # ============================================================
 # Paths
 # ============================================================
@@ -31,8 +32,8 @@ OUTPUT_PATH = (
     / "data_lake"
     / "raw"
     / "industry"
-    / "trendforce"
-    / "components.parquet"
+    / "components"
+    / "dx_components.parquet"
 )
 
 LOGGER = setup_logger(
@@ -121,10 +122,14 @@ DATE_COLUMNS = [
     "time_zone",
 ]
 
-VALUE_COLUMNS = [
-    "high",
-    "low",
-    "average",
+ID_COLUMNS = [
+    "base_date",
+    "release_date",
+    "time",
+    "time_zone",
+    "symbol",
+    "exchange",
+    "country",
 ]
 
 OUTPUT_COLUMNS = [
@@ -135,9 +140,15 @@ OUTPUT_COLUMNS = [
     "symbol",
     "exchange",
     "country",
+    "item",
+    "value",
+]
+
+POTENTIAL_ITEM_COLUMNS = [
     "high",
     "low",
     "average",
+    "value",
 ]
 
 
@@ -150,10 +161,10 @@ FIELD_MAPPING = {
     "low": "low",
     "average": "average",
     "avg": "average",
-    "value": "average",
-    "worldwide": "average",
-    "worldwide area": "average",
-    "worldwide (area)": "average",
+    "value": "value",
+    "worldwide": "value",
+    "worldwide area": "value",
+    "worldwide (area)": "value",
 }
 
 SYMBOL_SUFFIX_BY_FIELD = {
@@ -225,12 +236,14 @@ def normalize_field_name(
     field_name: object,
 ) -> str | None:
     """
-    Maps Excel field names to output value columns.
+    Maps Excel field names to final item names.
 
     Last Avg is intentionally ignored.
     """
 
-    field_key = normalize_field_key(field_name)
+    field_key = normalize_field_key(
+        field_name
+    )
 
     if field_key in IGNORED_FIELDS:
         return None
@@ -297,7 +310,10 @@ def load_metadata(
     )
 
     string_columns = metadata.select_dtypes(
-        include=["object", "string"]
+        include=[
+            "object",
+            "string",
+        ]
     ).columns
 
     for column in string_columns:
@@ -326,6 +342,7 @@ def get_trendforce_symbol_info() -> pd.DataFrame:
     required_columns = {
         "asset_class",
         "category",
+        "sub_category",
         "instrument_type",
         "symbol",
         "exchange",
@@ -345,7 +362,7 @@ def get_trendforce_symbol_info() -> pd.DataFrame:
         (metadata["asset_class"].str.upper() == "INDUSTRY")
         & (metadata["exchange"].str.upper() == "DRAMEXCHANGE")
         & (metadata["instrument_type"].str.upper().isin(["SPOT", "INDEX"]))
-        ][
+    ][
         [
             "category",
             "sub_category",
@@ -357,16 +374,29 @@ def get_trendforce_symbol_info() -> pd.DataFrame:
         ]
     ].copy()
 
+    if symbol_info.empty:
+        raise ValueError(
+            "No TrendForce metadata rows found."
+        )
+
+    symbol_info["category"] = (
+        symbol_info["category"]
+        .astype("string")
+        .str.strip()
+    )
+
     symbol_info["sub_category"] = (
         symbol_info["sub_category"]
         .astype("string")
         .str.strip()
     )
 
-    if symbol_info.empty:
-        raise ValueError(
-            "No TrendForce metadata rows found."
-        )
+    symbol_info["instrument_type"] = (
+        symbol_info["instrument_type"]
+        .astype("string")
+        .str.strip()
+        .str.upper()
+    )
 
     symbol_info["symbol"] = (
         symbol_info["symbol"]
@@ -384,12 +414,6 @@ def get_trendforce_symbol_info() -> pd.DataFrame:
 
     symbol_info["country"] = (
         symbol_info["country"]
-        .astype("string")
-        .str.strip()
-    )
-
-    symbol_info["category"] = (
-        symbol_info["category"]
         .astype("string")
         .str.strip()
     )
@@ -429,7 +453,6 @@ def get_trendforce_symbol_info() -> pd.DataFrame:
             "Metadata contains empty name values.\n"
             f"{empty_name_rows}"
         )
-
 
     duplicated_symbols = symbol_info[
         symbol_info["symbol"].duplicated(keep=False)
@@ -528,7 +551,10 @@ def read_excel_sheet(
         data = pd.read_excel(
             input_path,
             sheet_name=sheet_name,
-            header=[0, 1],
+            header=[
+                0,
+                1,
+            ],
         )
 
     elif mode == "single_value":
@@ -559,28 +585,16 @@ def read_excel_sheet(
 # Finalization
 # ============================================================
 
-def finalize_trendforce_rows(
-    data: pd.DataFrame,
+def get_matching_symbol_info(
+    symbol_info: pd.DataFrame,
     file_name: str,
     sheet_name: str,
     category: str,
     sub_category: str | None,
-    symbol_info: pd.DataFrame,
 ) -> pd.DataFrame:
     """
-    Maps Excel product names to metadata symbols,
-    applies symbol suffixes, and validates final rows.
+    Filters metadata rows by category and sub_category.
     """
-
-    data = data.copy()
-
-    data["name"] = data["name"].map(
-        normalize_text_value
-    )
-
-    data["match_name"] = data["name"].map(
-        normalize_match_key
-    )
 
     matched_symbol_info = symbol_info[
         symbol_info["category"].eq(category)
@@ -611,7 +625,42 @@ def finalize_trendforce_rows(
             f"{duplicated_names.sort_values(by=['match_name', 'symbol'])}"
         )
 
-    data = data.merge(
+    return matched_symbol_info.reset_index(drop=True)
+
+
+def finalize_trendforce_rows(
+    data: pd.DataFrame,
+    file_name: str,
+    sheet_name: str,
+    category: str,
+    sub_category: str | None,
+    symbol_info: pd.DataFrame,
+) -> pd.DataFrame:
+    """
+    Maps Excel product names to metadata symbols,
+    applies symbol suffixes, converts wide item columns into item/value long form,
+    and validates final rows.
+    """
+
+    result = data.copy()
+
+    result["name"] = result["name"].map(
+        normalize_text_value
+    )
+
+    result["match_name"] = result["name"].map(
+        normalize_match_key
+    )
+
+    matched_symbol_info = get_matching_symbol_info(
+        symbol_info=symbol_info,
+        file_name=file_name,
+        sheet_name=sheet_name,
+        category=category,
+        sub_category=sub_category,
+    )
+
+    result = result.merge(
         matched_symbol_info[
             [
                 "match_name",
@@ -626,8 +675,8 @@ def finalize_trendforce_rows(
     )
 
     unmapped_names = (
-        data.loc[
-            data["symbol"].isna(),
+        result.loc[
+            result["symbol"].isna(),
             "name",
         ]
         .dropna()
@@ -641,47 +690,107 @@ def finalize_trendforce_rows(
             f"file={file_name} | sheet={sheet_name} | names={unmapped_names}"
         )
 
-    if "symbol_suffix" not in data.columns:
-        data["symbol_suffix"] = ""
+    if "symbol_suffix" not in result.columns:
+        result["symbol_suffix"] = ""
 
-    data["symbol_suffix"] = (
-        data["symbol_suffix"]
+    result["symbol_suffix"] = (
+        result["symbol_suffix"]
         .fillna("")
         .astype(str)
         .str.strip()
     )
 
-    data["symbol"] = (
-        data["symbol"]
+    result["symbol"] = (
+        result["symbol"]
         .astype("string")
         .str.strip()
-        + data["symbol_suffix"]
+        + result["symbol_suffix"]
     )
 
-    for column in VALUE_COLUMNS:
-        if column not in data.columns:
-            data[column] = pd.NA
+    item_columns = [
+        column
+        for column in POTENTIAL_ITEM_COLUMNS
+        if column in result.columns
+    ]
 
-        data[column] = pd.to_numeric(
-            data[column],
+    if not item_columns:
+        raise ValueError(
+            "No item columns detected before finalization | "
+            f"file={file_name} | sheet={sheet_name} | "
+            f"columns={list(result.columns)}"
+        )
+
+    for column in item_columns:
+        result[column] = pd.to_numeric(
+            result[column],
             errors="coerce",
         )
 
-    data = data[OUTPUT_COLUMNS]
+    result = result[
+        ID_COLUMNS
+        + item_columns
+    ]
 
-    data = data.dropna(
-        how="all",
-        subset=VALUE_COLUMNS,
+    # ------------------------------------------------------------
+    # IMPORTANT:
+    # Do not use value_name="value" directly here.
+    #
+    # Some TrendForce sheets already contain an item column named "value".
+    # In that case, pandas.melt() raises:
+    # ValueError: value_name (value) cannot match an element in the DataFrame columns.
+    #
+    # Use a temporary value column name first, then rename it to "value".
+    # ------------------------------------------------------------
+
+    temporary_value_column = "__trendforce_value__"
+
+    if temporary_value_column in result.columns:
+        raise ValueError(
+            f"Temporary column name already exists before melt: {temporary_value_column}"
+        )
+
+    result = result.melt(
+        id_vars=ID_COLUMNS,
+        value_vars=item_columns,
+        var_name="item",
+        value_name=temporary_value_column,
     )
 
-    duplicated_rows = data[
-        data.duplicated(
+    result = result.rename(
+        columns={
+            temporary_value_column: "value",
+        }
+    )
+
+    result["item"] = (
+        result["item"]
+        .astype("string")
+        .str.strip()
+        .str.lower()
+    )
+
+    result["value"] = pd.to_numeric(
+        result["value"],
+        errors="coerce",
+    )
+
+    result = result.dropna(
+        subset=[
+            "value",
+        ]
+    )
+
+    result = result[OUTPUT_COLUMNS]
+
+    duplicated_rows = result[
+        result.duplicated(
             subset=[
                 "base_date",
                 "release_date",
                 "time",
                 "symbol",
                 "exchange",
+                "item",
             ],
             keep=False,
         )
@@ -695,7 +804,20 @@ def finalize_trendforce_rows(
             f"{duplicated_rows}"
         )
 
-    return data.reset_index(drop=True)
+    result = (
+        result.sort_values(
+            by=[
+                "base_date",
+                "release_date",
+                "time",
+                "symbol",
+                "item",
+            ]
+        )
+        .reset_index(drop=True)
+    )
+
+    return result
 
 
 # ============================================================
@@ -720,12 +842,12 @@ def transform_multi_field_sheet(
     Output:
         base_date, release_date, time, time_zone,
         symbol, exchange, country,
-        high, low, average
+        item, value
 
     Notes:
         Last Avg is ignored.
-        Worldwide becomes symbol + W.
-        Worldwide Area becomes symbol + WA.
+        Worldwide becomes item=value and symbol suffix W.
+        Worldwide Area becomes item=value and symbol suffix WA.
     """
 
     if not isinstance(df.columns, pd.MultiIndex):
@@ -737,7 +859,6 @@ def transform_multi_field_sheet(
 
     fixed_columns = []
     value_columns = []
-
     normalized_value_columns = []
 
     for column in data.columns:
@@ -841,7 +962,7 @@ def transform_multi_field_sheet(
         normalized_value_columns,
         names=[
             "name",
-            "field",
+            "item",
             "symbol_suffix",
         ],
     )
@@ -924,7 +1045,7 @@ def transform_single_value_sheet(
         Base Date, Release Date, Time, Time Zone, product_1, product_2, ...
 
     Output:
-        product values are stored in average.
+        product values are stored as item=value.
     """
 
     data = df.copy()
@@ -959,6 +1080,8 @@ def transform_single_value_sheet(
         column
         for column in data.columns
         if column not in DATE_COLUMNS
+        and not str(column).lower().startswith("unnamed")
+        and str(column).strip() != ""
     ]
 
     if not value_columns:
@@ -990,7 +1113,7 @@ def transform_single_value_sheet(
         id_vars=DATE_COLUMNS,
         value_vars=value_columns,
         var_name="name",
-        value_name="average",
+        value_name="value",
     )
 
     transformed = finalize_trendforce_rows(
@@ -1087,6 +1210,7 @@ def transform_workbook(
                 "time",
                 "symbol",
                 "exchange",
+                "item",
             ],
             keep=False,
         )
@@ -1106,12 +1230,14 @@ def transform_workbook(
                 "release_date",
                 "time",
                 "symbol",
+                "item",
             ]
         )
         .reset_index(drop=True)
     )
 
     return result
+
 
 # ============================================================
 # Main job
@@ -1163,6 +1289,7 @@ def collect_trendforce_industry_data() -> None:
                 "time",
                 "symbol",
                 "exchange",
+                "item",
             ],
             keep=False,
         )
@@ -1181,6 +1308,7 @@ def collect_trendforce_industry_data() -> None:
                 "release_date",
                 "time",
                 "symbol",
+                "item",
             ]
         )
         .reset_index(drop=True)

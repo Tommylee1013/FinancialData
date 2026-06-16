@@ -55,8 +55,17 @@ VOLATILITY_DATA_PATH = (
 INDUSTRY_DATA_PATH = (
     PROJECT_ROOT
     / "data_lake"
+    / "raw"
     /"industry"
-    / "trendforce"
+    /'components'
+)
+
+INDUSTRY_INDEX_DATA_PATH = (
+    PROJECT_ROOT
+    / "data_lake"
+    / 'raw'
+    /'industry'
+    / 'index'
 )
 
 
@@ -75,7 +84,8 @@ INDEX_TABLE = "market.index_data"
 MACRO_TABLE = "macro.macro_data"
 FREIGHT_TABLE = "freight.freight_data"
 VOLATILITY_TABLE = "market.volatility_data"
-INDUSTRY_TABLE = 'industry.industry_data'
+INDUSTRY_TABLE = 'industry.components_data'
+INDUSTRY_INDEX_TABLE = 'industry.index_data'
 
 # ============================================================
 # Expected columns
@@ -107,6 +117,7 @@ MACRO_COLUMNS = [
     "actual",
     "forecast",
     "previous",
+    'preliminary_release'
 ]
 
 FREIGHT_COLUMNS = [
@@ -143,9 +154,19 @@ INDUSTRY_COLUMNS = [
     "symbol",
     "exchange",
     "country",
-    "high",
-    "low",
-    "average",
+    "item",
+    'value'
+]
+
+INDUSTRY_INDEX_COLUMNS = [
+"base_date",
+    "release_date",
+    "time",
+    "time_zone",
+    "symbol",
+    "exchange",
+    "country",
+    'value'
 ]
 
 # ============================================================
@@ -317,9 +338,17 @@ def create_schemas(
         """
     )
 
+    # add code from here (create schema)
+
+    connection.execute(
+        """
+        CREATE SCHEMA IF NOT EXISTS industry
+        """
+    )
+
     LOGGER.info(
         "DuckDB schemas created or verified | "
-        "schemas=metadata,market,macro,freight"
+        "schemas=metadata,market,macro,freight,industry"
     )
 
 
@@ -471,7 +500,8 @@ def create_macro_table(
             CAST(country AS VARCHAR) AS country,
             CAST(actual AS DOUBLE) AS actual,
             CAST(forecast AS DOUBLE) AS forecast,
-            CAST(previous AS DOUBLE) AS previous
+            CAST(previous AS DOUBLE) AS previous,
+            CAST(preliminary_release as boolean) as preliminary_release,
         FROM read_parquet(
             {parquet_paths},
             union_by_name = TRUE
@@ -584,14 +614,113 @@ def create_volatility_table(
     row_count = connection.execute(
         f"""
         SELECT COUNT(*)
-        FROM {INDEX_TABLE}
+        FROM {VOLATILITY_TABLE}
         """
     ).fetchone()[0]
 
     LOGGER.info(
-        "Index table created | "
+        "Volatility Index table created | "
         "table=%s | files=%d | rows=%d",
-        INDEX_TABLE,
+        VOLATILITY_TABLE,
+        len(parquet_files),
+        row_count,
+    )
+
+    return row_count
+
+# add codes from here (functions)
+
+def create_industry_table(
+    connection: duckdb.DuckDBPyConnection,
+    parquet_files: list[Path],
+) -> int:
+    """
+    Combines all Industry Parquet files into industry.industry_data.
+    """
+
+    parquet_paths = build_parquet_path_list(
+        parquet_files
+    )
+
+    query = f"""
+        CREATE OR REPLACE TABLE {INDUSTRY_TABLE} AS
+        SELECT
+            CAST(base_date AS DATE) AS base_date,
+            CAST(release_date AS DATE) AS release_date,
+            CAST(time AS TIME) AS time,
+            CAST(time_zone AS VARCHAR) AS time_zone,
+            CAST(symbol AS VARCHAR) AS symbol,
+            CAST(exchange AS VARCHAR) AS exchange,
+            CAST(country AS VARCHAR) AS country,
+            CAST(item AS VARCHAR) AS item,
+            CAST(value AS DOUBLE) AS value,
+        FROM read_parquet(
+            {parquet_paths},
+            union_by_name = TRUE
+        )
+    """
+
+    connection.execute(query)
+
+    row_count = connection.execute(
+        f"""
+        SELECT COUNT(*)
+        FROM {INDUSTRY_TABLE}
+        """
+    ).fetchone()[0]
+
+    LOGGER.info(
+        "Industry Components table created | "
+        "table=%s | files=%d | rows=%d",
+        INDUSTRY_TABLE,
+        len(parquet_files),
+        row_count,
+    )
+
+    return row_count
+
+def create_industry_index_table(
+    connection: duckdb.DuckDBPyConnection,
+    parquet_files: list[Path],
+) -> int:
+    """
+    Combines all Industry Parquet files into industry.industry_data.
+    """
+
+    parquet_paths = build_parquet_path_list(
+        parquet_files
+    )
+
+    query = f"""
+        CREATE OR REPLACE TABLE {INDUSTRY_INDEX_TABLE} AS
+        SELECT
+            CAST(base_date AS DATE) AS base_date,
+            CAST(release_date AS DATE) AS release_date,
+            CAST(time AS TIME) AS time,
+            CAST(time_zone AS VARCHAR) AS time_zone,
+            CAST(symbol AS VARCHAR) AS symbol,
+            CAST(exchange AS VARCHAR) AS exchange,
+            CAST(country AS VARCHAR) AS country,
+            CAST(value AS DOUBLE) AS value,
+        FROM read_parquet(
+            {parquet_paths},
+            union_by_name = TRUE
+        )
+    """
+
+    connection.execute(query)
+
+    row_count = connection.execute(
+        f"""
+        SELECT COUNT(*)
+        FROM {INDUSTRY_INDEX_TABLE}
+        """
+    ).fetchone()[0]
+
+    LOGGER.info(
+        "Industry Index table created | "
+        "table=%s | files=%d | rows=%d",
+        INDUSTRY_INDEX_TABLE,
         len(parquet_files),
         row_count,
     )
@@ -644,6 +773,26 @@ def validate_database(
             FROM {VOLATILITY_TABLE}
             WHERE base_date IS NULL
                OR symbol IS NULL
+            """
+    ).fetchone()[0]
+
+    # add codes from here (null keys)
+
+    industry_null_keys = connection.execute(
+        f"""
+            SELECT COUNT(*)
+            FROM {INDUSTRY_TABLE}
+            WHERE base_date IS NULL
+               OR symbol IS NULL
+            """
+    ).fetchone()[0]
+
+    industry_index_null_keys = connection.execute(
+        f"""
+                SELECT COUNT(*)
+                FROM {INDUSTRY_INDEX_TABLE}
+                WHERE base_date IS NULL
+                   OR symbol IS NULL
             """
     ).fetchone()[0]
 
@@ -727,6 +876,40 @@ def validate_database(
             """
     ).fetchone()[0]
 
+    # add codes from here (duplicates)
+
+    industry_duplicates = connection.execute(
+        f"""
+                SELECT COUNT(*)
+                FROM (
+                    SELECT
+                        base_date,
+                        symbol,
+                        exchange,
+                        COUNT(*) AS row_count
+                    FROM {INDUSTRY_TABLE}
+                    GROUP BY
+                        base_date,
+                        symbol,
+                        exchange
+                    HAVING COUNT(*) > 1
+                )
+                """
+    ).fetchone()[0]
+
+    industry_index_duplicates = connection.execute(
+        f"""
+            select count(*)
+            from (
+                select base_date, symbol, exchange,
+                count(*) as row_count
+                from {INDUSTRY_INDEX_TABLE}
+                group by base_date, symbol, exchange
+                having count(*) > 1
+            )
+        """
+    ).fetchone()[0]
+
     if index_null_keys > 0:
         raise ValueError(
             "The index table contains "
@@ -750,8 +933,24 @@ def validate_database(
 
     if volatility_null_keys > 0:
         raise ValueError(
-            "The index table contains "
+            "The volatility index table contains "
             f"{volatility_null_keys:,} rows with a null "
+            "base_date or symbol."
+        )
+
+    # add codes from here
+
+    if industry_null_keys > 0:
+        raise ValueError(
+            "The industry components table contains "
+            f"{industry_null_keys:,} rows with a null "
+            "base_date or symbol."
+        )
+
+    if industry_index_null_keys > 0 :
+        raise ValueError(
+            "The industry index table contains "
+            f"{industry_index_null_keys:,} rows with a null "
             "base_date or symbol."
         )
 
@@ -778,10 +977,28 @@ def validate_database(
 
     if volatility_duplicates > 0:
         LOGGER.warning(
-            "Duplicate index keys detected | "
+            "Duplicate volatility index keys detected | "
             "duplicate_groups=%d",
-            index_duplicates,
+            volatility_duplicates,
         )
+
+    # add codes from here
+
+    if industry_duplicates > 0:
+        LOGGER.warning(
+            "Duplicate industry index keys detected | "
+            "duplicate_groups=%d",
+            industry_duplicates,
+        )
+
+    if industry_index_duplicates > 0:
+        LOGGER.warning(
+            "Duplicate industry index keys detected | "
+            "duplicate_groups=%d",
+            industry_index_duplicates,
+        )
+
+    # add codes from here
 
     LOGGER.info(
         "Database validation completed | "
@@ -789,18 +1006,26 @@ def validate_database(
         "macro_null_keys=%d | "
         "freight_null_keys=%d | "
         "volatility_null_keys=%d | "
+        "industry_null_keys=%d | "
+        'industry_index_null_keys=%d | '
         "index_duplicate_groups=%d | "
         "macro_duplicate_groups=%d | "
         "freight_duplicate_groups=%d"
-        "volatility_duplicate_groups=%d | ",
+        "volatility_duplicate_groups=%d | "
+        "industury_duplicate_groups=%d | "
+        'industry_index_duplicates_groups=%d | ',
         index_null_keys,
         macro_null_keys,
         freight_null_keys,
         volatility_null_keys,
+        industry_null_keys,
+        industry_index_null_keys,
         index_duplicates,
         macro_duplicates,
         freight_duplicates,
         volatility_duplicates,
+        industry_duplicates,
+        industry_index_duplicates
     )
 
 
@@ -842,6 +1067,16 @@ def build_duckdb() -> None:
             VOLATILITY_DATA_PATH
         )
 
+        # add codes from here (files input)
+
+        industry_files = get_parquet_files(
+            INDUSTRY_DATA_PATH
+        )
+
+        industry_index_files = get_parquet_files(
+            INDUSTRY_INDEX_DATA_PATH
+        )
+
         LOGGER.info(
             "Parquet file discovery completed | "
             "index_files=%d | macro_files=%d | freight_files=%d",
@@ -872,6 +1107,20 @@ def build_duckdb() -> None:
             parquet_files=volatility_files,
             required_columns=VOLATILITY_COLUMNS,
             data_type_name="risk",
+        )
+
+        # add codes from here (validations)
+
+        validate_parquet_columns(
+            parquet_files=industry_files,
+            required_columns=INDUSTRY_COLUMNS,
+            data_type_name="industry",
+        )
+
+        validate_parquet_columns(
+            parquet_files=industry_index_files,
+            required_columns=INDUSTRY_INDEX_COLUMNS,
+            data_type_name="industry",
         )
 
         connection = duckdb.connect(
@@ -915,6 +1164,17 @@ def build_duckdb() -> None:
             parquet_files=volatility_files,
         )
 
+        # add codes from here
+        industry_rows = create_industry_table(
+            connection,
+            parquet_files=industry_files,
+        )
+
+        industry_index_rows = create_industry_index_table(
+            connection,
+            parquet_files=industry_index_files,
+        )
+
         validate_database(
             connection
         )
@@ -928,13 +1188,18 @@ def build_duckdb() -> None:
             "metadata_rows=%d | "
             "index_rows=%d | "
             "macro_rows=%d | "
-            "freight_rows=%d"
-            "volatility_rows=%d",
+            "freight_rows=%d | "
+            "volatility_rows=%d | "
+            "industry_rows=%d | "
+            "industry_index_rows=%d"
+            ,
             metadata_rows,
             index_rows,
             macro_rows,
             freight_rows,
-            volatility_rows
+            volatility_rows,
+            industry_rows,
+            industry_index_rows
         )
 
     except Exception:

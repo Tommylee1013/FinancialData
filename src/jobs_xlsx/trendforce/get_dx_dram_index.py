@@ -7,6 +7,7 @@ import pandas as pd
 
 from src.utils.log import setup_logger
 
+
 # ============================================================
 # Paths
 # ============================================================
@@ -26,7 +27,7 @@ OUTPUT_PATH = (
     / "data_lake"
     / "raw"
     / "industry"
-    / "trendforce"
+    / "index"
     / "dxi.parquet"
 )
 
@@ -61,9 +62,7 @@ OUTPUT_COLUMNS = [
     "symbol",
     "exchange",
     "country",
-    "high",
-    "low",
-    "average",
+    "value",
 ]
 
 
@@ -144,16 +143,15 @@ def transform_dxi_index_data(
     df: pd.DataFrame,
 ) -> pd.DataFrame:
     """
-    Transforms DRAMExchange DRAM Index data into normalized
-    TrendForce industry semi-long schema.
+    Transforms DRAMExchange DXI data into normalized
+    index schema.
 
     Input:
         Base Date, Release Date, Time, Time Zone, DXI, Volume
 
     Output:
         base_date, release_date, time, time_zone,
-        symbol, exchange, country,
-        high, low, average
+        symbol, exchange, country, value
     """
 
     data = df.copy()
@@ -206,19 +204,18 @@ def transform_dxi_index_data(
     data["exchange"] = EXCHANGE
     data["country"] = COUNTRY
 
-    data["high"] = pd.NA
-    data["low"] = pd.NA
-
-    data["average"] = pd.to_numeric(
+    data["value"] = pd.to_numeric(
         data["dxi"],
         errors="coerce",
     )
 
-    data = data[OUTPUT_COLUMNS]
+    data = data[
+        OUTPUT_COLUMNS
+    ]
 
     data = data.dropna(
         subset=[
-            "average",
+            "value",
         ]
     )
 
@@ -263,7 +260,7 @@ def transform_dxi_index_data(
 def collect_dxi_index_data() -> None:
     """
     Reads TrendForce Index.xlsx / DXI sheet,
-    transforms DXI into normalized industry schema,
+    transforms DXI into normalized index schema,
     and saves it as Parquet.
     """
 

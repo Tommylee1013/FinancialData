@@ -54,6 +54,9 @@ def transform_macro_data(
         "previous",
     }
 
+    if "preliminary_release" not in data.columns:
+        data["preliminary_release"] = pd.NA
+
     missing_columns = required_columns - set(data.columns)
 
     if missing_columns:
@@ -90,6 +93,7 @@ def transform_macro_data(
         "actual",
         "forecast",
         "previous",
+        'preliminary_release',
     ]
 
     for column in value_columns:
@@ -114,6 +118,7 @@ def transform_macro_data(
         "actual",
         "forecast",
         "previous",
+        'preliminary_release'
     ]
 
     data = data[output_columns]
@@ -129,7 +134,10 @@ def transform_macro_data(
         data.duplicated(
             subset=[
                 "base_date",
+                "release_date",
+                "time",
                 "symbol",
+                "exchange",
             ],
             keep=False,
         )
@@ -137,7 +145,7 @@ def transform_macro_data(
 
     if not duplicated_rows.empty:
         raise ValueError(
-            "동일한 base_date와 symbol을 가진 "
+            "동일한 base_date, release_date, time, symbol, exchange를 가진 "
             "중복 데이터가 있습니다.\n"
             f"{duplicated_rows}"
         )
@@ -145,8 +153,10 @@ def transform_macro_data(
     data = (
         data.sort_values(
             by=[
+                "symbol",
                 "base_date",
                 "release_date",
+                "time",
             ]
         )
         .reset_index(drop=True)

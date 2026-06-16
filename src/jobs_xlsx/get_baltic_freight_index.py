@@ -42,13 +42,15 @@ BALTIC_SYMBOL_INFO = pd.DataFrame(
             "exchange": "BALTIC",
             "country": "United Kingdom",
             "name": "Baltic Dry Index",
+            "release_time": "13:00:00",
         },
         {
             "symbol": "BSI",
             "symbol_raw": "BSI",
             "exchange": "BALTIC",
             "country": "United Kingdom",
-            "name": pd.NA,
+            "name": "Baltic Supramax Index",
+            "release_time": "13:00:00",
         },
         {
             "symbol": "BCI",
@@ -56,6 +58,7 @@ BALTIC_SYMBOL_INFO = pd.DataFrame(
             "exchange": "BALTIC",
             "country": "United Kingdom",
             "name": "Baltic Capesize Index",
+            "release_time": "13:00:00",
         },
         {
             "symbol": "BCTI",
@@ -63,6 +66,7 @@ BALTIC_SYMBOL_INFO = pd.DataFrame(
             "exchange": "BALTIC",
             "country": "United Kingdom",
             "name": "Baltic Clean Tanker Index",
+            "release_time": "16:00:00",
         },
         {
             "symbol": "BPI",
@@ -70,13 +74,15 @@ BALTIC_SYMBOL_INFO = pd.DataFrame(
             "exchange": "BALTIC",
             "country": "United Kingdom",
             "name": "Baltic Panamax Index",
+            "release_time": "13:00:00",
         },
         {
             "symbol": "BHSI",
             "symbol_raw": "BHSI",
             "exchange": "BALTIC",
             "country": "United Kingdom",
-            "name": pd.NA,
+            "name": "Baltic Handysize Index",
+            "release_time": "13:00:00",
         },
         {
             "symbol": "BLNG",
@@ -84,6 +90,7 @@ BALTIC_SYMBOL_INFO = pd.DataFrame(
             "exchange": "BALTIC",
             "country": "United Kingdom",
             "name": "Baltic LNG Index",
+            "release_time": "11:00:00",
         },
         {
             "symbol": "BLPG",
@@ -91,13 +98,15 @@ BALTIC_SYMBOL_INFO = pd.DataFrame(
             "exchange": "BALTIC",
             "country": "United Kingdom",
             "name": "Baltic LPG Index",
+            "release_time": "16:00:00",
         },
         {
             "symbol": "FBX",
             "symbol_raw": "FBX",
             "exchange": "BALTIC",
             "country": "United Kingdom",
-            "name": pd.NA,
+            "name": "Freightos Baltic Index",
+            "release_time": "14:00:00",
         },
         {
             "symbol": "BDTI",
@@ -105,6 +114,7 @@ BALTIC_SYMBOL_INFO = pd.DataFrame(
             "exchange": "BALTIC",
             "country": "United Kingdom",
             "name": "Baltic Dirty Tanker Index",
+            "release_time": "16:00:00",
         },
     ]
 )
@@ -170,6 +180,11 @@ def transform_baltic_freight_data(
     """
     Transforms Baltic freight index data from wide format
     into normalized value-based time-series format.
+
+    Important:
+    - release time is assigned by symbol using Baltic metadata.
+    - time_zone is preserved from the Excel file because it already reflects
+      UTC+0 / UTC+1 according to London daylight-saving time.
     """
 
     data = normalize_columns(df)
@@ -185,6 +200,63 @@ def transform_baltic_freight_data(
             f"{sorted(missing_date_columns)}"
         )
 
+    required_metadata_columns = {
+        "symbol",
+        "exchange",
+        "country",
+        "release_time",
+    }
+
+    missing_metadata_columns = (
+        required_metadata_columns
+        - set(symbol_info.columns)
+    )
+
+    if missing_metadata_columns:
+        raise ValueError(
+            "Required Baltic metadata columns are missing: "
+            f"{sorted(missing_metadata_columns)}"
+        )
+
+    symbol_info = symbol_info.copy()
+
+    symbol_info["symbol"] = (
+        symbol_info["symbol"]
+        .astype("string")
+        .str.strip()
+    )
+
+    symbol_info["exchange"] = (
+        symbol_info["exchange"]
+        .astype("string")
+        .str.strip()
+    )
+
+    symbol_info["country"] = (
+        symbol_info["country"]
+        .astype("string")
+        .str.strip()
+    )
+
+    symbol_info["release_time"] = (
+        symbol_info["release_time"]
+        .astype("string")
+        .str.strip()
+    )
+
+    duplicated_metadata_symbols = symbol_info[
+        symbol_info.duplicated(
+            subset=["symbol"],
+            keep=False,
+        )
+    ]
+
+    if not duplicated_metadata_symbols.empty:
+        raise ValueError(
+            "Duplicate symbols detected in Baltic metadata.\n"
+            f"{duplicated_metadata_symbols}"
+        )
+
     symbol_columns = [
         column
         for column in data.columns
@@ -195,6 +267,11 @@ def transform_baltic_freight_data(
         raise ValueError(
             "No freight symbol columns were found."
         )
+
+    symbol_columns = [
+        str(column).strip()
+        for column in symbol_columns
+    ]
 
     valid_symbols = set(
         symbol_info["symbol"].astype(str)
@@ -228,11 +305,6 @@ def transform_baltic_freight_data(
         errors="raise",
     ).dt.normalize()
 
-    long_df["time"] = pd.to_datetime(
-        long_df["time"].astype(str),
-        errors="raise",
-    ).dt.time
-
     long_df["time_zone"] = (
         long_df["time_zone"]
         .astype("string")
@@ -256,6 +328,7 @@ def transform_baltic_freight_data(
                 "symbol",
                 "exchange",
                 "country",
+                "release_time",
             ]
         ],
         how="left",
@@ -266,7 +339,8 @@ def transform_baltic_freight_data(
     unmapped_symbols = (
         long_df.loc[
             long_df["exchange"].isna()
-            | long_df["country"].isna(),
+            | long_df["country"].isna()
+            | long_df["release_time"].isna(),
             "symbol",
         ]
         .drop_duplicates()
@@ -275,9 +349,25 @@ def transform_baltic_freight_data(
 
     if unmapped_symbols:
         raise ValueError(
-            "Failed to map exchange or country for symbols: "
+            "Failed to map Baltic metadata for symbols: "
             f"{unmapped_symbols}"
         )
+
+    # --------------------------------------------------------
+    # Only overwrite release time by symbol.
+    # Keep Excel time_zone as-is: UTC+0 / UTC+1.
+    # --------------------------------------------------------
+
+    long_df["time"] = long_df["release_time"]
+
+    long_df["time"] = (
+        pd.to_datetime(
+            long_df["time"],
+            format="%H:%M:%S",
+            errors="raise",
+        )
+        .dt.strftime("%H:%M:%S")
+    )
 
     long_df = long_df[OUTPUT_COLUMNS]
 

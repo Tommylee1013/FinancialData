@@ -52,3 +52,15 @@
 2026-06-15 17:41:21 | INFO | src.jobs_xlsx.get_baltic_air_freight_index | Baltic air freight data job started | input_path=C:\Users\krm\PycharmProjects\AlternativeData\data\freight\Baltic air freight index.xlsx
 2026-06-15 17:41:21 | INFO | src.jobs_xlsx.get_baltic_air_freight_index | Excel file loaded | rows=440 | columns=11
 2026-06-15 17:41:21 | INFO | src.jobs_xlsx.get_baltic_air_freight_index | Baltic air freight Parquet saved | output_path=C:\Users\krm\PycharmProjects\AlternativeData\data_lake\raw\freight\baltic_air_freight_index.parquet | rows=3080
+2026-06-16 10:46:26 | INFO | src.jobs_xlsx.get_baltic_air_freight_index | Baltic air freight data job started | input_path=C:\Users\krm\PycharmProjects\AlternativeData\data\freight\Baltic air freight index.xlsx
+2026-06-16 10:46:26 | INFO | src.jobs_xlsx.get_baltic_air_freight_index | Excel file loaded | rows=441 | columns=11
+2026-06-16 10:46:26 | INFO | src.jobs_xlsx.get_baltic_air_freight_index | Baltic air freight Parquet saved | output_path=C:\Users\krm\PycharmProjects\AlternativeData\data_lake\raw\freight\baltic_air_freight_index.parquet | rows=3087
+2026-06-16 11:01:48 | INFO | src.jobs_xlsx.get_baltic_air_freight_index | Baltic air freight data job started | input_path=C:\Users\krm\PycharmProjects\AlternativeData\data\freight\Baltic air freight index.xlsx
+2026-06-16 11:01:48 | INFO | src.jobs_xlsx.get_baltic_air_freight_index | Excel file loaded | rows=441 | columns=11
+2026-06-16 11:01:48 | INFO | src.jobs_xlsx.get_baltic_air_freight_index | Baltic air freight Parquet saved | output_path=C:\Users\krm\PycharmProjects\AlternativeData\data_lake\raw\freight\baltic_air_freight_index.parquet | rows=3087
+2026-06-16 14:22:11 | INFO | src.jobs_xlsx.get_baltic_air_freight_index | Baltic air freight data job started | input_path=C:\Users\krm\PycharmProjects\AlternativeData\data\freight\Baltic air freight index.xlsx
+2026-06-16 14:22:11 | INFO | src.jobs_xlsx.get_baltic_air_freight_index | Excel file loaded | rows=441 | columns=11
+2026-06-16 14:22:11 | INFO | src.jobs_xlsx.get_baltic_air_freight_index | Baltic air freight Parquet saved | output_path=C:\Users\krm\PycharmProjects\AlternativeData\data_lake\raw\freight\baltic_air_freight_index.parquet | rows=3087
+2026-06-16 14:28:52 | INFO | src.jobs_xlsx.get_baltic_air_freight_index | Baltic air freight data job started | input_path=C:\Users\krm\PycharmProjects\AlternativeData\data\freight\Baltic air freight index.xlsx
+2026-06-16 14:28:52 | INFO | src.jobs_xlsx.get_baltic_air_freight_index | Excel file loaded | rows=441 | columns=11
+2026-06-16 14:28:52 | INFO | src.jobs_xlsx.get_baltic_air_freight_index | Baltic air freight Parquet saved | output_path=C:\Users\krm\PycharmProjects\AlternativeData\data_lake\raw\freight\baltic_air_freight_index.parquet | rows=3087

@@ -7,6 +7,7 @@ import pandas as pd
 
 from src.utils.log import setup_logger
 
+
 # ============================================================
 # Paths
 # ============================================================
@@ -31,8 +32,8 @@ OUTPUT_PATH = (
     / "data_lake"
     / "raw"
     / "industry"
-    / "cfm"
-    / "cfm_industry.parquet"
+    / "components"
+    / "cfm_components.parquet"
 )
 
 LOGGER = setup_logger(
@@ -108,7 +109,7 @@ WORKBOOK_CONFIGS = [
         "sub_category": "Embedded Storage",
         "mode": "price_sheet",
         "skip_sheets": {"fig", "info"},
-    }
+    },
 ]
 
 
@@ -123,6 +124,16 @@ DATE_COLUMNS = [
     "time_zone",
 ]
 
+ID_COLUMNS = [
+    "base_date",
+    "release_date",
+    "time",
+    "time_zone",
+    "symbol",
+    "exchange",
+    "country",
+]
+
 OUTPUT_COLUMNS = [
     "base_date",
     "release_date",
@@ -131,15 +142,8 @@ OUTPUT_COLUMNS = [
     "symbol",
     "exchange",
     "country",
-    "high",
-    "low",
-    "average",
-]
-
-VALUE_COLUMNS = [
-    "high",
-    "low",
-    "average",
+    "item",
+    "value",
 ]
 
 
@@ -205,11 +209,7 @@ def normalize_sheet_name_for_matching(
     Normalizes CFM sheet names before matching to metadata.name.
     """
 
-    normalized = normalize_text_value(sheet_name)
-
-    # CFM workbook uses 1TB / 512GB style, while metadata may use 1Tb / 512Gb.
-    # Matching is case-insensitive, so no explicit conversion is required here.
-    return normalized
+    return normalize_text_value(sheet_name)
 
 
 # ============================================================
@@ -261,7 +261,7 @@ def get_cfm_symbol_info() -> pd.DataFrame:
     Loads CFM metadata rows.
 
     Matching key:
-        Excel sheet name or index column name == metadata.name
+        Excel sheet name == metadata.name
 
     Saved symbol:
         metadata.symbol
@@ -467,7 +467,7 @@ def map_name_to_symbol(
     sheet_name: str,
 ) -> dict:
     """
-    Maps one Excel sheet/column name to metadata symbol information.
+    Maps one Excel sheet name to metadata symbol information.
     """
 
     match_name = normalize_match_key(
@@ -581,12 +581,7 @@ def normalize_date_time_columns(
         for column in result.columns
     ]
 
-    required_columns = {
-        "base_date",
-        "release_date",
-        "time",
-        "time_zone",
-    }
+    required_columns = set(DATE_COLUMNS)
 
     missing_columns = required_columns - set(result.columns)
 
@@ -594,7 +589,8 @@ def normalize_date_time_columns(
         raise ValueError(
             "Required date/time columns are missing | "
             f"file={file_name} | sheet={sheet_name} | "
-            f"missing={sorted(missing_columns)}"
+            f"missing={sorted(missing_columns)} | "
+            f"columns={list(result.columns)}"
         )
 
     result["base_date"] = pd.to_datetime(
@@ -620,32 +616,102 @@ def normalize_date_time_columns(
     return result
 
 
+def infer_item_columns(
+    data: pd.DataFrame,
+    file_name: str,
+    sheet_name: str,
+) -> list[str]:
+    """
+    Dynamically infers CFM item columns.
+
+    Rule:
+        All columns except date/time/id columns become item columns.
+
+    Examples:
+        DDR.xlsx:
+            low, high, average
+
+        Flash Wafer.xlsx:
+            low, open, close
+    """
+
+    excluded_columns = set(ID_COLUMNS)
+
+    item_columns = [
+        column
+        for column in data.columns
+        if column not in excluded_columns
+        and not str(column).lower().startswith("unnamed")
+        and str(column).strip() != ""
+    ]
+
+    if not item_columns:
+        raise ValueError(
+            "No item columns detected | "
+            f"file={file_name} | sheet={sheet_name} | "
+            f"columns={list(data.columns)}"
+        )
+
+    return item_columns
+
+
 def finalize_cfm_rows(
     data: pd.DataFrame,
     file_name: str,
     sheet_name: str,
 ) -> pd.DataFrame:
     """
-    Enforces final output schema and duplicate checks.
+    Converts dynamically detected CFM item columns into item/value long form.
+
+    Rule:
+        All non-date/id columns are converted into item/value rows.
     """
 
     result = data.copy()
 
-    for column in VALUE_COLUMNS:
-        if column not in result.columns:
-            result[column] = pd.NA
+    item_columns = infer_item_columns(
+        data=result,
+        file_name=file_name,
+        sheet_name=sheet_name,
+    )
 
+    for column in item_columns:
         result[column] = pd.to_numeric(
             result[column],
             errors="coerce",
         )
 
-    result = result[OUTPUT_COLUMNS]
+    result = result[
+        ID_COLUMNS
+        + item_columns
+    ]
+
+    result = result.melt(
+        id_vars=ID_COLUMNS,
+        value_vars=item_columns,
+        var_name="item",
+        value_name="value",
+    )
+
+    result["item"] = (
+        result["item"]
+        .astype("string")
+        .str.strip()
+        .str.lower()
+    )
+
+    result["value"] = pd.to_numeric(
+        result["value"],
+        errors="coerce",
+    )
 
     result = result.dropna(
-        how="all",
-        subset=VALUE_COLUMNS,
+        subset=[
+            "value",
+        ]
     )
+
+    result = result[OUTPUT_COLUMNS]
 
     duplicated_rows = result[
         result.duplicated(
@@ -655,6 +721,7 @@ def finalize_cfm_rows(
                 "time",
                 "symbol",
                 "exchange",
+                "item",
             ],
             keep=False,
         )
@@ -675,6 +742,7 @@ def finalize_cfm_rows(
                 "release_date",
                 "time",
                 "symbol",
+                "item",
             ]
         )
         .reset_index(drop=True)
@@ -684,7 +752,7 @@ def finalize_cfm_rows(
 
 
 # ============================================================
-# Transform: standard price sheets
+# Transform sheets
 # ============================================================
 
 def transform_price_sheet(
@@ -698,13 +766,13 @@ def transform_price_sheet(
     """
     Transforms standard CFM price sheets.
 
-    Input columns:
-        Base Date, Release Date, Time, Time Zone, Low, High, Average
+    Input:
+        Base Date, Release Date, Time, Time Zone, plus arbitrary value columns.
 
     Output:
         base_date, release_date, time, time_zone,
         symbol, exchange, country,
-        high, low, average
+        item, value
     """
 
     data = normalize_date_time_columns(
@@ -712,24 +780,6 @@ def transform_price_sheet(
         file_name=file_name,
         sheet_name=sheet_name,
     )
-
-    required_value_columns = {
-        "low",
-        "high",
-        "average",
-    }
-
-    missing_value_columns = (
-        required_value_columns
-        - set(data.columns)
-    )
-
-    if missing_value_columns:
-        raise ValueError(
-            "Required price columns are missing | "
-            f"file={file_name} | sheet={sheet_name} | "
-            f"missing={sorted(missing_value_columns)}"
-        )
 
     scoped_symbol_info = get_scoped_symbol_info(
         symbol_info=symbol_info,
@@ -755,21 +805,6 @@ def transform_price_sheet(
     data["exchange"] = mapped["exchange"]
     data["country"] = mapped["country"]
 
-    data["high"] = pd.to_numeric(
-        data["high"],
-        errors="coerce",
-    )
-
-    data["low"] = pd.to_numeric(
-        data["low"],
-        errors="coerce",
-    )
-
-    data["average"] = pd.to_numeric(
-        data["average"],
-        errors="coerce",
-    )
-
     result = finalize_cfm_rows(
         data=data,
         file_name=file_name,
@@ -778,10 +813,6 @@ def transform_price_sheet(
 
     return result
 
-
-# ============================================================
-# Transform: Flash Wafer sheets
-# ============================================================
 
 def transform_wafer_sheet(
     df: pd.DataFrame,
@@ -794,14 +825,7 @@ def transform_wafer_sheet(
     """
     Transforms CFM Flash Wafer sheets.
 
-    Input columns:
-        Base Date, Release Date, Time, Time Zone, Low, Open, Close
-
-    Mapping:
-        Low   -> low
-        Close -> average
-        Open  -> ignored
-        high  -> NA
+    Same dynamic item/value rule as transform_price_sheet.
     """
 
     data = normalize_date_time_columns(
@@ -809,23 +833,6 @@ def transform_wafer_sheet(
         file_name=file_name,
         sheet_name=sheet_name,
     )
-
-    required_value_columns = {
-        "low",
-        "close",
-    }
-
-    missing_value_columns = (
-        required_value_columns
-        - set(data.columns)
-    )
-
-    if missing_value_columns:
-        raise ValueError(
-            "Required wafer price columns are missing | "
-            f"file={file_name} | sheet={sheet_name} | "
-            f"missing={sorted(missing_value_columns)}"
-        )
 
     scoped_symbol_info = get_scoped_symbol_info(
         symbol_info=symbol_info,
@@ -851,18 +858,6 @@ def transform_wafer_sheet(
     data["exchange"] = mapped["exchange"]
     data["country"] = mapped["country"]
 
-    data["high"] = pd.NA
-
-    data["low"] = pd.to_numeric(
-        data["low"],
-        errors="coerce",
-    )
-
-    data["average"] = pd.to_numeric(
-        data["close"],
-        errors="coerce",
-    )
-
     result = finalize_cfm_rows(
         data=data,
         file_name=file_name,
@@ -870,6 +865,7 @@ def transform_wafer_sheet(
     )
 
     return result
+
 
 # ============================================================
 # Workbook reader
@@ -893,18 +889,6 @@ def get_target_sheet_names(
         str(sheet_name).strip()
         for sheet_name in config.get("skip_sheets", set())
     }
-
-    if config["mode"] == "index_sheet":
-        target_sheet = config["target_sheet"]
-
-        if target_sheet not in all_sheet_names:
-            raise ValueError(
-                f"Target index sheet not found | file={input_path.name} | sheet={target_sheet}"
-            )
-
-        return [
-            target_sheet
-        ]
 
     target_sheet_names = [
         sheet_name
@@ -1009,6 +993,7 @@ def transform_workbook(
                 "time",
                 "symbol",
                 "exchange",
+                "item",
             ],
             keep=False,
         )
@@ -1028,6 +1013,7 @@ def transform_workbook(
                 "release_date",
                 "time",
                 "symbol",
+                "item",
             ]
         )
         .reset_index(drop=True)
@@ -1086,6 +1072,7 @@ def collect_cfm_industry_data() -> None:
                 "time",
                 "symbol",
                 "exchange",
+                "item",
             ],
             keep=False,
         )
@@ -1104,6 +1091,7 @@ def collect_cfm_industry_data() -> None:
                 "release_date",
                 "time",
                 "symbol",
+                "item",
             ]
         )
         .reset_index(drop=True)
