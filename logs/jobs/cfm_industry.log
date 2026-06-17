@@ -1854,3 +1854,143 @@
 2026-06-16 13:49:22 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=eMCP.xlsx | sheet=eMCP(eMMC + LPDDR4X)128GB+48Gb | rows=132
 2026-06-16 13:49:22 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM workbook transformed | file=eMCP.xlsx | rows=396
 2026-06-16 13:49:22 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM industry Parquet saved | output_path=C:\Users\krm\PycharmProjects\AlternativeData\data_lake\raw\industry\components\cfm_components.parquet | rows=12996
+2026-06-17 10:38:08 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM industry data job started | input_dir=C:\Users\krm\PycharmProjects\AlternativeData\data\industry\cfm | metadata_path=C:\Users\krm\PycharmProjects\AlternativeData\data\metadata.xlsx
+2026-06-17 10:38:08 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM metadata loaded | symbols=97
+2026-06-17 10:38:08 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=DDR.xlsx | sheet=DDR4 16Gb 3200 | mode=price_sheet | rows=45 | columns=7
+2026-06-17 10:38:08 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=DDR.xlsx | sheet=DDR4 16Gb 3200 | rows=135
+2026-06-17 10:38:08 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=DDR.xlsx | sheet=DDR4 16Gb eTT | mode=price_sheet | rows=45 | columns=7
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=DDR.xlsx | sheet=DDR4 16Gb eTT | rows=135
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=DDR.xlsx | sheet=DDR4 8Gb 3200 | mode=price_sheet | rows=45 | columns=7
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=DDR.xlsx | sheet=DDR4 8Gb 3200 | rows=135
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=DDR.xlsx | sheet=DDR4 8Gb eTT | mode=price_sheet | rows=45 | columns=7
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=DDR.xlsx | sheet=DDR4 8Gb eTT | rows=135
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=DDR.xlsx | sheet=DDR4 4Gb eTT | mode=price_sheet | rows=45 | columns=7
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=DDR.xlsx | sheet=DDR4 4Gb eTT | rows=135
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=DDR.xlsx | sheet=DDR5 24Gb Major | mode=price_sheet | rows=45 | columns=7
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=DDR.xlsx | sheet=DDR5 24Gb Major | rows=135
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=DDR.xlsx | sheet=DDR5 16Gb Major | mode=price_sheet | rows=45 | columns=7
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=DDR.xlsx | sheet=DDR5 16Gb Major | rows=135
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=DDR.xlsx | sheet=DDR5 16Gb eTT | mode=price_sheet | rows=45 | columns=7
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=DDR.xlsx | sheet=DDR5 16Gb eTT | rows=135
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM workbook transformed | file=DDR.xlsx | rows=1080
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=RDIMM.xlsx | sheet=DDR4 RDIMM 16GB 3200 | mode=price_sheet | rows=13 | columns=7
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=RDIMM.xlsx | sheet=DDR4 RDIMM 16GB 3200 | rows=39
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=RDIMM.xlsx | sheet=DDR4 RDIMM 32GB 3200 | mode=price_sheet | rows=13 | columns=7
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=RDIMM.xlsx | sheet=DDR4 RDIMM 32GB 3200 | rows=39
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=RDIMM.xlsx | sheet=DDR4 RDIMM 64GB 3200 | mode=price_sheet | rows=13 | columns=7
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=RDIMM.xlsx | sheet=DDR4 RDIMM 64GB 3200 | rows=39
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=RDIMM.xlsx | sheet=DDR5 RDIMM 32GB | mode=price_sheet | rows=13 | columns=7
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=RDIMM.xlsx | sheet=DDR5 RDIMM 32GB | rows=39
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=RDIMM.xlsx | sheet=DDR5 RDIMM 64GB | mode=price_sheet | rows=13 | columns=7
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=RDIMM.xlsx | sheet=DDR5 RDIMM 64GB | rows=39
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=RDIMM.xlsx | sheet=DDR5 RDIMM 96GB | mode=price_sheet | rows=13 | columns=7
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=RDIMM.xlsx | sheet=DDR5 RDIMM 96GB | rows=39
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM workbook transformed | file=RDIMM.xlsx | rows=234
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=LPDDR.xlsx | sheet=LPDDR4X 96GB | mode=price_sheet | rows=40 | columns=7
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=LPDDR.xlsx | sheet=LPDDR4X 96GB | rows=120
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=LPDDR.xlsx | sheet=LPDDR4X 64GB | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=LPDDR.xlsx | sheet=LPDDR4X 64GB | rows=132
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=LPDDR.xlsx | sheet=LPDDR4X 48GB | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=LPDDR.xlsx | sheet=LPDDR4X 48GB | rows=132
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=LPDDR.xlsx | sheet=LPDDR4X 32GB | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=LPDDR.xlsx | sheet=LPDDR4X 32GB | rows=132
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=LPDDR.xlsx | sheet=LPDDR4X 16GB | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=LPDDR.xlsx | sheet=LPDDR4X 16GB | rows=132
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=LPDDR.xlsx | sheet=LPDDR5X 128GB | mode=price_sheet | rows=4 | columns=7
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=LPDDR.xlsx | sheet=LPDDR5X 128GB | rows=12
+2026-06-17 10:38:09 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=LPDDR.xlsx | sheet=LPDDR5X 96GB | mode=price_sheet | rows=4 | columns=7
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=LPDDR.xlsx | sheet=LPDDR5X 96GB | rows=12
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=LPDDR.xlsx | sheet=LPDDR5X 64GB | mode=price_sheet | rows=4 | columns=7
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=LPDDR.xlsx | sheet=LPDDR5X 64GB | rows=12
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=LPDDR.xlsx | sheet=LPDDR5X 48GB | mode=price_sheet | rows=4 | columns=7
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=LPDDR.xlsx | sheet=LPDDR5X 48GB | rows=12
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=LPDDR.xlsx | sheet=LPDDR5X 32GB | mode=price_sheet | rows=4 | columns=7
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=LPDDR.xlsx | sheet=LPDDR5X 32GB | rows=12
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM workbook transformed | file=LPDDR.xlsx | rows=708
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=Flash Wafer.xlsx | sheet=1TB QLC | mode=wafer_sheet | rows=178 | columns=7
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=Flash Wafer.xlsx | sheet=1TB QLC | rows=534
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=Flash Wafer.xlsx | sheet=1TB TLC | mode=wafer_sheet | rows=180 | columns=7
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=Flash Wafer.xlsx | sheet=1TB TLC | rows=540
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=Flash Wafer.xlsx | sheet=512GB TLC | mode=wafer_sheet | rows=180 | columns=7
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=Flash Wafer.xlsx | sheet=512GB TLC | rows=540
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=Flash Wafer.xlsx | sheet=256GB TLC | mode=wafer_sheet | rows=180 | columns=7
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=Flash Wafer.xlsx | sheet=256GB TLC | rows=540
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM workbook transformed | file=Flash Wafer.xlsx | rows=2154
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=Channel SSD.xlsx | sheet=Channel SSD 120GB SATA | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=Channel SSD.xlsx | sheet=Channel SSD 120GB SATA | rows=132
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=Channel SSD.xlsx | sheet=Channel SSD 240GB SATA | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=Channel SSD.xlsx | sheet=Channel SSD 240GB SATA | rows=132
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=Channel SSD.xlsx | sheet=Channel SSD 480GB SATA | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=Channel SSD.xlsx | sheet=Channel SSD 480GB SATA | rows=132
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=Channel SSD.xlsx | sheet=Channel SSD 256GB PCIe 3.0 | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=Channel SSD.xlsx | sheet=Channel SSD 256GB PCIe 3.0 | rows=132
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=Channel SSD.xlsx | sheet=Channel SSD 512GB PCIe 3.0 | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=Channel SSD.xlsx | sheet=Channel SSD 512GB PCIe 3.0 | rows=132
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=Channel SSD.xlsx | sheet=Channel SSD 1TB PCIe 3.0 | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=Channel SSD.xlsx | sheet=Channel SSD 1TB PCIe 3.0 | rows=132
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=Channel SSD.xlsx | sheet=Channel SSD 512GB PCIe 4.0 | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=Channel SSD.xlsx | sheet=Channel SSD 512GB PCIe 4.0 | rows=132
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=Channel SSD.xlsx | sheet=Channel SSD 1TB PCIe 4.0 | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:10 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=Channel SSD.xlsx | sheet=Channel SSD 1TB PCIe 4.0 | rows=132
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=Channel SSD.xlsx | sheet=Channel SSD 2TB PCIe 4.0 | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=Channel SSD.xlsx | sheet=Channel SSD 2TB PCIe 4.0 | rows=132
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM workbook transformed | file=Channel SSD.xlsx | rows=1188
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=OEM SSD.xlsx | sheet=OEM SSD 256GB SATA | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=OEM SSD.xlsx | sheet=OEM SSD 256GB SATA | rows=132
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=OEM SSD.xlsx | sheet=OEM SSD 512GB SATA | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=OEM SSD.xlsx | sheet=OEM SSD 512GB SATA | rows=132
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=OEM SSD.xlsx | sheet=OEM SSD 1TB SATA | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=OEM SSD.xlsx | sheet=OEM SSD 1TB SATA | rows=132
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=OEM SSD.xlsx | sheet=OEM SSD 256GB PCIe 3.0 | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=OEM SSD.xlsx | sheet=OEM SSD 256GB PCIe 3.0 | rows=132
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=OEM SSD.xlsx | sheet=OEM SSD 512GB PCIe 3.0 | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=OEM SSD.xlsx | sheet=OEM SSD 512GB PCIe 3.0 | rows=132
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=OEM SSD.xlsx | sheet=OEM SSD 1TB PCIe 3.0 | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=OEM SSD.xlsx | sheet=OEM SSD 1TB PCIe 3.0 | rows=132
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=OEM SSD.xlsx | sheet=OEM SSD 512GB PCIe 4.0 | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=OEM SSD.xlsx | sheet=OEM SSD 512GB PCIe 4.0 | rows=132
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=OEM SSD.xlsx | sheet=OEM SSD 1TB PCIe 4.0 | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=OEM SSD.xlsx | sheet=OEM SSD 1TB PCIe 4.0 | rows=132
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=OEM SSD.xlsx | sheet=OEM SSD 2TB PCIe 4.0 | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=OEM SSD.xlsx | sheet=OEM SSD 2TB PCIe 4.0 | rows=132
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM workbook transformed | file=OEM SSD.xlsx | rows=1188
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=Flash Card.xlsx | sheet=MicroSD 16GB(Channel) | mode=price_sheet | rows=212 | columns=7
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=Flash Card.xlsx | sheet=MicroSD 16GB(Channel) | rows=636
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=Flash Card.xlsx | sheet=MicroSD 32GB(Channel) | mode=price_sheet | rows=212 | columns=7
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=Flash Card.xlsx | sheet=MicroSD 32GB(Channel) | rows=636
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=Flash Card.xlsx | sheet=MicroSD 64GB(Channel) | mode=price_sheet | rows=212 | columns=7
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=Flash Card.xlsx | sheet=MicroSD 64GB(Channel) | rows=636
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=Flash Card.xlsx | sheet=MicroSD 128GB(Channel) | mode=price_sheet | rows=212 | columns=7
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=Flash Card.xlsx | sheet=MicroSD 128GB(Channel) | rows=636
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=Flash Card.xlsx | sheet=MicroSD 256GB(Channel) | mode=price_sheet | rows=134 | columns=7
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=Flash Card.xlsx | sheet=MicroSD 256GB(Channel) | rows=402
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=Flash Card.xlsx | sheet=MicroSD 64GB(OEM) | mode=price_sheet | rows=134 | columns=7
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=Flash Card.xlsx | sheet=MicroSD 64GB(OEM) | rows=402
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=Flash Card.xlsx | sheet=MicroSD 128GB(OEM) | mode=price_sheet | rows=212 | columns=7
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=Flash Card.xlsx | sheet=MicroSD 128GB(OEM) | rows=636
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=Flash Card.xlsx | sheet=MicroSD 256GB(OEM) | mode=price_sheet | rows=212 | columns=7
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=Flash Card.xlsx | sheet=MicroSD 256GB(OEM) | rows=636
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=Flash Card.xlsx | sheet=MicroSD 512GB(OEM) | mode=price_sheet | rows=212 | columns=7
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=Flash Card.xlsx | sheet=MicroSD 512GB(OEM) | rows=636
+2026-06-17 10:38:11 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM workbook transformed | file=Flash Card.xlsx | rows=5256
+2026-06-17 10:38:12 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=eMMC.xlsx | sheet=eMMC 8GB 5.1 | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:12 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=eMMC.xlsx | sheet=eMMC 8GB 5.1 | rows=132
+2026-06-17 10:38:12 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=eMMC.xlsx | sheet=eMMC 16GB 5.1 | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:12 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=eMMC.xlsx | sheet=eMMC 16GB 5.1 | rows=132
+2026-06-17 10:38:12 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=eMMC.xlsx | sheet=eMMC 32GB 5.1 | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:12 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=eMMC.xlsx | sheet=eMMC 32GB 5.1 | rows=132
+2026-06-17 10:38:12 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=eMMC.xlsx | sheet=eMMC 64GB 5.1 | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:12 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=eMMC.xlsx | sheet=eMMC 64GB 5.1 | rows=132
+2026-06-17 10:38:12 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=eMMC.xlsx | sheet=eMMC 128GB 5.1 | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:12 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=eMMC.xlsx | sheet=eMMC 128GB 5.1 | rows=132
+2026-06-17 10:38:12 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=eMMC.xlsx | sheet=eMMC 256GB 5.1 | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:12 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=eMMC.xlsx | sheet=eMMC 256GB 5.1 | rows=132
+2026-06-17 10:38:12 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM workbook transformed | file=eMMC.xlsx | rows=792
+2026-06-17 10:38:12 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=eMCP.xlsx | sheet=eMCP(eMMC + LPDDR4X)64GB+32Gb | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:12 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=eMCP.xlsx | sheet=eMCP(eMMC + LPDDR4X)64GB+32Gb | rows=132
+2026-06-17 10:38:12 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=eMCP.xlsx | sheet=eMCP(eMMC + LPDDR4X)128GB+32Gb | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:12 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=eMCP.xlsx | sheet=eMCP(eMMC + LPDDR4X)128GB+32Gb | rows=132
+2026-06-17 10:38:12 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet loaded | file=eMCP.xlsx | sheet=eMCP(eMMC + LPDDR4X)128GB+48Gb | mode=price_sheet | rows=44 | columns=7
+2026-06-17 10:38:12 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM sheet transformed | file=eMCP.xlsx | sheet=eMCP(eMMC + LPDDR4X)128GB+48Gb | rows=132
+2026-06-17 10:38:12 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM workbook transformed | file=eMCP.xlsx | rows=396
+2026-06-17 10:38:12 | INFO | src.jobs_xlsx.cfm.get_cfm_comp_index | CFM industry Parquet saved | output_path=C:\Users\krm\PycharmProjects\AlternativeData\data_lake\raw\industry\components\cfm_components.parquet | rows=12996

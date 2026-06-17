@@ -46,3 +46,7 @@
 2026-06-16 13:49:22 | INFO | src.jobs_xlsx.cfm.get_cfm_price_index | CFM index metadata loaded | symbols=2
 2026-06-16 13:49:22 | INFO | src.jobs_xlsx.cfm.get_cfm_price_index | CFM price index Excel sheet loaded | rows=49 | columns=6
 2026-06-16 13:49:22 | INFO | src.jobs_xlsx.cfm.get_cfm_price_index | CFM price index Parquet saved | output_path=C:\Users\krm\PycharmProjects\AlternativeData\data_lake\raw\industry\index\cfm_price_index.parquet | rows=98
+2026-06-17 10:38:12 | INFO | src.jobs_xlsx.cfm.get_cfm_price_index | CFM price index data job started | input_path=C:\Users\krm\PycharmProjects\AlternativeData\data\industry\cfm\Index.xlsx | metadata_path=C:\Users\krm\PycharmProjects\AlternativeData\data\metadata.xlsx
+2026-06-17 10:38:12 | INFO | src.jobs_xlsx.cfm.get_cfm_price_index | CFM index metadata loaded | symbols=2
+2026-06-17 10:38:12 | INFO | src.jobs_xlsx.cfm.get_cfm_price_index | CFM price index Excel sheet loaded | rows=49 | columns=6
+2026-06-17 10:38:12 | INFO | src.jobs_xlsx.cfm.get_cfm_price_index | CFM price index Parquet saved | output_path=C:\Users\krm\PycharmProjects\AlternativeData\data_lake\raw\industry\index\cfm_price_index.parquet | rows=98

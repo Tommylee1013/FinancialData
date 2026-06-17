@@ -49,3 +49,6 @@
 2026-06-16 13:49:18 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI data job started | input_path=C:\Users\krm\PycharmProjects\AlternativeData\data\industry\TrendForce\Index.xlsx | sheet=DXI
 2026-06-16 13:49:19 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI Excel sheet loaded | rows=4377 | columns=6
 2026-06-16 13:49:19 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI Parquet saved | output_path=C:\Users\krm\PycharmProjects\AlternativeData\data_lake\raw\industry\index\dxi.parquet | rows=4377
+2026-06-17 10:38:05 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI data job started | input_path=C:\Users\krm\PycharmProjects\AlternativeData\data\industry\TrendForce\Index.xlsx | sheet=DXI
+2026-06-17 10:38:05 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI Excel sheet loaded | rows=4377 | columns=6
+2026-06-17 10:38:05 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI Parquet saved | output_path=C:\Users\krm\PycharmProjects\AlternativeData\data_lake\raw\industry\index\dxi.parquet | rows=4377

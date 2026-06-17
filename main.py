@@ -9,13 +9,14 @@ from src.jobs_api.equity.get_korea_index_data import collect_korean_index_data
 from src.jobs_api.equity.get_index_data_from_yfinance import collect_yfinance_index_data
 
 from src.jobs_api.risk.get_volatility_index import collect_volatility_data
+from src.jobs_xlsx.risk.get_volatility_index_from_xlsx import collect_volatility_data_from_excel
 
 from src.jobs_xlsx.get_macro_data import save_macro_data
-from src.jobs_xlsx.get_baltic_freight_index import collect_baltic_freight_data
-from src.jobs_xlsx.get_baltic_air_freight_index import collect_baltic_air_freight_data
-from src.jobs_xlsx.get_drewry_index import collect_drewry_wci_freight_data
-from src.jobs_xlsx.get_kcci_index import collect_kobc_container_freight_data
-from src.jobs_xlsx.get_rail_traffic_index import collect_us_rail_freight_data
+from src.jobs_xlsx.freight.get_baltic_freight_index import collect_baltic_freight_data
+from src.jobs_xlsx.freight.get_baltic_air_freight_index import collect_baltic_air_freight_data
+from src.jobs_xlsx.freight.get_drewry_index import collect_drewry_wci_freight_data
+from src.jobs_xlsx.freight.get_kcci_index import collect_kobc_container_freight_data
+from src.jobs_xlsx.freight.get_rail_traffic_index import collect_us_rail_freight_data
 from src.jobs_xlsx.trendforce.get_dx_dram_index import collect_dxi_index_data
 from src.jobs_xlsx.trendforce.get_dx_comp_index import collect_trendforce_industry_data
 from src.jobs_xlsx.cfm.get_cfm_comp_index import collect_cfm_industry_data
@@ -110,6 +111,7 @@ def market_main() -> None :
 
 def risk_main() -> None :
     collect_volatility_data()
+    collect_volatility_data_from_excel()
     return None
 
 def yfinance_main() -> None :
@@ -138,10 +140,10 @@ def macro_main() -> None :
     return None
 
 if __name__ == "__main__":
-    market_main()
-    yfinance_main()
-    commodity_main()
+    # market_main()
+    # yfinance_main()
+    # commodity_main()
     risk_main()
-    industry_main()
-    freight_main()
-    macro_main()
+    # industry_main()
+    # freight_main()
+    # macro_main()
