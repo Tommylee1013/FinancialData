@@ -498,3 +498,25 @@ C:\Program Files\JetBrains\PyCharm 2026.1\jbr\bin\java.exe (PID 21608)
 2026-06-17 11:26:49 | INFO | src.dataloader.build_db | Database validation completed | index_null_keys=0 | macro_null_keys=0 | freight_null_keys=0 | volatility_null_keys=0 | industry_null_keys=0 | industry_index_null_keys=0 | index_duplicate_groups=0 | macro_duplicate_groups=0 | freight_duplicate_groups=0volatility_duplicate_groups=0 | industury_duplicate_groups=5798 | industry_index_duplicates_groups=0 | 
 2026-06-17 11:26:49 | INFO | src.dataloader.build_db | DuckDB build job completed successfully | metadata_rows=657 | index_rows=552383 | macro_rows=9078 | freight_rows=62216 | volatility_rows=71281 | industry_rows=21753 | industry_index_rows=4475
 2026-06-17 11:26:49 | INFO | src.dataloader.build_db | DuckDB connection closed.
+2026-06-18 17:35:26 | INFO | src.dataloader.build_db | DuckDB build job started | database=C:\Users\krm\PycharmProjects\AlternativeData\database\alternative_data.duckdb
+2026-06-18 17:35:26 | INFO | src.dataloader.build_db | Parquet file discovery completed | index_files=5 | macro_files=17 | freight_files=5
+2026-06-18 17:35:26 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=index | files=5
+2026-06-18 17:35:27 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=macro | files=17
+2026-06-18 17:35:27 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=freight | files=5
+2026-06-18 17:35:27 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=risk | files=2
+2026-06-18 17:35:27 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=industry | files=2
+2026-06-18 17:35:27 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=industry | files=2
+2026-06-18 17:35:27 | INFO | src.dataloader.build_db | DuckDB connection opened | database=C:\Users\krm\PycharmProjects\AlternativeData\database\alternative_data.duckdb
+2026-06-18 17:35:27 | INFO | src.dataloader.build_db | DuckDB schemas created or verified | schemas=metadata,market,macro,freight,industry
+2026-06-18 17:35:27 | INFO | src.dataloader.build_db | Loading metadata Excel file | path=C:\Users\krm\PycharmProjects\AlternativeData\data\metadata.xlsx
+2026-06-18 17:35:27 | INFO | src.dataloader.build_db | Metadata table created | table=metadata.instrument_master | rows=666
+2026-06-18 17:35:28 | INFO | src.dataloader.build_db | Index table created | table=market.index_data | files=5 | rows=552484
+2026-06-18 17:35:28 | INFO | src.dataloader.build_db | Macro table created | table=macro.macro_data | files=17 | rows=9079
+2026-06-18 17:35:28 | INFO | src.dataloader.build_db | Freight table created | table=freight.freight_data | files=5 | rows=62226
+2026-06-18 17:35:28 | INFO | src.dataloader.build_db | Volatility Index table created | table=market.volatility_data | files=2 | rows=71298
+2026-06-18 17:35:28 | INFO | src.dataloader.build_db | Industry Components table created | table=industry.components_data | files=2 | rows=21858
+2026-06-18 17:35:28 | INFO | src.dataloader.build_db | Industry Index table created | table=industry.index_data | files=2 | rows=4477
+2026-06-18 17:35:28 | WARNING | src.dataloader.build_db | Duplicate industry index keys detected | duplicate_groups=5812
+2026-06-18 17:35:28 | INFO | src.dataloader.build_db | Database validation completed | index_null_keys=0 | macro_null_keys=0 | freight_null_keys=0 | volatility_null_keys=0 | industry_null_keys=0 | industry_index_null_keys=0 | index_duplicate_groups=0 | macro_duplicate_groups=0 | freight_duplicate_groups=0volatility_duplicate_groups=0 | industury_duplicate_groups=5812 | industry_index_duplicates_groups=0 | 
+2026-06-18 17:35:29 | INFO | src.dataloader.build_db | DuckDB build job completed successfully | metadata_rows=666 | index_rows=552484 | macro_rows=9079 | freight_rows=62226 | volatility_rows=71298 | industry_rows=21858 | industry_index_rows=4477
+2026-06-18 17:35:29 | INFO | src.dataloader.build_db | DuckDB connection closed.
