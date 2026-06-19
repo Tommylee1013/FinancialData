@@ -68,6 +68,13 @@ INDUSTRY_INDEX_DATA_PATH = (
     / 'index'
 )
 
+FX_INDEX_DATA_PATH = (
+    PROJECT_ROOT
+    / "data_lake"
+    / 'raw'
+    /'fx'
+)
+
 
 LOGGER = setup_logger(
     name=__name__,
@@ -86,6 +93,7 @@ FREIGHT_TABLE = "freight.freight_data"
 VOLATILITY_TABLE = "market.volatility_data"
 INDUSTRY_TABLE = 'industry.components_data'
 INDUSTRY_INDEX_TABLE = 'industry.index_data'
+FX_TABLE = 'market.fx_data'
 
 # ============================================================
 # Expected columns
@@ -167,6 +175,21 @@ INDUSTRY_INDEX_COLUMNS = [
     "exchange",
     "country",
     'value'
+]
+
+FX_COLUMNS = [
+    "base_date",
+    "release_date",
+    "time",
+    "time_zone",
+    "symbol",
+    "exchange",
+    "country",
+    "open",
+    "high",
+    "low",
+    "close",
+    "volume",
 ]
 
 # ============================================================
@@ -727,6 +750,58 @@ def create_industry_index_table(
 
     return row_count
 
+def create_fx_table(
+    connection: duckdb.DuckDBPyConnection,
+    parquet_files: list[Path],
+) -> int:
+    """
+    Combines all FX Parquet files into market.fx_data.
+    """
+
+    parquet_paths = build_parquet_path_list(
+        parquet_files
+    )
+
+    query = f"""
+        CREATE OR REPLACE TABLE {FX_TABLE} AS
+        SELECT
+            CAST(base_date AS DATE) AS base_date,
+            CAST(release_date AS DATE) AS release_date,
+            CAST(time AS TIME) AS time,
+            CAST(time_zone AS VARCHAR) AS time_zone,
+            CAST(symbol AS VARCHAR) AS symbol,
+            CAST(exchange AS VARCHAR) AS exchange,
+            CAST(country AS VARCHAR) AS country,
+            CAST(open AS DOUBLE) AS open,
+            CAST(high AS DOUBLE) AS high,
+            CAST(low AS DOUBLE) AS low,
+            CAST(close AS DOUBLE) AS close,
+            CAST(volume AS DOUBLE) AS volume
+        FROM read_parquet(
+            {parquet_paths},
+            union_by_name = TRUE
+        )
+    """
+
+    connection.execute(query)
+
+    row_count = connection.execute(
+        f"""
+        SELECT COUNT(*)
+        FROM {FX_TABLE}
+        """
+    ).fetchone()[0]
+
+    LOGGER.info(
+        "FX table created | "
+        "table=%s | files=%d | rows=%d",
+        FX_TABLE,
+        len(parquet_files),
+        row_count,
+    )
+
+    return row_count
+
 # ============================================================
 # Database validation
 # ============================================================
@@ -794,6 +869,15 @@ def validate_database(
                 WHERE base_date IS NULL
                    OR symbol IS NULL
             """
+    ).fetchone()[0]
+
+    fx_null_keys = connection.execute(
+        f"""
+                    SELECT COUNT(*)
+                    FROM {FX_TABLE}
+                    WHERE base_date IS NULL
+                       OR symbol IS NULL
+                """
     ).fetchone()[0]
 
     index_duplicates = connection.execute(
@@ -910,6 +994,25 @@ def validate_database(
         """
     ).fetchone()[0]
 
+    fx_duplicates = connection.execute(
+        f"""
+                SELECT COUNT(*)
+                FROM (
+                    SELECT
+                        base_date,
+                        symbol,
+                        exchange,
+                        COUNT(*) AS row_count
+                    FROM {FX_TABLE}
+                    GROUP BY
+                        base_date,
+                        symbol,
+                        exchange
+                    HAVING COUNT(*) > 1
+                )
+                """
+    ).fetchone()[0]
+
     if index_null_keys > 0:
         raise ValueError(
             "The index table contains "
@@ -951,6 +1054,13 @@ def validate_database(
         raise ValueError(
             "The industry index table contains "
             f"{industry_index_null_keys:,} rows with a null "
+            "base_date or symbol."
+        )
+
+    if fx_null_keys > 0:
+        raise ValueError(
+            "The FX table contains "
+            f"{fx_null_keys:,} rows with a null "
             "base_date or symbol."
         )
 
@@ -998,6 +1108,13 @@ def validate_database(
             industry_index_duplicates,
         )
 
+    if fx_duplicates > 0:
+        LOGGER.warning(
+            "Duplicate FX keys detected | "
+            "duplicate_groups=%d",
+            fx_duplicates,
+        )
+
     # add codes from here
 
     LOGGER.info(
@@ -1008,24 +1125,28 @@ def validate_database(
         "volatility_null_keys=%d | "
         "industry_null_keys=%d | "
         'industry_index_null_keys=%d | '
+        'fx_null_keys=%d | '
         "index_duplicate_groups=%d | "
         "macro_duplicate_groups=%d | "
         "freight_duplicate_groups=%d"
         "volatility_duplicate_groups=%d | "
         "industury_duplicate_groups=%d | "
-        'industry_index_duplicates_groups=%d | ',
+        'industry_index_duplicates_groups=%d | '
+        'fx_duplicates_groups=%d | ',
         index_null_keys,
         macro_null_keys,
         freight_null_keys,
         volatility_null_keys,
         industry_null_keys,
         industry_index_null_keys,
+        fx_null_keys,
         index_duplicates,
         macro_duplicates,
         freight_duplicates,
         volatility_duplicates,
         industry_duplicates,
-        industry_index_duplicates
+        industry_index_duplicates,
+        fx_duplicates
     )
 
 
@@ -1077,6 +1198,10 @@ def build_duckdb() -> None:
             INDUSTRY_INDEX_DATA_PATH
         )
 
+        fx_files = get_parquet_files(
+            FX_INDEX_DATA_PATH
+        )
+
         LOGGER.info(
             "Parquet file discovery completed | "
             "index_files=%d | macro_files=%d | freight_files=%d",
@@ -1121,6 +1246,12 @@ def build_duckdb() -> None:
             parquet_files=industry_index_files,
             required_columns=INDUSTRY_INDEX_COLUMNS,
             data_type_name="industry",
+        )
+
+        validate_parquet_columns(
+            parquet_files=fx_files,
+            required_columns=FX_COLUMNS,
+            data_type_name="fx"
         )
 
         connection = duckdb.connect(
@@ -1175,6 +1306,11 @@ def build_duckdb() -> None:
             parquet_files=industry_index_files,
         )
 
+        fx_rows = create_fx_table(
+            connection,
+            parquet_files=fx_files,
+        )
+
         validate_database(
             connection
         )
@@ -1191,7 +1327,8 @@ def build_duckdb() -> None:
             "freight_rows=%d | "
             "volatility_rows=%d | "
             "industry_rows=%d | "
-            "industry_index_rows=%d"
+            "industry_index_rows=%d |"
+            'fx_index_rows=%d '
             ,
             metadata_rows,
             index_rows,
@@ -1199,7 +1336,8 @@ def build_duckdb() -> None:
             freight_rows,
             volatility_rows,
             industry_rows,
-            industry_index_rows
+            industry_index_rows,
+            fx_rows
         )
 
     except Exception:

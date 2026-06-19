@@ -8,6 +8,8 @@ from src.jobs_api.equity.get_nasdaq_index_data import collect_nasdaq_index_data
 from src.jobs_api.equity.get_korea_index_data import collect_korean_index_data
 from src.jobs_api.equity.get_index_data_from_yfinance import collect_yfinance_index_data
 
+from src.jobs_api.fx.get_currencies import collect_currency_data
+
 from src.jobs_api.risk.get_volatility_index import collect_volatility_data
 from src.jobs_xlsx.risk.get_volatility_index_from_xlsx import collect_volatility_data_from_excel
 
@@ -109,6 +111,10 @@ def market_main() -> None :
     collect_nasdaq_index_data()
     return None
 
+def currency_main() -> None :
+    collect_currency_data()
+    return None
+
 def risk_main() -> None :
     collect_volatility_data()
     collect_volatility_data_from_excel()
@@ -142,6 +148,7 @@ def macro_main() -> None :
 if __name__ == "__main__":
     market_main()
     yfinance_main()
+    currency_main()
     commodity_main()
     risk_main()
     industry_main()
