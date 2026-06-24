@@ -73,3 +73,6 @@
 2026-06-19 14:05:32 | INFO | src.jobs_xlsx.freight.get_rail_traffic_index | US rail freight data job started | input_path=C:\Users\krm\PycharmProjects\AlternativeData\data\freight\US Rail Traffic.xlsx
 2026-06-19 14:05:32 | INFO | src.jobs_xlsx.freight.get_rail_traffic_index | Excel file loaded | rows=897 | columns=5
 2026-06-19 14:05:32 | INFO | src.jobs_xlsx.freight.get_rail_traffic_index | US rail traffic Parquet saved | output_path=C:\Users\krm\PycharmProjects\AlternativeData\data_lake\raw\freight\us_rail_traffic.parquet | rows=897
+2026-06-24 14:54:39 | INFO | src.jobs_xlsx.freight.get_rail_traffic_index | US rail freight data job started | input_path=C:\Users\krm\PycharmProjects\AlternativeData\data\freight\US Rail Traffic.xlsx
+2026-06-24 14:54:39 | INFO | src.jobs_xlsx.freight.get_rail_traffic_index | Excel file loaded | rows=898 | columns=5
+2026-06-24 14:54:39 | INFO | src.jobs_xlsx.freight.get_rail_traffic_index | US rail traffic Parquet saved | output_path=C:\Users\krm\PycharmProjects\AlternativeData\data_lake\raw\freight\us_rail_traffic.parquet | rows=897

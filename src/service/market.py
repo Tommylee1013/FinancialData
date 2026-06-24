@@ -50,17 +50,28 @@ class PriceService(object):
                 """
             ).df()
 
+            fx_data = conn.execute(
+                """
+                select 'fx' as asset_type,
+                       *
+                from market.fx_data
+                order by release_date, time, symbol
+                """
+            ).df()
+
         finally:
             conn.close()
 
         self.index_data = index_data.copy()
         self.volatility_data = volatility_data.copy()
+        self.fx_data = fx_data.copy()
 
         self.data = (
             pd.concat(
                 [
                     self.index_data,
                     self.volatility_data,
+                    self.fx_data
                 ],
                 axis=0,
                 ignore_index=True,
@@ -129,6 +140,7 @@ class PriceService(object):
         valid_asset_types = {
             "index",
             "volatility",
+            'fx',
         }
 
         invalid_asset_types = sorted(
@@ -139,7 +151,7 @@ class PriceService(object):
             raise ValueError(
                 "invalid asset_types: "
                 f"{invalid_asset_types}. "
-                "valid asset_types are ['index', 'volatility']."
+                "valid asset_types are ['index', 'volatility', 'fx']."
             )
 
         if not asset_type_list:

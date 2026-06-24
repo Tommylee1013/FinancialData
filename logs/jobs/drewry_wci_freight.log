@@ -73,3 +73,6 @@
 2026-06-19 14:05:32 | INFO | src.jobs_xlsx.freight.get_drewry_index | Drewry WCI freight data job started | input_path=C:\Users\krm\PycharmProjects\AlternativeData\data\freight\world container index.xlsx
 2026-06-19 14:05:32 | INFO | src.jobs_xlsx.freight.get_drewry_index | Excel file loaded | rows=774 | columns=13
 2026-06-19 14:05:32 | INFO | src.jobs_xlsx.freight.get_drewry_index | Drewry WCI freight Parquet saved | output_path=C:\Users\krm\PycharmProjects\AlternativeData\data_lake\raw\freight\drewry_world_container_index.parquet | rows=6966
+2026-06-24 14:54:39 | INFO | src.jobs_xlsx.freight.get_drewry_index | Drewry WCI freight data job started | input_path=C:\Users\krm\PycharmProjects\AlternativeData\data\freight\world container index.xlsx
+2026-06-24 14:54:39 | INFO | src.jobs_xlsx.freight.get_drewry_index | Excel file loaded | rows=775 | columns=13
+2026-06-24 14:54:39 | INFO | src.jobs_xlsx.freight.get_drewry_index | Drewry WCI freight Parquet saved | output_path=C:\Users\krm\PycharmProjects\AlternativeData\data_lake\raw\freight\drewry_world_container_index.parquet | rows=6975
