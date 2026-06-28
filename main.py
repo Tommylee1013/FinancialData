@@ -19,11 +19,14 @@ from src.jobs_xlsx.freight.get_baltic_air_freight_index import collect_baltic_ai
 from src.jobs_xlsx.freight.get_drewry_index import collect_drewry_wci_freight_data
 from src.jobs_xlsx.freight.get_kcci_index import collect_kobc_container_freight_data
 from src.jobs_xlsx.freight.get_rail_traffic_index import collect_us_rail_freight_data
+from src.jobs_xlsx.freight.get_freight_index_data import collect_freights_data
+
 from src.jobs_xlsx.trendforce.get_dx_dram_index import collect_dxi_index_data
 from src.jobs_xlsx.trendforce.get_dx_comp_index import collect_trendforce_industry_data
 from src.jobs_xlsx.cfm.get_cfm_comp_index import collect_cfm_industry_data
 from src.jobs_xlsx.cfm.get_cfm_price_index import collect_cfm_price_index_data
 from src.jobs_api.commodity.get_commodity_index import collect_commodity_index_data
+from src.jobs_xlsx.industry.get_industry_data import collect_industry_data
 
 # Project root 지정
 PROJECT_ROOT = Path.cwd()
@@ -128,29 +131,35 @@ def commodity_main() -> None :
     return None
 
 def industry_main() -> None :
+    industry_yaml_path = 'config/industry_jobs.yaml'
+
     collect_dxi_index_data()
     collect_trendforce_industry_data()
     collect_cfm_industry_data()
     collect_cfm_price_index_data()
+    collect_industry_data(industry_yaml_path)
     return None
 
 def freight_main() -> None :
+    freights_yaml_path = 'config/freight_jobs.yaml'
+
     collect_baltic_freight_data()
     collect_baltic_air_freight_data()
     collect_drewry_wci_freight_data()
     collect_kobc_container_freight_data()
     collect_us_rail_freight_data()
+    collect_freights_data(freights_yaml_path)
 
 def macro_main() -> None :
     collect_macro_data()
     return None
 
 if __name__ == "__main__":
-    market_main()
-    yfinance_main()
-    currency_main()
-    commodity_main()
-    risk_main()
+    # market_main()
+    # yfinance_main()
+    # currency_main()
+    # commodity_main()
+    # risk_main()
     industry_main()
     freight_main()
-    macro_main()
+    # macro_main()

@@ -1,0 +1,27 @@
+job:
+  name: industry_excel_wide_value_loader
+  output_path: data_lake/raw/industry/index/industry_data.parquet
+  duplicate_strategy: error
+  log_path: logs/jobs/industry_excel_wide_value_loader.log
+
+sources:
+  - file_name: data/industry/Energy/AAA Gasoline.xlsx
+    sheet_name: gasoline
+    exchange: AAA
+    country: United States
+  - file_name: data/industry/Logistics/Logistic manager index.xlsx
+    sheet_name: LMI
+    exchange: CSCMP
+    country: United States
+  - file_name: data/industry/Logistics/Logistic manager index.xlsx
+    sheet_name: LMIFUTURES
+    exchange: CSCMP
+    country: United States
+  - file_name: data/industry/Real Estate/South Korea Apartment.xlsx
+    sheet_name: scaling
+    exchange: KB
+    country: South Korea
+  - file_name: data/industry/Automobile/MUVVI.xlsx
+    sheet_name: MANHEIM
+    exchange: COXAUTONIC
+    country: South Korea

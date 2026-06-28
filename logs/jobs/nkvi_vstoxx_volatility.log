@@ -34,3 +34,9 @@
 2026-06-27 11:21:03 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loading | symbol=VSTOXX | input_path=C:\Users\Geust\PycharmProjects\AlternativeData\data\volatility\VSTOXX.xlsx
 2026-06-27 11:21:04 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loaded | symbol=VSTOXX | rows=5147 | columns=8
 2026-06-27 11:21:04 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | NKVI / VSTOXX volatility Parquet saved | output_path=C:\Users\Geust\PycharmProjects\AlternativeData\data_lake\raw\risk\volatility_excel.parquet | rows=11432
+2026-06-27 15:21:42 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | NKVI / VSTOXX volatility data job started | input_dir=/Users/tommy/Desktop/Pycharm/FinancialData/data/volatility
+2026-06-27 15:21:42 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loading | symbol=NKVI | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/volatility/NKVI.xlsx
+2026-06-27 15:21:42 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loaded | symbol=NKVI | rows=6285 | columns=8
+2026-06-27 15:21:42 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loading | symbol=VSTOXX | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data/volatility/VSTOXX.xlsx
+2026-06-27 15:21:42 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loaded | symbol=VSTOXX | rows=5147 | columns=8
+2026-06-27 15:21:42 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | NKVI / VSTOXX volatility Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/raw/risk/volatility_excel.parquet | rows=11432

@@ -1,0 +1,96 @@
+job:
+  name: freight_excel_loader
+  output_path: data_lake/raw/freight/freights_index.parquet
+  duplicate_strategy: error
+  log_path: logs/jobs/freight_excel_loader.log
+
+sources:
+  - file_name: data/freight/china containerized freight index.xlsx
+    sheet_name: CCFI
+    exchange: SSE
+    country: China
+
+  - file_name: data/freight/china containerized freight index.xlsx
+    sheet_name: SCFI
+    exchange: SSE
+    country: China
+
+  - file_name: data/freight/china containerized freight index.xlsx
+    sheet_name: SCFIS
+    exchange: SSE
+    country: China
+
+  - file_name: data/freight/china containerized freight index.xlsx
+    sheet_name: CBFI
+    exchange: SSE
+    country: China
+
+  - file_name: data/freight/china containerized freight index.xlsx
+    sheet_name: CBCFI
+    exchange: SSE
+    country: China
+
+  - file_name: data/freight/china containerized freight index.xlsx
+    sheet_name: CBOFI
+    exchange: SSE
+    country: China
+
+  - file_name: data/freight/china containerized freight index.xlsx
+    sheet_name: CBGFI
+    exchange: SSE
+    country: China
+
+  - file_name: data/freight/china containerized freight index.xlsx
+    sheet_name: CDFI
+    exchange: SSE
+    country: China
+
+  - file_name: data/freight/china containerized freight index.xlsx
+    sheet_name: FDI
+    exchange: SSE
+    country: China
+
+  - file_name: data/freight/china containerized freight index.xlsx
+    sheet_name: CTFI
+    exchange: SSE
+    country: China
+
+  - file_name: data/freight/china containerized freight index.xlsx
+    sheet_name: CSI
+    exchange: SSE
+    country: China
+
+  - file_name: data/freight/china containerized freight index.xlsx
+    sheet_name: CICFI
+    exchange: SSE
+    country: China
+
+  - file_name: data/freight/china containerized freight index.xlsx
+    sheet_name: SEAFI
+    exchange: SSE
+    country: China
+
+  - file_name: data/freight/china containerized freight index.xlsx
+    sheet_name: BRTVI
+    exchange: SSE
+    country: China
+
+  - file_name: data/freight/china containerized freight index.xlsx
+    sheet_name: BRCVI
+    exchange: SSE
+    country: China
+
+  - file_name: data/freight/china containerized freight index.xlsx
+    sheet_name: SRFI
+    exchange: SSE
+    country: China
+
+  - file_name: data/freight/china containerized freight index.xlsx
+    sheet_name: TWFI
+    exchange: SSE
+    country: China
+
+  - file_name: data/freight/GSCPI.xlsx
+    sheet_name: GSCPI
+    exchange: FED
+    country: United States
