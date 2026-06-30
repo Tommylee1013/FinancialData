@@ -10,6 +10,8 @@ from src.jobs_api.equity.get_index_data_from_yfinance import collect_yfinance_in
 
 from src.jobs_api.fx.get_currencies import collect_currency_data
 
+from src.jobs_xlsx.fixed_income.get_fixed_incomes_data import collect_fixed_income_data
+
 from src.jobs_api.risk.get_volatility_index import collect_volatility_data
 from src.jobs_xlsx.risk.get_volatility_index_from_xlsx import collect_volatility_data_from_excel
 
@@ -114,6 +116,11 @@ def market_main() -> None :
     collect_nasdaq_index_data()
     return None
 
+def fixed_income_main() -> None :
+    fixed_income_yaml_path = 'config/fixed_income_jobs.yaml'
+
+    collect_fixed_income_data(fixed_income_yaml_path)
+
 def currency_main() -> None :
     collect_currency_data()
     return None
@@ -163,3 +170,4 @@ if __name__ == "__main__":
     industry_main()
     freight_main()
     macro_main()
+    fixed_income_main()

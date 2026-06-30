@@ -75,6 +75,12 @@ FX_INDEX_DATA_PATH = (
     /'fx'
 )
 
+FIXED_INCOME_DATA_PATH = (
+    PROJECT_ROOT
+    / "data_lake"
+    / 'raw'
+    /'fixed_income'
+)
 
 LOGGER = setup_logger(
     name=__name__,
@@ -94,6 +100,7 @@ VOLATILITY_TABLE = "market.volatility_data"
 INDUSTRY_TABLE = 'industry.components_data'
 INDUSTRY_INDEX_TABLE = 'industry.index_data'
 FX_TABLE = 'market.fx_data'
+FIXED_INCOME_TABLE = 'fixed_income.fixed_income_data'
 
 # ============================================================
 # Expected columns
@@ -167,7 +174,7 @@ INDUSTRY_COLUMNS = [
 ]
 
 INDUSTRY_INDEX_COLUMNS = [
-"base_date",
+    "base_date",
     "release_date",
     "time",
     "time_zone",
@@ -190,6 +197,17 @@ FX_COLUMNS = [
     "low",
     "close",
     "volume",
+]
+
+FIXED_INCOME_COLUMNS = [
+    "base_date",
+    "release_date",
+    "time",
+    "time_zone",
+    "symbol",
+    "exchange",
+    "country",
+    'value'
 ]
 
 # ============================================================
@@ -369,9 +387,15 @@ def create_schemas(
         """
     )
 
+    connection.execute(
+        """
+        CREATE SCHEMA IF NOT EXISTS fixed_income
+        """
+    )
+
     LOGGER.info(
         "DuckDB schemas created or verified | "
-        "schemas=metadata,market,macro,freight,industry"
+        "schemas=metadata,market,macro,freight,industry,fixed_income"
     )
 
 
@@ -802,6 +826,54 @@ def create_fx_table(
 
     return row_count
 
+def create_fixed_income_table(
+    connection: duckdb.DuckDBPyConnection,
+    parquet_files: list[Path],
+) -> int:
+    """
+    Combines all Industry Parquet files into industry.industry_data.
+    """
+
+    parquet_paths = build_parquet_path_list(
+        parquet_files
+    )
+
+    query = f"""
+        CREATE OR REPLACE TABLE {FIXED_INCOME_TABLE} AS
+        SELECT
+            CAST(base_date AS DATE) AS base_date,
+            CAST(release_date AS DATE) AS release_date,
+            CAST(time AS TIME) AS time,
+            CAST(time_zone AS VARCHAR) AS time_zone,
+            CAST(symbol AS VARCHAR) AS symbol,
+            CAST(exchange AS VARCHAR) AS exchange,
+            CAST(country AS VARCHAR) AS country,
+            CAST(value AS DOUBLE) AS value,
+        FROM read_parquet(
+            {parquet_paths},
+            union_by_name = TRUE
+        )
+    """
+
+    connection.execute(query)
+
+    row_count = connection.execute(
+        f"""
+        SELECT COUNT(*)
+        FROM {FIXED_INCOME_TABLE}
+        """
+    ).fetchone()[0]
+
+    LOGGER.info(
+        "Fixed Income table created | "
+        "table=%s | files=%d | rows=%d",
+        FIXED_INCOME_TABLE,
+        len(parquet_files),
+        row_count,
+    )
+
+    return row_count
+
 # ============================================================
 # Database validation
 # ============================================================
@@ -875,6 +947,15 @@ def validate_database(
         f"""
                     SELECT COUNT(*)
                     FROM {FX_TABLE}
+                    WHERE base_date IS NULL
+                       OR symbol IS NULL
+                """
+    ).fetchone()[0]
+
+    fixed_income_null_keys = connection.execute(
+        f"""
+                    SELECT COUNT(*)
+                    FROM {FIXED_INCOME_TABLE}
                     WHERE base_date IS NULL
                        OR symbol IS NULL
                 """
@@ -1013,6 +1094,19 @@ def validate_database(
                 """
     ).fetchone()[0]
 
+    fixed_income_duplicates = connection.execute(
+        f"""
+                select count(*)
+                from (
+                    select base_date, symbol, exchange,
+                    count(*) as row_count
+                    from {FIXED_INCOME_TABLE}
+                    group by base_date, symbol, exchange
+                    having count(*) > 1
+                )
+            """
+    ).fetchone()[0]
+
     if index_null_keys > 0:
         raise ValueError(
             "The index table contains "
@@ -1061,6 +1155,13 @@ def validate_database(
         raise ValueError(
             "The FX table contains "
             f"{fx_null_keys:,} rows with a null "
+            "base_date or symbol."
+        )
+
+    if fixed_income_null_keys > 0 :
+        raise ValueError(
+            "The fixed income table contains "
+            f"{fixed_income_null_keys:,} rows with a null "
             "base_date or symbol."
         )
 
@@ -1115,6 +1216,13 @@ def validate_database(
             fx_duplicates,
         )
 
+    if fixed_income_duplicates > 0:
+        LOGGER.warning(
+            "Duplicate fixed income keys detected | "
+            "duplicate_groups=%d",
+            fixed_income_duplicates,
+        )
+
     # add codes from here
 
     LOGGER.info(
@@ -1126,13 +1234,15 @@ def validate_database(
         "industry_null_keys=%d | "
         'industry_index_null_keys=%d | '
         'fx_null_keys=%d | '
+        'fixed_income_null_key=%d | '
         "index_duplicate_groups=%d | "
         "macro_duplicate_groups=%d | "
         "freight_duplicate_groups=%d"
         "volatility_duplicate_groups=%d | "
         "industury_duplicate_groups=%d | "
         'industry_index_duplicates_groups=%d | '
-        'fx_duplicates_groups=%d | ',
+        'fx_duplicates_groups=%d | '
+        'fixed_income_duplicates_groups=%d | ',
         index_null_keys,
         macro_null_keys,
         freight_null_keys,
@@ -1140,13 +1250,15 @@ def validate_database(
         industry_null_keys,
         industry_index_null_keys,
         fx_null_keys,
+        fixed_income_null_keys,
         index_duplicates,
         macro_duplicates,
         freight_duplicates,
         volatility_duplicates,
         industry_duplicates,
         industry_index_duplicates,
-        fx_duplicates
+        fx_duplicates,
+        fixed_income_duplicates
     )
 
 
@@ -1202,6 +1314,10 @@ def build_duckdb() -> None:
             FX_INDEX_DATA_PATH
         )
 
+        fixed_income_files = get_parquet_files(
+            FIXED_INCOME_DATA_PATH
+        )
+
         LOGGER.info(
             "Parquet file discovery completed | "
             "index_files=%d | macro_files=%d | freight_files=%d",
@@ -1252,6 +1368,12 @@ def build_duckdb() -> None:
             parquet_files=fx_files,
             required_columns=FX_COLUMNS,
             data_type_name="fx"
+        )
+
+        validate_parquet_columns(
+            parquet_files=fixed_income_files,
+            required_columns=FIXED_INCOME_COLUMNS,
+            data_type_name="fixed_income"
         )
 
         connection = duckdb.connect(
@@ -1311,6 +1433,11 @@ def build_duckdb() -> None:
             parquet_files=fx_files,
         )
 
+        fixed_income_rows = create_fixed_income_table(
+            connection,
+            parquet_files=fixed_income_files,
+        )
+
         validate_database(
             connection
         )
@@ -1327,8 +1454,8 @@ def build_duckdb() -> None:
             "freight_rows=%d | "
             "volatility_rows=%d | "
             "industry_rows=%d | "
-            "industry_index_rows=%d |"
-            'fx_index_rows=%d '
+            "industry_index_rows=%d | "
+            'fx_index_rows=%d | fixed_income_rows=%d | '
             ,
             metadata_rows,
             index_rows,
@@ -1337,7 +1464,7 @@ def build_duckdb() -> None:
             volatility_rows,
             industry_rows,
             industry_index_rows,
-            fx_rows
+            fx_rows, fixed_income_rows
         )
 
     except Exception:

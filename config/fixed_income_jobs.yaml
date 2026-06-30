@@ -1,0 +1,15 @@
+job:
+  name: fixed_income_excel_loader
+  output_path: data_lake/raw/fixed_income/fixed_income_index.parquet
+  duplicate_strategy: error
+  log_path: logs/jobs/fixed_income_excel_loader.log
+
+sources:
+  - file_name: data/fixed_income/South Korea/BondMarket.xlsx
+    sheet_name: KRBONDS
+    exchange: KOFIA
+    country: South Korea
+  - file_name: data/fixed_income/South Korea/KOFR.xlsx
+    sheet_name: KOFR
+    exchange: KOFR
+    country: South Korea

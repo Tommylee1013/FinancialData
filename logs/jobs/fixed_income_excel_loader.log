@@ -1,0 +1,6 @@
+2026-06-30 11:23:40 | INFO | src.jobs_xlsx.fixed_income.get_fixed_incomes_data | Excel wide value loader started | config_path=config/fixed_income_jobs.yaml
+2026-06-30 11:23:40 | INFO | src.jobs_xlsx.fixed_income.get_fixed_incomes_data | Loading Excel sheet | file=C:\Users\krm\PycharmProjects\AlternativeData\data\fixed_income\South Korea\BondMarket.xlsx | sheet=KRBONDS | exchange=KOFIA | country=South Korea
+2026-06-30 11:23:41 | INFO | src.jobs_xlsx.fixed_income.get_fixed_incomes_data | Excel sheet loaded | file=C:\Users\krm\PycharmProjects\AlternativeData\data\fixed_income\South Korea\BondMarket.xlsx | sheet=KRBONDS | rows=8163 | columns=22
+2026-06-30 11:23:41 | INFO | src.jobs_xlsx.fixed_income.get_fixed_incomes_data | Loading Excel sheet | file=C:\Users\krm\PycharmProjects\AlternativeData\data\fixed_income\South Korea\KOFR.xlsx | sheet=KOFR | exchange=KOFR | country=South Korea
+2026-06-30 11:23:41 | INFO | src.jobs_xlsx.fixed_income.get_fixed_incomes_data | Excel sheet loaded | file=C:\Users\krm\PycharmProjects\AlternativeData\data\fixed_income\South Korea\KOFR.xlsx | sheet=KOFR | rows=2083 | columns=6
+2026-06-30 11:23:41 | INFO | src.jobs_xlsx.fixed_income.get_fixed_incomes_data | Parquet saved | output_path=C:\Users\krm\PycharmProjects\AlternativeData\data_lake\raw\fixed_income\fixed_income_index.parquet | rows=110619 | symbols=20
