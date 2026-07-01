@@ -115,3 +115,6 @@
 2026-06-30 11:23:37 | INFO | src.jobs_xlsx.freight.get_kcci_index | KOBC container freight data job started | input_path=C:\Users\krm\PycharmProjects\AlternativeData\data\freight\KOBC Container Composite Index.xlsx
 2026-06-30 11:23:37 | INFO | src.jobs_xlsx.freight.get_kcci_index | Excel file loaded | rows=181 | columns=18
 2026-06-30 11:23:37 | INFO | src.jobs_xlsx.freight.get_kcci_index | KOBC container freight Parquet saved | output_path=C:\Users\krm\PycharmProjects\AlternativeData\data_lake\raw\freight\kobc_container_composite_index.parquet | rows=2534
+2026-07-02 01:43:00 | INFO | src.jobs_xlsx.freight.get_kcci_index | KOBC container freight data job started | input_path=C:\Users\Geust\PycharmProjects\AlternativeData\data\freight\KOBC Container Composite Index.xlsx
+2026-07-02 01:43:00 | INFO | src.jobs_xlsx.freight.get_kcci_index | Excel file loaded | rows=181 | columns=18
+2026-07-02 01:43:00 | INFO | src.jobs_xlsx.freight.get_kcci_index | KOBC container freight Parquet saved | output_path=C:\Users\Geust\PycharmProjects\AlternativeData\data_lake\raw\freight\kobc_container_composite_index.parquet | rows=2534
