@@ -16,13 +16,13 @@ PROJECT_ROOT = Path.cwd()
 
 METADATA_PATH = (
     PROJECT_ROOT
-    / "data"
+    / "data_lake"
     / "metadata.xlsx"
 )
 
 INPUT_PATH = (
     PROJECT_ROOT
-    / "data"
+    / "data_lake"
     / "industry"
     / "cfm"
     / "Index.xlsx"
@@ -428,7 +428,7 @@ def normalize_date_time_columns(
 
     if missing_columns:
         raise ValueError(
-            "Required date/time columns are missing from CFM index data: "
+            "Required date/time columns are missing from CFM index data_lake: "
             f"{sorted(missing_columns)}"
         )
 
@@ -460,7 +460,7 @@ def transform_cfm_price_index_data(
     symbol_info: pd.DataFrame,
 ) -> pd.DataFrame:
     """
-    Transforms CFM price index Excel data.
+    Transforms CFM price index Excel data_lake.
 
     Input:
         Base Date, Release Date, Time, Time Zone, DRAM Index, NAND Index
@@ -582,7 +582,7 @@ def collect_cfm_price_index_data() -> None:
     """
 
     LOGGER.info(
-        "CFM price index data job started | input_path=%s | metadata_path=%s",
+        "CFM price index data_lake job started | input_path=%s | metadata_path=%s",
         INPUT_PATH,
         METADATA_PATH,
     )

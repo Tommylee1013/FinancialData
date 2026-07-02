@@ -324,7 +324,7 @@ def transform_index_data(
 
 def collect_nasdaq_index_data() -> None:
     LOGGER.info(
-        'starting download US market (Exchange : NASDAQ) index data.'
+        'starting download US market (Exchange : NASDAQ) index data_lake.'
     )
 
     symbol_info = get_nasdaq_symbol_info()
@@ -376,7 +376,7 @@ def collect_nasdaq_index_data() -> None:
     )
 
     LOGGER.info(
-        'All of US market (Exchange : NASDAQ) index data has been downloaded.'
+        'All of US market (Exchange : NASDAQ) index data_lake has been downloaded.'
     )
 
 

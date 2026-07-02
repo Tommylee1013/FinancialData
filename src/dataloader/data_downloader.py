@@ -28,7 +28,7 @@ def get_data_from_tradingview(
 
     - multi_level_index:
         * True  : columns=MultiIndex (ticker, field)  -> ("AAPL","close") 형태
-        * False : columns=MultiIndex (field, ticker)  -> data["close"] 로 모든 종목 접근 가능
+        * False : columns=MultiIndex (field, ticker)  -> data_lake["close"] 로 모든 종목 접근 가능
 
     - tz_cleansing:
         * True  : 인덱스를 날짜 단위로 정규화
@@ -118,7 +118,7 @@ def get_data_from_tradingview(
                 )
 
                 if temp is None or temp.empty:
-                    raise ValueError(f"Empty data returned for {ticker} ({exch}).")
+                    raise ValueError(f"Empty data_lake returned for {ticker} ({exch}).")
 
                 temp.columns = [c.lower() for c in temp.columns]
                 temp.index = pd.to_datetime(temp.index)
@@ -159,7 +159,7 @@ def get_data_from_tradingview(
                     col = column.lower()
                     if col not in temp.columns:
                         raise KeyError(
-                            f"Column '{column}' not in data columns for {ticker}: {list(temp.columns)}"
+                            f"Column '{column}' not in data_lake columns for {ticker}: {list(temp.columns)}"
                         )
 
                     series = temp[col].copy()

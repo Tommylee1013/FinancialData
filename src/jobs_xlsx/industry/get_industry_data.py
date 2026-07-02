@@ -459,7 +459,7 @@ def collect_industry_data(
     ) or {}
 
     logger.info(
-        "Excel industry data loader started | config_path=%s",
+        "Excel industry data_lake loader started | config_path=%s",
         config_path,
     )
 

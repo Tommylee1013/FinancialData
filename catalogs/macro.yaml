@@ -8,8 +8,8 @@ indicators:
 
   - indicator_id: US_CPI_YOY
     name: US CPI Year-over-Year
-    file: data/macro/USA/USCPI YoY.xlsx
-    sheet: data
+    file: data_lake/macro/USA/USCPI YoY.xlsx
+    sheet: data_lake
     column_index: 0
     category: macro
     subcategory: inflation
@@ -23,7 +23,7 @@ indicators:
 
   - indicator_id: US_PMI
     name: US ISM Manufacturing PMI
-    file: data/macro/USA/USPMI.xlsx
+    file: data_lake/macro/USA/USPMI.xlsx
     sheet: NAPMPMI
     column_index: 0
     category: macro
@@ -37,7 +37,7 @@ indicators:
 
   - indicator_id: US_PMI_NEW_ORDERS
     name: US ISM New Orders Index
-    file: data/macro/USA/USPMI.xlsx
+    file: data_lake/macro/USA/USPMI.xlsx
     sheet: NAPMNEWO
     column_index: 0
     category: macro
@@ -51,7 +51,7 @@ indicators:
 
   - indicator_id: US_PMI_NMI
     name: US ISM Non-Manufacturing Index
-    file: data/macro/USA/USPMI.xlsx
+    file: data_lake/macro/USA/USPMI.xlsx
     sheet: NAPMNMI
     column_index: 0
     category: macro
@@ -65,7 +65,7 @@ indicators:
 
   - indicator_id: US_PMI_NM_NEW_ORDERS
     name: US ISM Non-Manufacturing New Orders
-    file: data/macro/USA/USPMI.xlsx
+    file: data_lake/macro/USA/USPMI.xlsx
     sheet: NAPMNNO
     column_index: 0
     category: macro
@@ -79,7 +79,7 @@ indicators:
 
   - indicator_id: US_PMI_NM_SUPPLIER_DEL
     name: US ISM Non-Manufacturing Supplier Deliveries
-    file: data/macro/USA/USPMI.xlsx
+    file: data_lake/macro/USA/USPMI.xlsx
     sheet: NAPMNSD
     column_index: 0
     category: macro
@@ -93,7 +93,7 @@ indicators:
 
   - indicator_id: US_GDP
     name: US GDP Quarter-over-Quarter (Annualized)
-    file: data/macro/USA/USGDP.xlsx
+    file: data_lake/macro/USA/USGDP.xlsx
     sheet: USGDP
     column_index: 0
     category: macro
@@ -107,7 +107,7 @@ indicators:
 
   - indicator_id: FED_RATE
     name: Federal Funds Target Rate
-    file: data/macro/USA/FED Target Rate.xlsx
+    file: data_lake/macro/USA/FED Target Rate.xlsx
     sheet: Fed Target Rate
     column_index: 0
     category: macro
@@ -121,7 +121,7 @@ indicators:
 
   - indicator_id: US_NFP
     name: US Nonfarm Payrolls
-    file: data/macro/USA/Nonfarm Payrolls.xlsx
+    file: data_lake/macro/USA/Nonfarm Payrolls.xlsx
     sheet: PAYEMS
     column_index: 0
     category: macro
@@ -135,7 +135,7 @@ indicators:
 
   - indicator_id: US_RETAIL_SALES
     name: US Retail Sales (RSAFS)
-    file: data/macro/USA/Retail Sales.xlsx
+    file: data_lake/macro/USA/Retail Sales.xlsx
     sheet: Retail Sales
     column_index: 0
     category: macro
@@ -149,7 +149,7 @@ indicators:
 
   - indicator_id: US_CONSUMER_CONF
     name: US Conference Board Consumer Confidence
-    file: data/macro/USA/US Consumer Confidence.xlsx
+    file: data_lake/macro/USA/US Consumer Confidence.xlsx
     sheet: CONCCONF
     column_index: 0
     category: macro
@@ -163,7 +163,7 @@ indicators:
 
   - indicator_id: US_CONSUMER_SENT
     name: US Michigan Consumer Sentiment
-    file: data/macro/USA/US Consumer Sentiment.xlsx
+    file: data_lake/macro/USA/US Consumer Sentiment.xlsx
     sheet: CONSSENT
     column_index: 0
     category: macro
@@ -177,7 +177,7 @@ indicators:
 
   - indicator_id: US_PCE_YOY
     name: US PCE Price Index Year-over-Year
-    file: data/macro/USA/US PCE.xlsx
+    file: data_lake/macro/USA/US PCE.xlsx
     sheet: PCECYOY
     column_index: 0
     category: macro
@@ -192,7 +192,7 @@ indicators:
 
   - indicator_id: US_PCE_SERVICES_YOY
     name: US PCE Services Year-over-Year
-    file: data/macro/USA/US PCE.xlsx
+    file: data_lake/macro/USA/US PCE.xlsx
     sheet: PCESRVY
     column_index: 0
     category: macro
@@ -206,7 +206,7 @@ indicators:
 
   - indicator_id: US_UNEMPLOYMENT
     name: US Unemployment Rate
-    file: data/macro/USA/US Unemployment rate.xlsx
+    file: data_lake/macro/USA/US Unemployment rate.xlsx
     sheet: USURTOT
     column_index: 0
     category: macro
@@ -220,7 +220,7 @@ indicators:
 
   - indicator_id: US_LMI
     name: Logistics Managers Index
-    file: data/macro/USA/Logistic manager index.xlsx
+    file: data_lake/macro/USA/Logistic manager index.xlsx
     sheet: LMI
     column_index: 0
     category: macro
@@ -233,7 +233,7 @@ indicators:
 
   - indicator_id: US_LMI_FUTURES
     name: Logistics Managers Index (Futures)
-    file: data/macro/USA/Logistic manager index.xlsx
+    file: data_lake/macro/USA/Logistic manager index.xlsx
     sheet: LMI
     column_index: 1
     category: macro
@@ -248,7 +248,7 @@ indicators:
 
   - indicator_id: CN_CPI_YOY
     name: China CPI Year-over-Year
-    file: data/macro/China/China CPI.xlsx
+    file: data_lake/macro/China/China CPI.xlsx
     sheet: CNCPIYOY
     column_index: 0
     category: macro
@@ -262,7 +262,7 @@ indicators:
 
   - indicator_id: CN_PMI
     name: China Manufacturing PMI
-    file: data/macro/China/China PMI.xlsx
+    file: data_lake/macro/China/China PMI.xlsx
     sheet: CPMINDX
     column_index: 0
     category: macro
@@ -276,7 +276,7 @@ indicators:
 
   - indicator_id: TW_EXPORT_YOY
     name: Taiwan Export Orders Year-over-Year
-    file: data/macro/China/Taiwan Export.xlsx
+    file: data_lake/macro/China/Taiwan Export.xlsx
     sheet: Taiwan Export
     column_index: 0
     category: macro
@@ -292,7 +292,7 @@ indicators:
 
   - indicator_id: EU_CPI_YOY
     name: Eurozone CPI Year-over-Year
-    file: data/macro/Europe/CPI.xlsx
+    file: data_lake/macro/Europe/CPI.xlsx
     sheet: CPICEMU
     column_index: 0
     category: macro
@@ -306,7 +306,7 @@ indicators:
 
   - indicator_id: ECB_RATE
     name: ECB Main Refinancing Rate
-    file: data/macro/Europe/Interest Rate.xlsx
+    file: data_lake/macro/Europe/Interest Rate.xlsx
     sheet: EUAPRRT
     column_index: 0
     category: macro
@@ -322,7 +322,7 @@ indicators:
 
   - indicator_id: JP_CPI_YOY
     name: Japan CPI Year-over-Year
-    file: data/macro/Japan/Japan CPI YoY.xlsx
+    file: data_lake/macro/Japan/Japan CPI YoY.xlsx
     sheet: JPCPI YoY
     column_index: 0
     category: macro
@@ -336,7 +336,7 @@ indicators:
 
   - indicator_id: BOJ_RATE
     name: Bank of Japan Policy Rate
-    file: data/macro/Japan/Japan Interest Rate.xlsx
+    file: data_lake/macro/Japan/Japan Interest Rate.xlsx
     sheet: JP_interest
     column_index: 0
     category: macro
@@ -352,7 +352,7 @@ indicators:
 
   - indicator_id: KR_EXPORT_YOY
     name: South Korea Export Year-over-Year
-    file: data/macro/South Korea/South Korea Export.xlsx
+    file: data_lake/macro/South Korea/South Korea Export.xlsx
     sheet: KR Export
     column_index: 0
     category: macro

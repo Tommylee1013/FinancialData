@@ -305,7 +305,7 @@ def transform_index_data(
 
 def collect_japan_index_data() -> None:
     LOGGER.info(
-        'starting download Japan market index data.'
+        'starting download Japan market index data_lake.'
     )
 
     symbol_info = get_tse_symbol_info()
@@ -357,7 +357,7 @@ def collect_japan_index_data() -> None:
     )
 
     LOGGER.info(
-        'All of Japan market index data has been downloaded.'
+        'All of Japan market index data_lake has been downloaded.'
     )
 
 

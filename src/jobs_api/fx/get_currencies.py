@@ -584,7 +584,7 @@ def transform_currency_data(
 
 def collect_currency_data() -> None:
     LOGGER.info(
-        "starting download currency data."
+        "starting download currency data_lake."
     )
 
     symbol_info = get_currency_symbol_info()
@@ -654,7 +654,7 @@ def collect_currency_data() -> None:
     )
 
     LOGGER.info(
-        "All currency data has been downloaded."
+        "All currency data_lake has been downloaded."
     )
 
 

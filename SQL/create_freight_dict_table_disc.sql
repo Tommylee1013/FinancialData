@@ -79,7 +79,7 @@ values
     'varchar',
     0,
     1,
-    'data source, benchmark provider, or exchange code.',
+    'data_lake source, benchmark provider, or exchange code.',
     'baltic',
     'represents the source institution or index provider.'
 ),

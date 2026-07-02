@@ -15,7 +15,7 @@ PROJECT_ROOT = Path.cwd()
 
 METADATA_PATH = (
     PROJECT_ROOT
-    / "data"
+    / "data_lake"
     / "metadata.xlsx"
 )
 
@@ -115,7 +115,7 @@ def load_metadata(
 
 def get_volatility_symbol_info() -> pd.DataFrame:
     """
-    Returns TradingView query information for volatility index data.
+    Returns TradingView query information for volatility index data_lake.
 
     SYMBOL_RAW is used for TradingView requests.
     SYMBOL is used for the final saved Parquet symbol.
@@ -353,7 +353,7 @@ def transform_volatility_data(
     country_mapping: dict[str, str],
 ) -> pd.DataFrame:
     """
-    Transforms TradingView volatility index data into normalized long form.
+    Transforms TradingView volatility index data_lake into normalized long form.
 
     Input columns:
         MultiIndex
@@ -550,11 +550,11 @@ def transform_volatility_data(
 
 def collect_volatility_data() -> None:
     """
-    Collects volatility index data from TradingView and saves it as Parquet.
+    Collects volatility index data_lake from TradingView and saves it as Parquet.
     """
 
     LOGGER.info(
-        "Volatility data job started | metadata_path=%s",
+        "Volatility data_lake job started | metadata_path=%s",
         METADATA_PATH,
     )
 
@@ -602,11 +602,11 @@ def collect_volatility_data() -> None:
 
     if data is None or data.empty:
         raise ValueError(
-            "No data was returned from TradingView."
+            "No data_lake was returned from TradingView."
         )
 
     LOGGER.info(
-        "TradingView data collected | rows=%d | columns=%d",
+        "TradingView data_lake collected | rows=%d | columns=%d",
         data.shape[0],
         data.shape[1],
     )
@@ -620,7 +620,7 @@ def collect_volatility_data() -> None:
 
     if transformed_data.empty:
         raise ValueError(
-            "No rows remained after volatility data transformation."
+            "No rows remained after volatility data_lake transformation."
         )
 
     OUTPUT_PATH.parent.mkdir(

@@ -298,7 +298,7 @@ def transform_index_data(
 
 def collect_korean_index_data() -> None:
     LOGGER.info(
-        'starting download Korea market index data.'
+        'starting download Korea market index data_lake.'
     )
     symbol_info = get_krx_symbol_info()
 
@@ -349,7 +349,7 @@ def collect_korean_index_data() -> None:
     )
 
     LOGGER.info(
-        'All of Korea market index data has been downloaded.'
+        'All of Korea market index data_lake has been downloaded.'
     )
 
 

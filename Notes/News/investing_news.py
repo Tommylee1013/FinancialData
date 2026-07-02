@@ -289,7 +289,7 @@ class InvestingNewsCrawler:
         # CTA, 광고, 관련기사, 버튼성 링크 제거
         for tag in article_root.select(
             """
-            a[data-article-pro-hook],
+            a[data_lake-article-pro-hook],
             script,
             style,
             iframe,

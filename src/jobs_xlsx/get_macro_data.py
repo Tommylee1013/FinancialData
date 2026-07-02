@@ -211,7 +211,7 @@ def save_macro_data(
     )
 
     logger.info(
-        "Macro data has been downloaded | symbol=%s | rows=%s | output_path=%s",
+        "Macro data_lake has been downloaded | symbol=%s | rows=%s | output_path=%s",
         symbol,
         f"{len(cleansing_data):,}",
         output_path,

@@ -11,7 +11,7 @@ PROJECT_ROOT = Path.cwd()
 
 INPUT_PATH = (
     PROJECT_ROOT
-    / "data"
+    / "data_lake"
     / "freight"
     / "Baltic air freight index.xlsx"
 )
@@ -147,7 +147,7 @@ def transform_baltic_air_freight_data(
     symbol_info: pd.DataFrame = BALTIC_AIR_FREIGHT_SYMBOL_INFO,
 ) -> pd.DataFrame:
     """
-    Transforms Baltic air freight index data from wide format
+    Transforms Baltic air freight index data_lake from wide format
     into normalized value-based time-series format.
     """
 
@@ -306,7 +306,7 @@ def collect_baltic_air_freight_data() -> None:
     """
 
     LOGGER.info(
-        "Baltic air freight data job started | input_path=%s",
+        "Baltic air freight data_lake job started | input_path=%s",
         INPUT_PATH,
     )
 

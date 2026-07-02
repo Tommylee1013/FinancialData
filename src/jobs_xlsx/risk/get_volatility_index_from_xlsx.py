@@ -13,7 +13,7 @@ PROJECT_ROOT = Path.cwd()
 
 INPUT_DIR = (
     PROJECT_ROOT
-    / "data"
+    / "data_lake"
     / "volatility"
 )
 
@@ -284,7 +284,7 @@ def transform_excel_volatility_data(
 
     if not frames:
         raise ValueError(
-            "No volatility data was transformed."
+            "No volatility data_lake was transformed."
         )
 
     result = pd.concat(
@@ -329,13 +329,13 @@ def transform_excel_volatility_data(
 
 def collect_volatility_data_from_excel() -> None:
     """
-    Reads NKVI and VSTOXX Excel files from data/volatility,
+    Reads NKVI and VSTOXX Excel files from data_lake/volatility,
     transforms them into volatility_data column structure,
     and saves the result as Parquet.
     """
 
     LOGGER.info(
-        "NKVI / VSTOXX volatility data job started | input_dir=%s",
+        "NKVI / VSTOXX volatility data_lake job started | input_dir=%s",
         INPUT_DIR,
     )
 

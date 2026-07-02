@@ -149,8 +149,8 @@ class YahooFinanceNewsCrawler:
 
         for selector in [
             "h1",
-            "h1[data-testid='headline']",
-            "h1[data-test-locator='headline']",
+            "h1[data_lake-testid='headline']",
+            "h1[data_lake-test-locator='headline']",
         ]:
             tag = soup.select_one(selector)
             if tag:
@@ -200,8 +200,8 @@ class YahooFinanceNewsCrawler:
         for selector in [
             '[class*="byline"]',
             '[class*="author"]',
-            '[data-testid*="author"]',
-            '[data-test-locator*="author"]',
+            '[data_lake-testid*="author"]',
+            '[data_lake-test-locator*="author"]',
         ]:
             tag = soup.select_one(selector)
             if tag:
@@ -269,8 +269,8 @@ class YahooFinanceNewsCrawler:
         for selector in [
             "div.caas-body",
             "div.caas-content",
-            "div[data-testid='article-body']",
-            "div[data-test-locator='article-body']",
+            "div[data_lake-testid='article-body']",
+            "div[data_lake-test-locator='article-body']",
             "article",
             "main article",
             "main",

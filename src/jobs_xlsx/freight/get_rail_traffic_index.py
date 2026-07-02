@@ -11,7 +11,7 @@ PROJECT_ROOT = Path.cwd()
 
 INPUT_PATH = (
     PROJECT_ROOT
-    / "data"
+    / "data_lake"
     / "freight"
     / "US Rail Traffic.xlsx"
 )
@@ -79,7 +79,7 @@ def normalize_columns(
     df: pd.DataFrame,
 ) -> pd.DataFrame:
     """
-    Normalizes fixed date/time columns while preserving data columns.
+    Normalizes fixed date/time columns while preserving data_lake columns.
     """
 
     data = df.copy()
@@ -106,7 +106,7 @@ def transform_us_rail_freight_data(
     symbol_info: pd.DataFrame = US_RAIL_SYMBOL_INFO,
 ) -> pd.DataFrame:
     """
-    Transforms US weekly rail traffic data from wide format
+    Transforms US weekly rail traffic data_lake from wide format
     into normalized value-based time-series format.
     """
 
@@ -138,7 +138,7 @@ def transform_us_rail_freight_data(
 
     if not value_columns:
         raise ValueError(
-            "No US rail traffic data columns were found."
+            "No US rail traffic data_lake columns were found."
         )
 
     unknown_columns = sorted(
@@ -288,7 +288,7 @@ def collect_us_rail_freight_data() -> None:
     """
 
     LOGGER.info(
-        "US rail freight data job started | input_path=%s",
+        "US rail freight data_lake job started | input_path=%s",
         INPUT_PATH,
     )
 

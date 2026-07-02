@@ -5,7 +5,7 @@ indicators:
   # ── Gasoline (AAA) ───────────────────────────────────────────────
   - indicator_id: COM_GASOLINE_REGULAR
     name: US Regular Gasoline Price (AAA)
-    file: data/commodity/AAA Gasoline.xlsx
+    file: data_lake/commodity/AAA Gasoline.xlsx
     sheet: gasoline
     column_index: 0
     category: commodity
@@ -18,7 +18,7 @@ indicators:
 
   - indicator_id: COM_GASOLINE_DIESEL
     name: US Diesel Price (AAA)
-    file: data/commodity/AAA Gasoline.xlsx
+    file: data_lake/commodity/AAA Gasoline.xlsx
     sheet: gasoline
     column_index: 3
     category: commodity
@@ -32,7 +32,7 @@ indicators:
   # ── Aluminum ─────────────────────────────────────────────────────
   - indicator_id: COM_ALUMINUM
     name: Aluminum Price (LME)
-    file: data/commodity/Aluminum.xlsx
+    file: data_lake/commodity/Aluminum.xlsx
     sheet: Aluminum
     column_index: 0
     category: commodity
@@ -46,7 +46,7 @@ indicators:
   # ── EIA Weekly Supply ────────────────────────────────────────────
   - indicator_id: EIA_PRODUCT_SUPPLIED
     name: US Weekly Petroleum Product Supplied
-    file: data/commodity/EIA Weekly Supply Estimation.xlsx
+    file: data_lake/commodity/EIA Weekly Supply Estimation.xlsx
     sheet: Product Supplied
     column_index: 0
     category: commodity
@@ -60,7 +60,7 @@ indicators:
 
   - indicator_id: EIA_CRUDE_INVENTORY
     name: US Weekly Crude Oil Stocks
-    file: data/commodity/EIA Weekly Supply Estimation.xlsx
+    file: data_lake/commodity/EIA Weekly Supply Estimation.xlsx
     sheet: Inventory
     column_index: 0
     category: commodity
@@ -74,7 +74,7 @@ indicators:
 
   - indicator_id: EIA_CRUDE_PRODUCTION
     name: US Weekly Crude Oil Production
-    file: data/commodity/EIA Weekly Supply Estimation.xlsx
+    file: data_lake/commodity/EIA Weekly Supply Estimation.xlsx
     sheet: Production
     column_index: 0
     category: commodity
@@ -88,7 +88,7 @@ indicators:
 
   - indicator_id: EIA_REFINERY_CAPACITY
     name: US Weekly Refinery Operable Capacity
-    file: data/commodity/EIA Weekly Supply Estimation.xlsx
+    file: data_lake/commodity/EIA Weekly Supply Estimation.xlsx
     sheet: Operate
     column_index: 0
     category: commodity
@@ -103,7 +103,7 @@ indicators:
   # ── Lithium ──────────────────────────────────────────────────────
   - indicator_id: COM_LITHIUM
     name: Lithium Carbonate Price (Close)
-    file: data/commodity/Lithium.xlsx
+    file: data_lake/commodity/Lithium.xlsx
     sheet: Lithium
     column_index: 3
     category: commodity
@@ -117,7 +117,7 @@ indicators:
   # ── Lumber ───────────────────────────────────────────────────────
   - indicator_id: COM_LUMBER
     name: Lumber Futures Price
-    file: data/commodity/Lumber Futures.xlsx
+    file: data_lake/commodity/Lumber Futures.xlsx
     sheet: lumber
     column_index: 0
     category: commodity
@@ -131,7 +131,7 @@ indicators:
   # ── Steel ────────────────────────────────────────────────────────
   - indicator_id: COM_STEEL_COLD
     name: Cold Rolled Steel Price (China)
-    file: data/commodity/Steel.xlsx
+    file: data_lake/commodity/Steel.xlsx
     sheet: steel
     column_index: 0
     category: commodity
@@ -144,7 +144,7 @@ indicators:
 
   - indicator_id: COM_STEEL_HOT
     name: Hot Rolled Steel Price (China)
-    file: data/commodity/Steel.xlsx
+    file: data_lake/commodity/Steel.xlsx
     sheet: steel
     column_index: 1
     category: commodity
@@ -157,7 +157,7 @@ indicators:
 
   - indicator_id: COM_STEEL_BILLET
     name: Steel Billet Price (China)
-    file: data/commodity/Steel.xlsx
+    file: data_lake/commodity/Steel.xlsx
     sheet: steel
     column_index: 2
     category: commodity
@@ -170,7 +170,7 @@ indicators:
 
   - indicator_id: COM_STEEL_SCRAP
     name: Steel Scrap Price (China)
-    file: data/commodity/Steel.xlsx
+    file: data_lake/commodity/Steel.xlsx
     sheet: steel
     column_index: 3
     category: commodity

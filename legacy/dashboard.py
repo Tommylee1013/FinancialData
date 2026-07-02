@@ -336,7 +336,7 @@ elif tab == '🔄 데이터 업데이트':
     st.title('🔄 데이터 업데이트')
 
     st.markdown('''
-    Excel 파일을 `data/` 폴더에 업데이트한 후 아래 버튼을 눌러 DB에 반영하세요.
+    Excel 파일을 `data_lake/` 폴더에 업데이트한 후 아래 버튼을 눌러 DB에 반영하세요.
     가격 데이터는 yfinance에서 자동으로 최신 데이터를 가져옵니다.
     ''')
 
@@ -452,12 +452,12 @@ elif tab == '➕ 새 데이터 추가':
     else:
         st.subheader('새 지표 등록')
         st.markdown('''
-        `data/` 폴더에 Excel 파일을 추가한 후, 아래 양식으로 지표 메타데이터를 등록하세요.
+        `data_lake/` 폴더에 Excel 파일을 추가한 후, 아래 양식으로 지표 메타데이터를 등록하세요.
         Excel 파일은 `Base Date | Release Date | Time | Time Zone | 값 컬럼...` 형식이어야 합니다.
         ''')
 
         # Show available Excel files
-        data_dir = Path(__file__).parent / 'data'
+        data_dir = Path(__file__).parent / 'data_lake'
         excel_files = sorted(data_dir.rglob('*.xlsx'))
         file_options = [str(f.relative_to(Path(__file__).parent)) for f in excel_files]
 

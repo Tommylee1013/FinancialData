@@ -11,7 +11,7 @@ PROJECT_ROOT = Path.cwd()
 
 INPUT_PATH = (
     PROJECT_ROOT
-    / "data"
+    / "data_lake"
     / "freight"
     / "KOBC Container Composite Index.xlsx"
 )
@@ -196,7 +196,7 @@ def transform_kobc_container_freight_data(
     symbol_info: pd.DataFrame = KOBC_CONTAINER_SYMBOL_INFO,
 ) -> pd.DataFrame:
     """
-    Transforms KOBC container freight index data from wide format
+    Transforms KOBC container freight index data_lake from wide format
     into normalized value-based time-series format.
     """
 
@@ -355,7 +355,7 @@ def collect_kobc_container_freight_data() -> None:
     """
 
     LOGGER.info(
-        "KOBC container freight data job started | input_path=%s",
+        "KOBC container freight data_lake job started | input_path=%s",
         INPUT_PATH,
     )
 

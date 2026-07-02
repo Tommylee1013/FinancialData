@@ -1,4 +1,4 @@
-"""Industry data loader for CFM and TrendForce semiconductor data.
+"""Industry data_lake loader for CFM and TrendForce semiconductor data_lake.
 
 CFM: Each sheet = one product spec with standard header (Base Date, Release Date, Time, TZ, Low, High, Average).
      Loads the Average column per sheet.
@@ -22,7 +22,7 @@ import duckdb
 import openpyxl
 
 DB_PATH = Path(__file__).parent / 'alternative_data.duckdb'
-DATA_DIR = Path(__file__).parent / 'data' / 'industry'
+DATA_DIR = Path(__file__).parent / 'data_lake' / 'industry'
 
 SKIP_SHEETS = {'fig', 'info', 'Info'}
 
@@ -288,7 +288,7 @@ def _load_standard_rows(
     con, data_rows, col_abs, indicator_id, display_name,
     fname, sheet_name, fpath, dry_run
 ) -> int:
-    """Extract and load rows from a standard data block."""
+    """Extract and load rows from a standard data_lake block."""
     rows = []
     for row in data_rows:
         if col_abs >= len(row):
@@ -374,7 +374,7 @@ def _guess_frequency(rows: list[tuple]) -> str:
 
 def main() -> None:
     import argparse
-    parser = argparse.ArgumentParser(description='Load CFM/TrendForce industry data')
+    parser = argparse.ArgumentParser(description='Load CFM/TrendForce industry data_lake')
     parser.add_argument('--db', default=str(DB_PATH))
     parser.add_argument('--dry-run', action='store_true')
     parser.add_argument('--cfm-only', action='store_true')

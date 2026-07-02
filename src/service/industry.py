@@ -763,7 +763,7 @@ class IndustryService(object):
                 )
 
         # ========================================================
-        # no data found
+        # no data_lake found
         # ========================================================
 
         if index_wide is None and components_wide is None:

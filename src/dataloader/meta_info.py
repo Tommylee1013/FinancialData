@@ -5,7 +5,7 @@ from pathlib import Path # Path lib 필요
 # Const Values
 
 OUTPUT_PATH = Path(
-    'data/metadata.xlsx'
+    'data_lake/metadata.xlsx'
 )
 
 def get_master_table() :

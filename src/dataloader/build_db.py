@@ -20,7 +20,7 @@ DATABASE_PATH = (
 
 METADATA_PATH = (
     PROJECT_ROOT
-    / "data"
+    / "data_lake"
     / "metadata.xlsx"
 )
 
@@ -269,7 +269,7 @@ def validate_parquet_columns(
         if missing_columns:
             raise ValueError(
                 f"Required columns are missing from "
-                f"{data_type_name} data.\n"
+                f"{data_type_name} data_lake.\n"
                 f"File: {file_path}\n"
                 f"Missing columns: {sorted(missing_columns)}"
             )
@@ -407,7 +407,7 @@ def create_metadata_table(
     connection: duckdb.DuckDBPyConnection,
 ) -> int:
     """
-    Creates metadata.instrument_master from data/metadata.xlsx.
+    Creates metadata.instrument_master from data_lake/metadata.xlsx.
     """
 
     if not METADATA_PATH.exists():
@@ -882,7 +882,7 @@ def validate_database(
     connection: duckdb.DuckDBPyConnection,
 ) -> None:
     """
-    Performs basic data-quality validation after table creation.
+    Performs basic data_lake-quality validation after table creation.
     """
 
     index_null_keys = connection.execute(

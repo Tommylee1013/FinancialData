@@ -1,4 +1,4 @@
-"""Generic indicator loader: reads YAML catalog → loads Excel data → inserts into DuckDB."""
+"""Generic indicator loader: reads YAML catalog → loads Excel data_lake → inserts into DuckDB."""
 import sys
 import argparse
 from pathlib import Path

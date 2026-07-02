@@ -1,4 +1,4 @@
-"""Load price data from yfinance into dim_security + fact_price."""
+"""Load price data_lake from yfinance into dim_security + fact_price."""
 import argparse
 from pathlib import Path
 from datetime import date
@@ -167,7 +167,7 @@ def load_prices(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description='Load price data from yfinance')
+    parser = argparse.ArgumentParser(description='Load price data_lake from yfinance')
     parser.add_argument('--db', default=str(DB_PATH))
     parser.add_argument('--start', default='2006-01-01')
     parser.add_argument('--end', default=str(date.today()))
@@ -186,7 +186,7 @@ def main() -> None:
 
     con = duckdb.connect(args.db)
 
-    # First, clear seed data for HMM (from earlier smoke test)
+    # First, clear seed data_lake for HMM (from earlier smoke test)
     con.execute("DELETE FROM fact_price WHERE source = 'seed'")
 
     total_rows = 0

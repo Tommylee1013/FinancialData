@@ -335,7 +335,7 @@ def transform_index_data(
 
 def collect_china_index_data() -> None:
     LOGGER.info(
-        'starting download China market index data.'
+        'starting download China market index data_lake.'
     )
     symbol_info = get_china_symbol_info()
 
@@ -384,7 +384,7 @@ def collect_china_index_data() -> None:
     )
 
     LOGGER.info(
-        'All of China market index data has been downloaded.'
+        'All of China market index data_lake has been downloaded.'
     )
 
 

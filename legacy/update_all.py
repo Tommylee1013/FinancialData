@@ -32,7 +32,7 @@ def run_indicator_update(db_path: str, dry_run: bool) -> dict:
 
 
 def get_staleness_report(db_path: str) -> list[tuple]:
-    """Find indicators whose latest data is more than 7 days old."""
+    """Find indicators whose latest data_lake is more than 7 days old."""
     con = duckdb.connect(db_path, read_only=True)
     today = date.today()
     stale_threshold = today - timedelta(days=7)
@@ -162,7 +162,7 @@ def main() -> None:
             for sec_id, name, last_date, days in stale_prices:
                 print(f'    {sec_id:15s}  {name:30s}  last: {last_date}  ({days}d ago)')
         else:
-            print('  All price data is fresh.')
+            print('  All price data_lake is fresh.')
 
     # ── Summary ────────────────────────────────────────────────────
     print_header(f'{mode}Summary')

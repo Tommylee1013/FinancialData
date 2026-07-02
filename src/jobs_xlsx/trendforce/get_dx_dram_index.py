@@ -16,7 +16,7 @@ PROJECT_ROOT = Path.cwd()
 
 INPUT_PATH = (
     PROJECT_ROOT
-    / "data"
+    / "data_lake"
     / "industry"
     / "TrendForce"
     / "Index.xlsx"
@@ -143,7 +143,7 @@ def transform_dxi_index_data(
     df: pd.DataFrame,
 ) -> pd.DataFrame:
     """
-    Transforms DRAMExchange DXI data into normalized
+    Transforms DRAMExchange DXI data_lake into normalized
     index schema.
 
     Input:
@@ -176,7 +176,7 @@ def transform_dxi_index_data(
 
     if missing_columns:
         raise ValueError(
-            "Required columns are missing from DXI data: "
+            "Required columns are missing from DXI data_lake: "
             f"{sorted(missing_columns)}"
         )
 
@@ -265,7 +265,7 @@ def collect_dxi_index_data() -> None:
     """
 
     LOGGER.info(
-        "DXI data job started | input_path=%s | sheet=%s",
+        "DXI data_lake job started | input_path=%s | sheet=%s",
         INPUT_PATH,
         SHEET_NAME,
     )

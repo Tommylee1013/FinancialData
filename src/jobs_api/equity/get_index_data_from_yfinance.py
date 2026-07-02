@@ -238,7 +238,7 @@ def download_yfinance_data(
 
     if data is None or data.empty:
         raise ValueError(
-            "yfinance returned empty data."
+            "yfinance returned empty data_lake."
         )
 
     data = data.copy()
@@ -620,7 +620,7 @@ def collect_yfinance_index_data() -> None:
     """
 
     LOGGER.info(
-        "Starting download yfinance index data."
+        "Starting download yfinance index data_lake."
     )
 
     symbol_info = get_yfinance_symbol_info()
@@ -675,7 +675,7 @@ def collect_yfinance_index_data() -> None:
     )
 
     LOGGER.info(
-        "All yfinance index data has been downloaded | output_path=%s | rows=%d | symbols=%d",
+        "All yfinance index data_lake has been downloaded | output_path=%s | rows=%d | symbols=%d",
         OUTPUT_PATH,
         len(cleansing_data),
         cleansing_data["symbol"].nunique(),

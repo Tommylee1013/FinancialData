@@ -1,7 +1,7 @@
 """Connect to alternative_data.duckdb and run a smoke-test query.
 
 Demonstrates: insert → select → ASOF JOIN pattern.
-Uses tiny fake data so you can see the schema work end-to-end
+Uses tiny fake data_lake so you can see the schema work end-to-end
 before you have real loaders.
 """
 import duckdb

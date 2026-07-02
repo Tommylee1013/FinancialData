@@ -16,13 +16,13 @@ PROJECT_ROOT = Path.cwd()
 
 METADATA_PATH = (
     PROJECT_ROOT
-    / "data"
+    / "data_lake"
     / "metadata.xlsx"
 )
 
 INPUT_DIR = (
     PROJECT_ROOT
-    / "data"
+    / "data_lake"
     / "industry"
     / "cfm"
 )
@@ -1034,7 +1034,7 @@ def collect_cfm_industry_data() -> None:
     """
 
     LOGGER.info(
-        "CFM industry data job started | input_dir=%s | metadata_path=%s",
+        "CFM industry data_lake job started | input_dir=%s | metadata_path=%s",
         INPUT_DIR,
         METADATA_PATH,
     )

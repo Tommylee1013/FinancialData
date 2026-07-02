@@ -1,4 +1,4 @@
-"""Run all 6 example queries from schema-design.md with real data."""
+"""Run all 6 example queries from schema-design.md with real data_lake."""
 import duckdb
 from pathlib import Path
 
@@ -281,7 +281,7 @@ def main() -> None:
         print(f'{s[0]:>15s}  {s[1]:>30s}  {s[2]:>6,}  {str(s[3]):>12s}  {str(s[4]):>12s}')
 
     con.close()
-    print('\nAll 6 queries passed with real data.')
+    print('\nAll 6 queries passed with real data_lake.')
 
 
 if __name__ == '__main__':

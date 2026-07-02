@@ -11,7 +11,7 @@ PROJECT_ROOT = Path.cwd()
 
 INPUT_PATH = (
     PROJECT_ROOT
-    / "data"
+    / "data_lake"
     / "freight"
     / "world container index.xlsx"
 )
@@ -161,7 +161,7 @@ def transform_drewry_wci_freight_data(
     symbol_info: pd.DataFrame = DREWRY_WCI_SYMBOL_INFO,
 ) -> pd.DataFrame:
     """
-    Transforms Drewry World Container Index data from wide format
+    Transforms Drewry World Container Index data_lake from wide format
     into normalized value-based time-series format.
 
     The original Excel route column names are mapped to internal symbols.
@@ -341,12 +341,12 @@ def collect_drewry_wci_freight_data() -> None:
     """
     Reads the first sheet of the Drewry WCI Excel file,
     maps route column names to internal symbols,
-    transforms the data into normalized value format,
+    transforms the data_lake into normalized value format,
     and saves it as Parquet.
     """
 
     LOGGER.info(
-        "Drewry WCI freight data job started | input_path=%s",
+        "Drewry WCI freight data_lake job started | input_path=%s",
         INPUT_PATH,
     )
 
