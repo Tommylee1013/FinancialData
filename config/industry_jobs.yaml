@@ -1,6 +1,6 @@
 job:
   name: industry_excel_wide_value_loader
-  output_path: data_lake/raw/industry/index/industry_data.parquet
+  output_path: data_warehouse/raw/industry/index/industry_data.parquet
   duplicate_strategy: error
   log_path: logs/jobs/industry_excel_wide_value_loader.log
 

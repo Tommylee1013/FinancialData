@@ -30,7 +30,7 @@ INPUT_PATH = (
 
 OUTPUT_PATH = (
     PROJECT_ROOT
-    / "data_lake"
+    / "data_warehouse"
     / "raw"
     / "industry"
     / "index"

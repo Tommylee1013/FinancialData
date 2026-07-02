@@ -15,7 +15,7 @@ from src.utils.log import setup_logger
 # ============================================================
 
 OUTPUT_PATH = Path(
-    "data_lake/raw/commodity/index/commodity_index.parquet"
+    "data_warehouse/raw/commodity/index/commodity_index.parquet"
 )
 
 LOGGER = setup_logger(

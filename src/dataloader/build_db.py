@@ -26,35 +26,35 @@ METADATA_PATH = (
 
 INDEX_DATA_PATH = (
     PROJECT_ROOT
-    / "data_lake"
+    / "data_warehouse"
     / "raw"
     / "index"
 )
 
 MACRO_DATA_PATH = (
     PROJECT_ROOT
-    / "data_lake"
+    / "data_warehouse"
     / "raw"
     / "macro"
 )
 
 FREIGHT_DATA_PATH = (
     PROJECT_ROOT
-    / "data_lake"
+    / "data_warehouse"
     / "raw"
     / "freight"
 )
 
 VOLATILITY_DATA_PATH = (
     PROJECT_ROOT
-    / "data_lake"
+    / "data_warehouse"
     /"raw"
     / "risk"
 )
 
 INDUSTRY_DATA_PATH = (
     PROJECT_ROOT
-    / "data_lake"
+    / "data_warehouse"
     / "raw"
     /"industry"
     /'components'
@@ -62,7 +62,7 @@ INDUSTRY_DATA_PATH = (
 
 INDUSTRY_INDEX_DATA_PATH = (
     PROJECT_ROOT
-    / "data_lake"
+    / "data_warehouse"
     / 'raw'
     /'industry'
     / 'index'
@@ -70,14 +70,14 @@ INDUSTRY_INDEX_DATA_PATH = (
 
 FX_INDEX_DATA_PATH = (
     PROJECT_ROOT
-    / "data_lake"
+    / "data_warehouse"
     / 'raw'
     /'fx'
 )
 
 FIXED_INCOME_DATA_PATH = (
     PROJECT_ROOT
-    / "data_lake"
+    / "data_warehouse"
     / 'raw'
     /'fixed_income'
 )

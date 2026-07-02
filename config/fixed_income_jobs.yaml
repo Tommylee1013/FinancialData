@@ -1,6 +1,6 @@
 job:
   name: fixed_income_excel_loader
-  output_path: data_lake/raw/fixed_income/fixed_income_index.parquet
+  output_path: data_warehouse/raw/fixed_income/fixed_income_index.parquet
   duplicate_strategy: error
   log_path: logs/jobs/fixed_income_excel_loader.log
 

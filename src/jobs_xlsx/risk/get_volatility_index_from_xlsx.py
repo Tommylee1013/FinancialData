@@ -19,7 +19,7 @@ INPUT_DIR = (
 
 OUTPUT_PATH = (
     PROJECT_ROOT
-    / "data_lake"
+    / "data_warehouse"
     / "raw"
     / "risk"
     / "volatility_excel.parquet"

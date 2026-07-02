@@ -14,7 +14,7 @@ from src.utils.log import setup_logger
 # ============================================================
 
 OUTPUT_PATH = Path(
-    "data_lake/raw/fx/currency.parquet"
+    "data_warehouse/raw/fx/currency.parquet"
 )
 
 LOGGER = setup_logger(

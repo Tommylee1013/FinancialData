@@ -1,6 +1,6 @@
 job:
   name: freight_excel_loader
-  output_path: data_lake/raw/freight/freights_index.parquet
+  output_path: data_warehouse/raw/freight/freights_index.parquet
   duplicate_strategy: error
   log_path: logs/jobs/freight_excel_loader.log
 

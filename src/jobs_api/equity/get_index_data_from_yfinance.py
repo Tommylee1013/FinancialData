@@ -12,7 +12,7 @@ from src.utils.log import setup_logger
 # ============================================================
 
 OUTPUT_PATH = Path(
-    "data_lake/raw/index/yfinance_index.parquet"
+    "data_warehouse/raw/index/yfinance_index.parquet"
 )
 
 LOGGER = setup_logger(

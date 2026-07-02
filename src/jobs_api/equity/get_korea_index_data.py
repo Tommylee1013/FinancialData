@@ -10,7 +10,7 @@ from pathlib import Path # Path lib 필요
 
 # Const Values
 OUTPUT_PATH = Path(
-    "data_lake/raw/index/korea_index.parquet"
+    "data_warehouse/raw/index/korea_index.parquet"
 )
 LOGGER = setup_logger(
     name = 'korea_index_job',
