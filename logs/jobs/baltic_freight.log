@@ -127,3 +127,6 @@
 2026-07-02 18:12:44 | INFO | src.jobs_xlsx.freight.get_baltic_freight_index | Baltic freight data_lake job started | input_path=C:\Users\krm\PycharmProjects\AlternativeData\data_lake\freight\baltic dry index.xlsx
 2026-07-02 18:12:45 | INFO | src.jobs_xlsx.freight.get_baltic_freight_index | Excel file loaded | rows=9513 | columns=14
 2026-07-02 18:12:45 | INFO | src.jobs_xlsx.freight.get_baltic_freight_index | Baltic freight Parquet saved | output_path=C:\Users\krm\PycharmProjects\AlternativeData\data_warehouse\raw\freight\baltic_index.parquet | rows=48857
+2026-07-03 23:34:38 | INFO | src.jobs_xlsx.freight.get_baltic_freight_index | Baltic freight data_lake job started | input_path=C:\Users\Geust\PycharmProjects\AlternativeData\data_lake\freight\baltic dry index.xlsx
+2026-07-03 23:34:39 | INFO | src.jobs_xlsx.freight.get_baltic_freight_index | Excel file loaded | rows=9513 | columns=14
+2026-07-03 23:34:39 | INFO | src.jobs_xlsx.freight.get_baltic_freight_index | Baltic freight Parquet saved | output_path=C:\Users\Geust\PycharmProjects\AlternativeData\data_warehouse\raw\freight\baltic_index.parquet | rows=48867
