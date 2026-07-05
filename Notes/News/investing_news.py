@@ -419,7 +419,7 @@ if __name__ == "__main__":
         sleep_max=4.0,
     )
 
-    news_data = crawler.crawl(max_links=30)
+    news_data = crawler.crawl(max_links=100)
 
     news_data["body_len"] = news_data["body"].fillna("").str.len()
 
@@ -437,5 +437,5 @@ if __name__ == "__main__":
         ]
     )
 
-    news_data.to_excel("investing_com_20260703.xlsx", index=False)
+    news_data.to_excel("investing_com_20260705.xlsx", index=False)
     # news_data.to_csv("investing_test.csv", index=False, encoding="utf-8-sig")

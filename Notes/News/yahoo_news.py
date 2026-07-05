@@ -10,7 +10,6 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 
-
 class YahooFinanceNewsCrawler:
     def __init__(
         self,
@@ -419,7 +418,7 @@ if __name__ == "__main__":
         sleep_max=2.5,
     )
 
-    news_data = crawler.crawl(max_links=50)
+    news_data = crawler.crawl(max_links=100)
 
     news_data["body_len"] = news_data["body"].fillna("").str.len()
 
@@ -437,5 +436,5 @@ if __name__ == "__main__":
         ].head(30)
     )
 
-    news_data.to_excel("yahoo_finance_news_20260703.xlsx", index=False)
+    news_data.to_excel("yahoo_finance_news_20260705.xlsx", index=False)
     #news_data.to_csv("yahoo_finance_news_test.csv", index=False, encoding="utf-8-sig")
