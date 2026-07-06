@@ -31,3 +31,5 @@
 2026-07-02 18:10:55 | INFO | us_nasdaq_index_job | All of US market (Exchange : NASDAQ) index data_lake has been downloaded.
 2026-07-03 23:30:44 | INFO | us_nasdaq_index_job | starting download US market (Exchange : NASDAQ) index data_lake.
 2026-07-03 23:31:30 | INFO | us_nasdaq_index_job | All of US market (Exchange : NASDAQ) index data_lake has been downloaded.
+2026-07-07 01:06:02 | INFO | us_nasdaq_index_job | starting download US market (Exchange : NASDAQ) index data_lake.
+2026-07-07 01:06:20 | INFO | us_nasdaq_index_job | All of US market (Exchange : NASDAQ) index data_lake has been downloaded.
