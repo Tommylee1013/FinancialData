@@ -287,7 +287,7 @@ class MacroService(object):
         ffill: bool = False,
     ) -> pd.Series | pd.DataFrame:
         """
-        Return macro series from long-form macro data_lake.
+        Return macro series from long-form macro data.
 
         Parameters
         ----------
@@ -356,7 +356,7 @@ class MacroService(object):
             Returned otherwise.
         """
 
-        if not hasattr(self, "data_lake"):
+        if not hasattr(self, "data"):
             raise AttributeError(
                 "self.data가 존재하지 않습니다. 먼저 collect_data()를 실행하세요."
             )
@@ -643,7 +643,7 @@ class MacroService(object):
         Return available symbols in macro.macro_data.
         """
 
-        if not hasattr(self, "data_lake"):
+        if not hasattr(self, "data"):
             raise AttributeError(
                 "self.data가 존재하지 않습니다. 먼저 collect_data()를 실행하세요."
             )
@@ -663,7 +663,7 @@ class MacroService(object):
         Return symbol-level metadata such as exchange and country.
         """
 
-        if not hasattr(self, "data_lake"):
+        if not hasattr(self, "data"):
             raise AttributeError(
                 "self.data가 존재하지 않습니다. 먼저 collect_data()를 실행하세요."
             )

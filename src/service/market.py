@@ -473,7 +473,7 @@ class PriceService(object):
         index_set: str,
         asset_types: str | list[str] | None,
     ) -> tuple[pd.DataFrame, list[str], bool]:
-        if not hasattr(self, "data_lake"):
+        if not hasattr(self, "data"):
             raise AttributeError(
                 "self.data가 존재하지 않습니다. 먼저 collect_data()를 실행하세요."
             )
@@ -854,7 +854,7 @@ class PriceService(object):
         Return available symbols in market.index_data and market.volatility_data.
         """
 
-        if not hasattr(self, "data_lake"):
+        if not hasattr(self, "data"):
             raise AttributeError(
                 "self.data가 존재하지 않습니다. 먼저 collect_data()를 실행하세요."
             )
@@ -895,7 +895,7 @@ class PriceService(object):
         Return symbol-level metadata such as asset_type, exchange, and country.
         """
 
-        if not hasattr(self, "data_lake"):
+        if not hasattr(self, "data"):
             raise AttributeError(
                 "self.data가 존재하지 않습니다. 먼저 collect_data()를 실행하세요."
             )
