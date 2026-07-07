@@ -436,5 +436,5 @@ if __name__ == "__main__":
         ].head(30)
     )
 
-    news_data.to_excel("yahoo_finance_news_20260705.xlsx", index=False)
+    news_data.to_excel("yahoo_finance_news_20260707.xlsx", index=False)
     #news_data.to_csv("yahoo_finance_news_test.csv", index=False, encoding="utf-8-sig")
