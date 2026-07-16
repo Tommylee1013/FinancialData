@@ -13,3 +13,7 @@ sources:
     sheet_name: KOFR
     exchange: KOFR
     country: South Korea
+  - file_name: data_lake/fixed_income/South Korea/SwapRate.xlsx
+    sheet_name: KR
+    exchange: SMB
+    country: South Korea
