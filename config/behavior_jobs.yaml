@@ -1,0 +1,27 @@
+job:
+  name: behavior_excel_loader
+  output_path: data_warehouse/raw/behavior/behavior_index.parquet
+  duplicate_strategy: error
+  log_path: logs/jobs/behavior_excel_loader.log
+
+sources:
+  - file_name: data_lake/behavior/AAII Sentiment.xlsx
+    sheet_name: AAII
+    exchange: AAII
+    country: United States
+  - file_name: data_lake/behavior/AAII Sentiment.xlsx
+    sheet_name: Asset Allocation
+    exchange: AAII
+    country: United States
+  - file_name: data_lake/behavior/CNN Fear and Greed Index.xlsx
+    sheet_name: CNNFNGI
+    exchange: CNN
+    country: United States
+  - file_name: data_lake/behavior/FINRA Margin.xlsx
+    sheet_name: MARGBLNC
+    exchange: FINRA
+    country: United States
+  - file_name: data_lake/behavior/NAAIM Exposure Index.xlsx
+    sheet_name: NAAIM
+    exchange: NAAIM
+    country: United States

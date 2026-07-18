@@ -82,6 +82,12 @@ FIXED_INCOME_DATA_PATH = (
     /'fixed_income'
 )
 
+BEHAVIOR_DATA_PATH = (PROJECT_ROOT
+    / "data_warehouse"
+    / 'raw'
+    / 'behavior'
+)
+
 LOGGER = setup_logger(
     name=__name__,
     log_path="logs/jobs/build_duckdb.log",
@@ -101,6 +107,7 @@ INDUSTRY_TABLE = 'industry.components_data'
 INDUSTRY_INDEX_TABLE = 'industry.index_data'
 FX_TABLE = 'market.fx_data'
 FIXED_INCOME_TABLE = 'fixed_income.fixed_income_data'
+BEHAVIOR_TABLE = 'behavior.behavior_data'
 
 # ============================================================
 # Expected columns
@@ -200,6 +207,17 @@ FX_COLUMNS = [
 ]
 
 FIXED_INCOME_COLUMNS = [
+    "base_date",
+    "release_date",
+    "time",
+    "time_zone",
+    "symbol",
+    "exchange",
+    "country",
+    'value'
+]
+
+BEHAVIOR_COLUMNS = [
     "base_date",
     "release_date",
     "time",
@@ -393,9 +411,15 @@ def create_schemas(
         """
     )
 
+    connection.execute(
+        """
+        CREATE SCHEMA IF NOT EXISTS behavior
+        """
+    )
+
     LOGGER.info(
         "DuckDB schemas created or verified | "
-        "schemas=metadata,market,macro,freight,industry,fixed_income"
+        "schemas=metadata,market,macro,freight,industry,fixed_income,behavior"
     )
 
 
@@ -874,6 +898,54 @@ def create_fixed_income_table(
 
     return row_count
 
+def create_behavior_table(
+    connection: duckdb.DuckDBPyConnection,
+    parquet_files: list[Path],
+) -> int:
+    """
+    Combines all Industry Parquet files into behavior.behavior_data.
+    """
+
+    parquet_paths = build_parquet_path_list(
+        parquet_files
+    )
+
+    query = f"""
+        CREATE OR REPLACE TABLE {BEHAVIOR_TABLE} AS
+        SELECT
+            CAST(base_date AS DATE) AS base_date,
+            CAST(release_date AS DATE) AS release_date,
+            CAST(time AS TIME) AS time,
+            CAST(time_zone AS VARCHAR) AS time_zone,
+            CAST(symbol AS VARCHAR) AS symbol,
+            CAST(exchange AS VARCHAR) AS exchange,
+            CAST(country AS VARCHAR) AS country,
+            CAST(value AS DOUBLE) AS value,
+        FROM read_parquet(
+            {parquet_paths},
+            union_by_name = TRUE
+        )
+    """
+
+    connection.execute(query)
+
+    row_count = connection.execute(
+        f"""
+        SELECT COUNT(*)
+        FROM {BEHAVIOR_TABLE}
+        """
+    ).fetchone()[0]
+
+    LOGGER.info(
+        "Behavior table created | "
+        "table=%s | files=%d | rows=%d",
+        BEHAVIOR_TABLE,
+        len(parquet_files),
+        row_count,
+    )
+
+    return row_count
+
 # ============================================================
 # Database validation
 # ============================================================
@@ -959,6 +1031,15 @@ def validate_database(
                     WHERE base_date IS NULL
                        OR symbol IS NULL
                 """
+    ).fetchone()[0]
+
+    behavior_null_keys = connection.execute(
+        f"""
+                        SELECT COUNT(*)
+                        FROM {BEHAVIOR_TABLE}
+                        WHERE base_date IS NULL
+                           OR symbol IS NULL
+                    """
     ).fetchone()[0]
 
     index_duplicates = connection.execute(
@@ -1107,6 +1188,19 @@ def validate_database(
             """
     ).fetchone()[0]
 
+    behavior_duplicates = connection.execute(
+        f"""
+                    select count(*)
+                    from (
+                        select base_date, symbol, exchange,
+                        count(*) as row_count
+                        from {BEHAVIOR_TABLE}
+                        group by base_date, symbol, exchange
+                        having count(*) > 1
+                    )
+                """
+    ).fetchone()[0]
+
     if index_null_keys > 0:
         raise ValueError(
             "The index table contains "
@@ -1162,6 +1256,13 @@ def validate_database(
         raise ValueError(
             "The fixed income table contains "
             f"{fixed_income_null_keys:,} rows with a null "
+            "base_date or symbol."
+        )
+
+    if behavior_null_keys > 0 :
+        raise ValueError(
+            "The behavior table contains "
+            f"{behavior_null_keys:,} rows with a null "
             "base_date or symbol."
         )
 
@@ -1223,6 +1324,13 @@ def validate_database(
             fixed_income_duplicates,
         )
 
+    if behavior_duplicates > 0:
+        LOGGER.warning(
+            "Duplicate behavior keys detected | "
+            "duplicate_groups=%d",
+            behavior_duplicates,
+        )
+
     # add codes from here
 
     LOGGER.info(
@@ -1235,6 +1343,7 @@ def validate_database(
         'industry_index_null_keys=%d | '
         'fx_null_keys=%d | '
         'fixed_income_null_key=%d | '
+        'behavior_null_keys=%d | '
         "index_duplicate_groups=%d | "
         "macro_duplicate_groups=%d | "
         "freight_duplicate_groups=%d"
@@ -1242,7 +1351,8 @@ def validate_database(
         "industury_duplicate_groups=%d | "
         'industry_index_duplicates_groups=%d | '
         'fx_duplicates_groups=%d | '
-        'fixed_income_duplicates_groups=%d | ',
+        'fixed_income_duplicates_groups=%d | '
+        'behavior_duplicates_groups=%d | ',
         index_null_keys,
         macro_null_keys,
         freight_null_keys,
@@ -1251,6 +1361,7 @@ def validate_database(
         industry_index_null_keys,
         fx_null_keys,
         fixed_income_null_keys,
+        behavior_null_keys,
         index_duplicates,
         macro_duplicates,
         freight_duplicates,
@@ -1258,7 +1369,8 @@ def validate_database(
         industry_duplicates,
         industry_index_duplicates,
         fx_duplicates,
-        fixed_income_duplicates
+        fixed_income_duplicates,
+        behavior_duplicates,
     )
 
 
@@ -1318,6 +1430,10 @@ def build_duckdb() -> None:
             FIXED_INCOME_DATA_PATH
         )
 
+        behavior_files = get_parquet_files(
+            BEHAVIOR_DATA_PATH
+        )
+
         LOGGER.info(
             "Parquet file discovery completed | "
             "index_files=%d | macro_files=%d | freight_files=%d",
@@ -1374,6 +1490,12 @@ def build_duckdb() -> None:
             parquet_files=fixed_income_files,
             required_columns=FIXED_INCOME_COLUMNS,
             data_type_name="fixed_income"
+        )
+
+        validate_parquet_columns(
+            parquet_files=behavior_files,
+            required_columns=BEHAVIOR_COLUMNS,
+            data_type_name="behavior",
         )
 
         connection = duckdb.connect(
@@ -1438,6 +1560,11 @@ def build_duckdb() -> None:
             parquet_files=fixed_income_files,
         )
 
+        behavior_rows = create_behavior_table(
+            connection,
+            parquet_files=behavior_files,
+        )
+
         validate_database(
             connection
         )
@@ -1456,6 +1583,7 @@ def build_duckdb() -> None:
             "industry_rows=%d | "
             "industry_index_rows=%d | "
             'fx_index_rows=%d | fixed_income_rows=%d | '
+            'behavior_rows=%d | behavior_rows=%d | '
             ,
             metadata_rows,
             index_rows,
@@ -1464,7 +1592,7 @@ def build_duckdb() -> None:
             volatility_rows,
             industry_rows,
             industry_index_rows,
-            fx_rows, fixed_income_rows
+            fx_rows, fixed_income_rows, behavior_rows, behavior_rows,
         )
 
     except Exception:

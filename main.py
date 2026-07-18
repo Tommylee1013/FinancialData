@@ -12,6 +12,8 @@ from src.jobs_api.fx.get_currencies import collect_currency_data
 
 from src.jobs_xlsx.fixed_income.get_fixed_incomes_data import collect_fixed_income_data
 
+from src.jobs_xlsx.behavior.get_behavior_index import collect_behavior_data
+
 from src.jobs_api.risk.get_volatility_index import collect_volatility_data
 from src.jobs_xlsx.risk.get_volatility_index_from_xlsx import collect_volatility_data_from_excel
 
@@ -121,6 +123,11 @@ def fixed_income_main() -> None :
 
     collect_fixed_income_data(fixed_income_yaml_path)
 
+def behavior_main() -> None :
+    behavior_yaml_path = 'config/behavior_jobs.yaml'
+
+    collect_behavior_data(behavior_yaml_path)
+
 def currency_main() -> None :
     collect_currency_data()
     return None
@@ -162,12 +169,13 @@ def macro_main() -> None :
     return None
 
 if __name__ == "__main__":
-    market_main()
-    yfinance_main()
-    currency_main()
-    commodity_main()
-    risk_main()
-    industry_main()
-    freight_main()
-    macro_main()
-    fixed_income_main()
+    # market_main()
+    # yfinance_main()
+    # currency_main()
+    # commodity_main()
+    # risk_main()
+    # industry_main()
+    # freight_main()
+    # macro_main()
+    # fixed_income_main()
+    behavior_main()
