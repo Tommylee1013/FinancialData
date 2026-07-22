@@ -92,3 +92,7 @@
 2026-07-22 10:48:05 | INFO | commodity_index_job | Commodity index metadata loaded | symbols=12 | excluded_symbols=['DJCI']
 2026-07-22 10:48:05 | INFO | commodity_index_job | Commodity index download target prepared | tickers=12 | exchanges=['DJCFD', 'SPCFD', 'TVC']
 2026-07-22 10:48:18 | INFO | commodity_index_job | All commodity index data_lake has been downloaded | output_path=data_warehouse\raw\commodity\index\commodity_index.parquet | rows=53436 | symbols=12
+2026-07-23 01:47:06 | INFO | commodity_index_job | Starting download commodity index data_lake.
+2026-07-23 01:47:06 | INFO | commodity_index_job | Commodity index metadata loaded | symbols=12 | excluded_symbols=['DJCI']
+2026-07-23 01:47:06 | INFO | commodity_index_job | Commodity index download target prepared | tickers=12 | exchanges=['DJCFD', 'SPCFD', 'TVC']
+2026-07-23 01:47:22 | INFO | commodity_index_job | All commodity index data_lake has been downloaded | output_path=data_warehouse/raw/commodity/index/commodity_index.parquet | rows=53439 | symbols=12

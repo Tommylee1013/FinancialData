@@ -27,7 +27,7 @@ OUTPUT_PATH = (
 
 LOGGER = setup_logger(
     name=__name__,
-    log_path="logs/jobs/nkvi_vstoxx_volatility.log",
+    log_path="logs/jobs/volatility_excel.log",
 )
 
 
@@ -52,6 +52,22 @@ VOLATILITY_SYMBOL_INFO = pd.DataFrame(
             "exchange": "STOXX",
             "country": "Europe",
             "name": "EUROSTOXX 50 Volatility Index",
+        },
+        {
+            "file_name": "VOL.xlsx",
+            "sheet_name": "VDAX",
+            "symbol": "VDAX",
+            "exchange": "DAX",
+            "country": "Germany",
+            "name": "DAX New Volatility Index",
+        },
+        {
+            "file_name": "VOL.xlsx",
+            "sheet_name": "AXVI",
+            "symbol": "AXVI",
+            "exchange": "ASX",
+            "country": "Australia",
+            "name": "S&P/ASX 200 VIX Index",
         },
     ]
 )
@@ -335,7 +351,7 @@ def collect_volatility_data_from_excel() -> None:
     """
 
     LOGGER.info(
-        "NKVI / VSTOXX volatility data_lake job started | input_dir=%s",
+        "volatility data_lake job started | input_dir=%s",
         INPUT_DIR,
     )
 
@@ -343,7 +359,7 @@ def collect_volatility_data_from_excel() -> None:
 
     if transformed_data.empty:
         raise ValueError(
-            "No rows remained after NKVI / VSTOXX volatility transformation."
+            "No rows remained after volatility transformation."
         )
 
     OUTPUT_PATH.parent.mkdir(
@@ -357,7 +373,7 @@ def collect_volatility_data_from_excel() -> None:
     )
 
     LOGGER.info(
-        "NKVI / VSTOXX volatility Parquet saved | output_path=%s | rows=%d",
+        "volatility Parquet saved | output_path=%s | rows=%d",
         OUTPUT_PATH,
         len(transformed_data),
     )
