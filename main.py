@@ -169,13 +169,13 @@ def macro_main() -> None :
     return None
 
 if __name__ == "__main__":
-    # market_main()
-    # yfinance_main()
-    # currency_main()
-    # commodity_main()
+    market_main()
+    yfinance_main()
+    currency_main()
+    commodity_main()
     risk_main()
-    # industry_main()
-    # freight_main()
-    # macro_main()
-    # fixed_income_main()
-    # behavior_main()
+    industry_main()
+    freight_main()
+    macro_main()
+    fixed_income_main()
+    behavior_main()

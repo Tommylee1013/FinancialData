@@ -55,14 +55,6 @@ VOLATILITY_SYMBOL_INFO = pd.DataFrame(
         },
         {
             "file_name": "VOL.xlsx",
-            "sheet_name": "VDAX",
-            "symbol": "VDAX",
-            "exchange": "DAX",
-            "country": "Germany",
-            "name": "DAX New Volatility Index",
-        },
-        {
-            "file_name": "VOL.xlsx",
             "sheet_name": "AXVI",
             "symbol": "AXVI",
             "exchange": "ASX",

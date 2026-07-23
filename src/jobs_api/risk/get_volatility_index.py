@@ -55,10 +55,9 @@ TARGET_SYMBOLS = {
     'COR1M',
     'COR3M',
     "VXN",
-    "VSTOXX",
-    "NKVI",
     "VHSI",
     "VKOSPI",
+    'BVSPVIX',
     "VXEEM",
     "MOVE",
     "GVZ",
@@ -66,6 +65,13 @@ TARGET_SYMBOLS = {
     "VXSLV",
     "OVX",
     "BITVX",
+    'VXD',
+    'RVX',
+    'VDAX',
+    'INDIAVIX',
+    'VSMI',
+    'VXEFA',
+    'VXEWZ'
 }
 
 OUTPUT_COLUMNS = [
