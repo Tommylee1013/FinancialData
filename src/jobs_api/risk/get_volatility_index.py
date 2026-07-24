@@ -270,6 +270,9 @@ def get_market_close_datetime(
     us_mask = country.eq("United States")
     hk_mask = country.eq("Hong Kong")
     kr_mask = country.eq("South Korea")
+    gm_mask = country.eq("Germany")
+    in_mask = country.eq("India")
+    sw_mask = country.eq("Swiss")
 
     if us_mask.any():
         us_dt = (
@@ -311,6 +314,57 @@ def get_market_close_datetime(
             kr_dt
             .dt.tz_localize(
                 "Asia/Seoul",
+                ambiguous="raise",
+                nonexistent="raise",
+            )
+        )
+
+    # Germany - VDAX-NEW
+    # Last calculation: 17:30 local time
+    if gm_mask.any():
+        gm_dt = (
+                base_date.loc[gm_mask]
+                + pd.Timedelta(hours=17, minutes=30)
+        )
+
+        result.loc[gm_mask] = (
+            gm_dt
+            .dt.tz_localize(
+                "Europe/Berlin",
+                ambiguous="raise",
+                nonexistent="raise",
+            )
+        )
+
+    # India - India VIX
+    # Market / daily calculation close: 15:30 local time
+    if in_mask.any():
+        in_dt = (
+                base_date.loc[in_mask]
+                + pd.Timedelta(hours=15, minutes=30)
+        )
+
+        result.loc[in_mask] = (
+            in_dt
+            .dt.tz_localize(
+                "Asia/Kolkata",
+                ambiguous="raise",
+                nonexistent="raise",
+            )
+        )
+
+    # Switzerland - VSMI
+    # Last calculation: 17:20 local time
+    if sw_mask.any():
+        sw_dt = (
+                base_date.loc[sw_mask]
+                + pd.Timedelta(hours=17, minutes=20)
+        )
+
+        result.loc[sw_mask] = (
+            sw_dt
+            .dt.tz_localize(
+                "Europe/Zurich",
                 ambiguous="raise",
                 nonexistent="raise",
             )
