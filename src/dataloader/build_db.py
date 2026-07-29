@@ -1209,6 +1209,20 @@ def validate_database(
         )
 
     if macro_null_keys > 0:
+
+        LOGGER.error(
+            "Invalid macro rows:\n%s",
+            connection.execute(
+                f"""
+                    SELECT *
+                    FROM {MACRO_TABLE}
+                    WHERE base_date IS NULL
+                       OR release_date IS NULL
+                       OR symbol IS NULL
+                    """
+            ).fetchdf().to_string(index=False),
+        )
+
         raise ValueError(
             "The macro table contains "
             f"{macro_null_keys:,} rows with a null "

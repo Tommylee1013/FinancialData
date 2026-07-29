@@ -148,3 +148,9 @@
 2026-07-24 09:11:52 | INFO | yfinance_index_job | yfinance download started | tickers=16
 2026-07-24 09:11:58 | INFO | yfinance_index_job | yfinance download completed | rows=25260 | columns=80
 2026-07-24 09:12:00 | INFO | yfinance_index_job | All yfinance index data_lake has been downloaded | output_path=data_warehouse\raw\index\yfinance_index.parquet | rows=157696 | symbols=16
+2026-07-29 10:56:39 | INFO | yfinance_index_job | Starting download yfinance index data_lake.
+2026-07-29 10:56:39 | INFO | yfinance_index_job | yfinance index metadata loaded | symbols=16
+2026-07-29 10:56:39 | INFO | yfinance_index_job | yfinance index download target prepared | tickers=16
+2026-07-29 10:56:39 | INFO | yfinance_index_job | yfinance download started | tickers=16
+2026-07-29 10:56:46 | INFO | yfinance_index_job | yfinance download completed | rows=25264 | columns=80
+2026-07-29 10:56:48 | INFO | yfinance_index_job | All yfinance index data_lake has been downloaded | output_path=data_warehouse\raw\index\yfinance_index.parquet | rows=157716 | symbols=16

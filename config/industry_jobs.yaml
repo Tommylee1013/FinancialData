@@ -24,4 +24,12 @@ sources:
   - file_name: data_lake/industry/Automobile/MUVVI.xlsx
     sheet_name: MANHEIM
     exchange: COXAUTONIC
-    country: South Korea
+    country: United States
+  - file_name: data_lake/industry/Energy/EIA.xlsx
+    sheet_name: EIA
+    exchange: EIA
+    country: United States
+  - file_name: data_lake/industry/Energy/Rig Count.xlsx
+    sheet_name: RIGSUS
+    exchange: BAKERHUGHES
+    country: United States
