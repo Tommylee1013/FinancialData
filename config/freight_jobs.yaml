@@ -94,3 +94,38 @@ sources:
     sheet_name: GSCPI
     exchange: FED
     country: United States
+
+  - file_name: data_lake/freight/HARPEX.xlsx
+    sheet_name: HARPEX
+    exchange: HARPERPETERSEN
+    country: Germany
+
+  - file_name: data_lake/freight/KOBC Container Composite Index.xlsx
+    sheet_name: KDCI
+    exchange: KOBC
+    country: South Korea
+
+  - file_name: data_lake/freight/KOBC Container Composite Index.xlsx
+    sheet_name: CAPE
+    exchange: KOBC
+    country: South Korea
+
+  - file_name: data_lake/freight/KOBC Container Composite Index.xlsx
+    sheet_name: PANAMAX
+    exchange: KOBC
+    country: South Korea
+
+  - file_name: data_lake/freight/KOBC Container Composite Index.xlsx
+    sheet_name: SUPRAMAX
+    exchange: KOBC
+    country: South Korea
+
+  - file_name: data_lake/freight/KOBC Container Composite Index.xlsx
+    sheet_name: HANDY
+    exchange: KOBC
+    country: South Korea
+
+  - file_name: data_lake/freight/Ningbo Container Freight Index.xlsx
+    sheet_name: NCFI
+    exchange: NSE
+    country: China
