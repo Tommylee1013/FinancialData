@@ -146,6 +146,18 @@ macro_jobs:
     exchange: "EUROSTAT"
     country: "Europe"
     sheet_name: "EUGNEMUY"
+  - input_path: "data_lake/macro/Europe/PMI.xlsx"
+    output_path: "data_warehouse/raw/macro/Europe/MPMIEZMA.parquet"
+    symbol: "MPMIEZMA"
+    exchange: "SNPGLOBAL"
+    country: "Europe"
+    sheet_name: "MPMIEZMA"
+  - input_path: "data_lake/macro/Europe/PMI.xlsx"
+    output_path: "data_warehouse/raw/macro/Europe/MPMIEZCA.parquet"
+    symbol: "MPMIEZCA"
+    exchange: "SNPGLOBAL"
+    country: "Europe"
+    sheet_name: "MPMIEZCA"
 
 # South Korea
   - input_path: "data_lake/macro/South Korea/Consumer Price Index.xlsx"
