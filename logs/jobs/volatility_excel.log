@@ -76,3 +76,11 @@
 2026-08-09 16:58:04 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loading | symbol=AXVI | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/volatility/VOL.xlsx
 2026-08-09 16:58:05 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loaded | symbol=AXVI | rows=4786 | columns=8
 2026-08-09 16:58:05 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | volatility Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_warehouse/raw/risk/volatility_excel.parquet | rows=16274
+2026-08-18 00:44:19 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | volatility data_lake job started | input_dir=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/volatility
+2026-08-18 00:44:19 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loading | symbol=NKVI | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/volatility/NKVI.xlsx
+2026-08-18 00:44:20 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loaded | symbol=NKVI | rows=6319 | columns=8
+2026-08-18 00:44:20 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loading | symbol=VSTOXX | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/volatility/VSTOXX.xlsx
+2026-08-18 00:44:20 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loaded | symbol=VSTOXX | rows=5184 | columns=8
+2026-08-18 00:44:20 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loading | symbol=AXVI | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/volatility/VOL.xlsx
+2026-08-18 00:44:20 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loaded | symbol=AXVI | rows=4794 | columns=8
+2026-08-18 00:44:20 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | volatility Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_warehouse/raw/risk/volatility_excel.parquet | rows=16296
