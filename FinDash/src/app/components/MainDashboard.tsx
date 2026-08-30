@@ -6,8 +6,10 @@ import {
   commodities, globalBenchmarks
 } from "../data/mockData";
 import type { Tab } from "./NavBar";
+import { openDetail } from "../detailNavigation";
 
-const fmt = (v: number, d = 2) => v.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+const fmt = (v: number | null | undefined, d = 2) =>
+  v == null ? '—' : v.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
 
 function PriceChange({ change, pct }: { change: number; pct: number }) {
   const up = change >= 0;
@@ -41,7 +43,7 @@ function SectionHeader({ title, subtitle, onViewAll, onViewAllLabel = 'View All'
 function BenchmarkCard({ bm }: { bm: typeof globalBenchmarks[0] }) {
   const up = bm.changePct >= 0;
   return (
-    <div className="bg-card border border-border rounded p-4 flex flex-col gap-2 hover:shadow-md transition-shadow">
+    <div onClick={() => openDetail('benchmark', bm.id)} className="bg-card border border-border rounded p-4 flex flex-col gap-2 hover:shadow-md transition-shadow cursor-pointer">
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-1.5">
@@ -76,7 +78,7 @@ function IndexCard({ idx, showCandle }: { idx: typeof marketIndices[0]; showCand
   const up = idx.changePct >= 0;
 
   return (
-    <div className="bg-card border border-border rounded p-3 flex flex-col gap-1.5 hover:shadow-md transition-shadow h-full">
+    <div onClick={() => openDetail('market', idx.id)} className="bg-card border border-border rounded p-3 flex flex-col gap-1.5 hover:shadow-md transition-shadow h-full cursor-pointer">
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-1.5">
@@ -98,7 +100,7 @@ function IndexCard({ idx, showCandle }: { idx: typeof marketIndices[0]; showCand
         {showCandle && (
           <div className="flex gap-1">
             {(['line', 'candle'] as const).map(v => (
-              <button key={v} onClick={() => setView(v)}
+              <button key={v} onClick={(event) => { event.stopPropagation(); setView(v); }}
                 className={`text-[9px] px-1 py-0.5 rounded ${view === v ? 'bg-primary text-white' : 'bg-secondary text-muted-foreground'}`}>
                 {v === 'line' ? 'Line' : 'Candle'}
               </button>
@@ -126,7 +128,7 @@ function VolCard({ v }: { v: typeof volatilityIndices[0] }) {
   const up = v.change >= 0;
   const fearColor = v.value < 15 ? 'text-up' : v.value < 25 ? 'text-yellow-500' : 'text-down';
   return (
-    <div className="bg-card border border-border rounded p-3 flex gap-3 items-center hover:shadow-md transition-shadow">
+    <div onClick={() => openDetail('volatility', v.id)} className="bg-card border border-border rounded p-3 flex gap-3 items-center hover:shadow-md transition-shadow cursor-pointer">
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-0.5">
           <span className="text-xs font-bold text-foreground">{v.name}</span>
@@ -151,7 +153,7 @@ function MacroCard({ m }: { m: typeof macroVariables[0] }) {
   const up = m.value > m.prev;
   const beat = m.value >= m.forecast;
   return (
-    <div className="bg-card border border-border rounded p-3 hover:shadow-md transition-shadow h-full">
+    <div onClick={() => openDetail('macro', m.id)} className="bg-card border border-border rounded p-3 hover:shadow-md transition-shadow h-full cursor-pointer">
       <div className="flex items-start justify-between mb-1">
         <div>
           <div className="text-xs font-bold text-foreground">{m.name}</div>
@@ -178,7 +180,7 @@ function MacroCard({ m }: { m: typeof macroVariables[0] }) {
 function CommodityCard({ c }: { c: typeof commodities[0] }) {
   const up = c.changePct >= 0;
   return (
-    <div className="bg-card border border-border rounded p-3 flex items-center gap-3 hover:shadow-md transition-shadow">
+    <div onClick={() => openDetail('commodity', c.id)} className="bg-card border border-border rounded p-3 flex items-center gap-3 hover:shadow-md transition-shadow cursor-pointer">
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between">
           <div>
@@ -222,15 +224,69 @@ function IndexGroup({ label, items, cardWidth = 190 }: { label: string; items: t
   return (
     <div>
       <div className="text-[10px] font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">{label}</div>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+      <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(auto-fit, minmax(${cardWidth}px, 1fr))` }}>
         {items.map(idx => (
-          <div key={idx.id} style={{ width: cardWidth, flexShrink: 0 }}>
+          <div key={idx.id}>
             <IndexCard idx={idx} showCandle />
           </div>
         ))}
       </div>
     </div>
   );
+}
+
+function MarketPulse() {
+  const ranked = [...marketIndices].sort((a, b) => b.changePct - a.changePct);
+  const advances = marketIndices.filter(item => item.changePct >= 0).length;
+  const average = marketIndices.reduce((sum, item) => sum + item.changePct, 0) / marketIndices.length;
+  const vix = volatilityIndices.find(item => item.id === 'vix') ?? volatilityIndices[0];
+  return <section className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+    {[{ label: 'Global Breadth', value: `${advances} / ${marketIndices.length}`, note: 'Indices advancing', tone: advances >= marketIndices.length / 2 ? 'text-up' : 'text-down' }, { label: 'Equal-weight Move', value: `${average >= 0 ? '+' : ''}${fmt(average)}%`, note: 'Global index basket', tone: average >= 0 ? 'text-up' : 'text-down' }, { label: 'Session Leader', value: ranked[0].name, note: `+${fmt(ranked[0].changePct)}%`, tone: 'text-up' }, { label: 'Risk Gauge', value: `VIX ${fmt(vix.value)}`, note: vix.value < 15 ? 'Low volatility' : vix.value < 25 ? 'Moderate volatility' : 'High volatility', tone: vix.value < 15 ? 'text-up' : vix.value < 25 ? 'text-yellow-500' : 'text-down' }].map(stat => <div key={stat.label} className="bg-card border border-border rounded p-3"><div className="text-[10px] uppercase tracking-wider text-muted-foreground">{stat.label}</div><div className={`text-base font-semibold mt-1 truncate ${stat.tone}`}>{stat.value}</div><div className="text-[10px] text-muted-foreground mt-0.5">{stat.note}</div></div>)}
+  </section>;
+}
+
+function BenchmarkBoard() {
+  return <div className="bg-card border border-border rounded-lg overflow-hidden shadow-sm">
+    <div className="grid grid-cols-[minmax(180px,1.5fr)_110px_100px_100px_100px_100px_minmax(120px,1fr)] px-4 py-2 bg-secondary/70 border-b border-border text-[9px] uppercase tracking-wider text-muted-foreground font-semibold">
+      <span>Benchmark</span><span className="text-right">Last</span><span className="text-right">Change</span><span className="text-right">YTD</span><span className="text-right">52W High</span><span className="text-right">52W Low</span><span className="text-right">Trend</span>
+    </div>
+    {globalBenchmarks.map((bm, index) => {
+      const up = bm.changePct >= 0;
+      return <button key={bm.id} onClick={() => openDetail('benchmark', bm.id)} className={`w-full grid grid-cols-[minmax(180px,1.5fr)_110px_100px_100px_100px_100px_minmax(120px,1fr)] items-center px-4 py-2.5 text-xs text-left hover:bg-accent transition-colors ${index ? 'border-t border-border' : ''}`}>
+        <span className="flex items-center gap-2 min-w-0"><span className="text-base">{bm.flag}</span><span className="min-w-0"><span className="block font-semibold truncate">{bm.name}</span><span className="block text-[9px] text-muted-foreground truncate">{bm.desc}</span></span></span>
+        <span className="text-right font-mono font-bold">{fmt(bm.value)}</span>
+        <span className={`text-right font-mono font-semibold ${up ? 'text-up' : 'text-down'}`}>{up ? '+' : ''}{fmt(bm.changePct)}%</span>
+        <span className={`text-right font-mono ${bm.ytd >= 0 ? 'text-up' : 'text-down'}`}>{bm.ytd >= 0 ? '+' : ''}{fmt(bm.ytd)}%</span>
+        <span className="text-right font-mono text-muted-foreground">{fmt(bm.high52w)}</span>
+        <span className="text-right font-mono text-muted-foreground">{fmt(bm.low52w)}</span>
+        <span className="flex justify-end"><MiniLineChart data={bm.trend} width={110} height={28} color={up ? '#16A34A' : '#DC2626'} fill={false}/></span>
+      </button>;
+    })}
+  </div>;
+}
+
+function MarketQuoteBoard({ groups }: { groups: Array<{ label: string; items: typeof marketIndices }> }) {
+  return <div className="bg-card border border-border rounded-lg overflow-hidden shadow-sm">
+    <div className="hidden md:grid grid-cols-[minmax(170px,1.4fr)_115px_105px_105px_105px_105px_105px_minmax(100px,1fr)] px-4 py-2 bg-secondary/70 border-b border-border text-[9px] uppercase tracking-wider text-muted-foreground font-semibold">
+      <span>Index</span><span className="text-right">Last</span><span className="text-right">Change</span><span className="text-right">Change %</span><span className="text-right">High</span><span className="text-right">Low</span><span className="text-right">Volume</span><span className="text-right">30D Trend</span>
+    </div>
+    {groups.map(group => <React.Fragment key={group.label}>
+      <div className="px-4 py-1.5 bg-secondary/40 border-t first:border-t-0 border-border text-[9px] font-bold tracking-[0.14em] uppercase text-muted-foreground">{group.label}</div>
+      {group.items.map(idx => {
+        const up = idx.changePct >= 0;
+        return <button key={idx.id} onClick={() => openDetail('market', idx.id)} className="w-full md:grid md:grid-cols-[minmax(170px,1.4fr)_115px_105px_105px_105px_105px_105px_minmax(100px,1fr)] flex items-center justify-between px-4 py-2.5 border-t border-border hover:bg-accent transition-colors text-xs text-left group">
+          <span className="flex items-center gap-2 min-w-0"><span>{idx.flag}</span><span><span className="block font-semibold group-hover:text-primary">{idx.name}</span><span className="block md:hidden text-[9px] text-muted-foreground">{idx.country}</span></span></span>
+          <span className="text-right font-mono font-bold">{fmt(idx.value)}</span>
+          <span className={`hidden md:block text-right font-mono ${up ? 'text-up' : 'text-down'}`}>{up ? '+' : ''}{fmt(idx.change)}</span>
+          <span className={`text-right font-mono font-bold ${up ? 'text-up' : 'text-down'}`}>{up ? '+' : ''}{fmt(idx.changePct)}%</span>
+          <span className="hidden md:block text-right font-mono text-muted-foreground">{fmt(idx.high)}</span>
+          <span className="hidden md:block text-right font-mono text-muted-foreground">{fmt(idx.low)}</span>
+          <span className="hidden md:block text-right font-mono text-muted-foreground">{idx.volume}</span>
+          <span className="hidden md:flex justify-end"><MiniLineChart data={idx.trend.slice(-30)} width={100} height={26} color={up ? '#16A34A' : '#DC2626'} fill={false}/></span>
+        </button>;
+      })}
+    </React.Fragment>)}
+  </div>;
 }
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
@@ -244,14 +300,12 @@ export function MainDashboard({ setActiveTab }: { setActiveTab: (tab: Tab) => vo
   return (
     <div className="p-4 space-y-6 max-w-screen-2xl mx-auto">
 
+      <MarketPulse />
+
       {/* ── MSCI & Global Benchmarks 2×2 ── */}
       <section>
         <SectionHeader title="Global Benchmarks" subtitle="MSCI · DJ Commodity" />
-        <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
-          {globalBenchmarks.map(bm => (
-            <BenchmarkCard key={bm.id} bm={bm} />
-          ))}
-        </div>
+        <BenchmarkBoard />
       </section>
 
       {/* ── Market Indices ── */}
@@ -262,13 +316,13 @@ export function MainDashboard({ setActiveTab }: { setActiveTab: (tab: Tab) => vo
           onViewAll={() => setActiveTab('market')}
           onViewAllLabel="Market Tab →"
         />
-        <div className="space-y-3">
-          <IndexGroup label="🇺🇸 US" items={usIdx} cardWidth={195} />
-          <IndexGroup label="🇰🇷 Korea" items={krIdx} cardWidth={195} />
-          <IndexGroup label="🇯🇵 Japan" items={jpIdx} cardWidth={195} />
-          <IndexGroup label="🇪🇺🇬🇧🇫🇷 Europe" items={euIdx} cardWidth={195} />
-          <IndexGroup label="🌏 Asia" items={asiaIdx} cardWidth={195} />
-        </div>
+        <MarketQuoteBoard groups={[
+          { label: '🇺🇸 United States', items: usIdx },
+          { label: '🇰🇷 South Korea', items: krIdx },
+          { label: '🇯🇵 Japan', items: jpIdx },
+          { label: '🇪🇺 Europe', items: euIdx },
+          { label: '🌏 Greater China', items: asiaIdx },
+        ]} />
       </section>
 
       {/* ── Volatility ── */}
@@ -279,9 +333,9 @@ export function MainDashboard({ setActiveTab }: { setActiveTab: (tab: Tab) => vo
           onViewAll={() => setActiveTab('market')}
           onViewAllLabel="Market Tab →"
         />
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+        <div className="grid gap-2" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))' }}>
           {volatilityIndices.map(v => (
-            <div key={v.id} style={{ width: 270, flexShrink: 0 }}>
+            <div key={v.id}>
               <VolCard v={v} />
             </div>
           ))}
@@ -296,9 +350,9 @@ export function MainDashboard({ setActiveTab }: { setActiveTab: (tab: Tab) => vo
           onViewAll={() => setActiveTab('macro')}
           onViewAllLabel="Macro Tab →"
         />
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+        <div className="grid gap-2" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
           {macroVariables.map(m => (
-            <div key={m.id} style={{ width: 185, flexShrink: 0 }}>
+            <div key={m.id}>
               <MacroCard m={m} />
             </div>
           ))}
@@ -313,9 +367,9 @@ export function MainDashboard({ setActiveTab }: { setActiveTab: (tab: Tab) => vo
           onViewAll={() => setActiveTab('commodities')}
           onViewAllLabel="Commodities Tab →"
         />
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+        <div className="grid gap-2" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))' }}>
           {commodities.map(c => (
-            <div key={c.id} style={{ width: 248, flexShrink: 0 }}>
+            <div key={c.id}>
               <CommodityCard c={c} />
             </div>
           ))}

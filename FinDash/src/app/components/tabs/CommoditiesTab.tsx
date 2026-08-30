@@ -3,6 +3,8 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { MiniLineChart } from "../CandlestickChart";
 import { commodities } from "../../data/mockData";
 import { TrendingUp, TrendingDown, Search } from "lucide-react";
+import { openDetail } from "../../detailNavigation";
+import { paddedDomain } from "../../chartUtils";
 
 const fmt = (v: number, d = 2) => v.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
 
@@ -41,7 +43,8 @@ function BoardRow({ c, isSelected, onClick }: { c: typeof commodities[0]; isSele
 
 function DetailPanel({ c }: { c: typeof commodities[0] }) {
   const up = c.changePct >= 0;
-  const chartData = c.trend.map((d, i) => ({ t: i, v: parseFloat(d.v.toFixed(2)) }));
+  const chartData = c.trend.map((d) => ({ t: d.date, v: parseFloat(d.v.toFixed(2)) }));
+  const domain = paddedDomain(chartData.map(point => point.v));
 
   return (
     <div className="bg-card border border-border rounded p-4 space-y-4">
@@ -82,8 +85,8 @@ function DetailPanel({ c }: { c: typeof commodities[0] }) {
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-            <XAxis dataKey="t" hide />
-            <YAxis tick={{ fontSize: 10, fill: 'var(--muted-foreground)' }} width={55} tickFormatter={v => v.toLocaleString()} />
+            <XAxis dataKey="t" tick={{ fontSize: 9, fill: 'var(--muted-foreground)' }} minTickGap={28} tickFormatter={v => String(v).slice(2, 10)} />
+            <YAxis domain={domain} tick={{ fontSize: 10, fill: 'var(--muted-foreground)' }} width={62} tickFormatter={v => Number(v).toLocaleString(undefined, { maximumFractionDigits: 2 })} />
             <Tooltip
               contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', fontSize: 11 }}
               formatter={(v: any) => [v.toLocaleString(), c.name]}
@@ -96,8 +99,36 @@ function DetailPanel({ c }: { c: typeof commodities[0] }) {
       <div className="text-[10px] text-muted-foreground bg-secondary rounded p-2">
         ※ Will be replaced with live TradingView candlestick chart upon integration
       </div>
+      <button onClick={() => openDetail('commodity', c.id)} className="w-full rounded bg-primary text-primary-foreground py-2 text-xs font-semibold hover:opacity-90">
+        Open professional research view →
+      </button>
     </div>
   );
+}
+
+function CommodityOverview() {
+  const sorted = [...commodities].sort((a, b) => b.changePct - a.changePct);
+  const up = commodities.filter(item => item.changePct >= 0).length;
+  const avg = commodities.reduce((sum, item) => sum + item.changePct, 0) / commodities.length;
+  const stats = [
+    { label: 'Market Breadth', value: `${up} / ${commodities.length}`, note: 'Advancing contracts', color: up >= commodities.length / 2 ? 'text-up' : 'text-down' },
+    { label: 'Average Move', value: `${avg >= 0 ? '+' : ''}${fmt(avg)}%`, note: 'Equal-weight basket', color: avg >= 0 ? 'text-up' : 'text-down' },
+    { label: 'Top Performer', value: sorted[0].name, note: `+${fmt(sorted[0].changePct)}%`, color: 'text-up' },
+    { label: 'Weakest', value: sorted.at(-1)!.name, note: `${fmt(sorted.at(-1)!.changePct)}%`, color: 'text-down' },
+  ];
+  return <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">{stats.map(stat => <div key={stat.label} className="bg-card border border-border rounded p-3"><div className="text-[10px] uppercase tracking-wider text-muted-foreground">{stat.label}</div><div className={`text-sm font-semibold mt-1 truncate ${stat.color}`}>{stat.value}</div><div className="text-[10px] text-muted-foreground mt-0.5">{stat.note}</div></div>)}</div>;
+}
+
+function CommodityCategoryPulse() {
+  const cats = categories.slice(1).map(category => {
+    const items = commodities.filter(item => item.category === category);
+    const avg = items.length ? items.reduce((sum, item) => sum + item.changePct, 0) / items.length : 0;
+    return { category, items, avg };
+  }).filter(group => group.items.length);
+  return <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+    <div className="bg-card border border-border rounded p-4"><h3 className="text-sm font-bold">Category Pulse</h3><p className="text-[10px] text-muted-foreground mt-0.5 mb-3">Equal-weight daily performance by commodity group</p><div className="space-y-3">{cats.map(group => <div key={group.category}><div className="flex justify-between text-[11px] mb-1"><span className="font-medium">{group.category}</span><span className={`font-mono font-semibold ${group.avg >= 0 ? 'text-up' : 'text-down'}`}>{group.avg >= 0 ? '+' : ''}{fmt(group.avg)}%</span></div><div className="h-2 bg-secondary rounded overflow-hidden"><div className="h-full rounded" style={{ width: `${Math.min(100, 25 + Math.abs(group.avg) * 20)}%`, background: group.avg >= 0 ? '#16A34A' : '#DC2626' }}/></div></div>)}</div></div>
+    <div className="bg-card border border-border rounded p-4"><h3 className="text-sm font-bold">Cross-Commodity Signals</h3><p className="text-[10px] text-muted-foreground mt-0.5 mb-3">Quick read from current price action</p><div className="grid grid-cols-2 gap-2">{commodities.slice().sort((a,b) => Math.abs(b.changePct)-Math.abs(a.changePct)).slice(0,6).map(item => <button key={item.id} onClick={() => openDetail('commodity', item.id)} className="text-left bg-secondary/60 hover:bg-accent rounded p-2"><div className="text-[10px] text-muted-foreground">{item.category}</div><div className="text-xs font-semibold truncate mt-0.5">{item.name}</div><div className={`text-xs font-mono mt-1 ${item.changePct >= 0 ? 'text-up' : 'text-down'}`}>{item.changePct >= 0 ? '+' : ''}{fmt(item.changePct)}%</div></button>)}</div></div>
+  </div>;
 }
 
 export function CommoditiesTab() {
@@ -133,6 +164,8 @@ export function CommoditiesTab() {
         ))}
       </div>
 
+      <CommodityOverview />
+
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
         <div className="xl:col-span-2">
           <div className="bg-card border border-border rounded overflow-hidden">
@@ -162,6 +195,7 @@ export function CommoditiesTab() {
           <DetailPanel c={selected} />
         </div>
       </div>
+      <CommodityCategoryPulse />
     </div>
   );
 }

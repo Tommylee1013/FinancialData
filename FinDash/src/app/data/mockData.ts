@@ -1,9 +1,12 @@
 export function generateTrend(base: number, periods: number, volatility: number, bias = 0) {
-  const data: { t: number; v: number }[] = [];
+  const data: { t: number; date: string; v: number }[] = [];
   let v = base;
+  const now = new Date();
   for (let i = 0; i < periods; i++) {
     v += (Math.random() - 0.5 + bias) * volatility;
-    data.push({ t: i, v: Math.max(0, v) });
+    const pointDate = new Date(now);
+    pointDate.setDate(now.getDate() - (periods - 1 - i));
+    data.push({ t: i, date: pointDate.toISOString().slice(0, 10), v: Math.max(0, v) });
   }
   return data;
 }
@@ -18,7 +21,7 @@ export function generateOHLC(base: number, periods: number, volatility: number, 
     const close = open + change;
     const high = Math.max(open, close) + Math.random() * Math.abs(volatility) * 0.4;
     const low = Math.min(open, close) - Math.random() * Math.abs(volatility) * 0.4;
-    const date = new Date(now - (periods - i) * 86400000 * 7).toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' });
+    const date = new Date(now - (periods - i) * 86400000 * 7).toISOString().slice(0, 10);
     data.push({ t: i, open, high, low, close, date });
     price = close;
   }
@@ -196,10 +199,10 @@ export const industryData = [
 ];
 
 export const sentimentData = {
-  fng: { value: 62, label: 'Greed', color: '#16A34A', trend: generateTrend(45, 30, 8, 0.03) },
-  aaii: { bullish: 45.2, bearish: 28.6, neutral: 26.2, trend: generateTrend(38, 30, 4, 0.02) },
-  naaim: { value: 68.3, change: 3.2, trend: generateTrend(60, 30, 5, 0.02) },
-  putcall: { value: 0.82, change: -0.05, trend: generateTrend(1.0, 30, 0.08, -0.02) },
+  fng: { value: 62, label: 'Greed', connected: true, color: '#16A34A', trend: generateTrend(45, 30, 8, 0.03) },
+  aaii: { bullish: 45.2, bearish: 28.6, neutral: 26.2, connected: true, trend: generateTrend(38, 30, 4, 0.02) },
+  naaim: { value: 68.3, change: 3.2, connected: true, trend: generateTrend(60, 30, 5, 0.02) },
+  putcall: { value: 0.82 as number | null, change: -0.05, connected: true, reason: '', trend: generateTrend(1.0, 30, 0.08, -0.02) },
 };
 
 export const newsFeed = [
@@ -237,6 +240,13 @@ export const krSectorData = [
   { name: 'Battery', changePct: -1.23, value: 987.65 },
   { name: 'Chemicals', changePct: -0.41, value: 654.32 },
 ];
+
+export const sectorDataByCountry: Record<string, any[]> = {
+  US: sectorData.map((item, index) => ({ ...item, id: `sector-us-${index}`, country: 'US' })),
+  KR: krSectorData.map((item, index) => ({ ...item, id: `sector-kr-${index}`, country: 'KR' })),
+  JP: [],
+  CN: [],
+};
 
 // MSCI + Global Benchmark Indices (2x2 section on Overview)
 export const globalBenchmarks = [
@@ -414,4 +424,62 @@ export function generateEfficientFrontier(activeIds: string[]) {
     frontier.push({ x: parseFloat(vol.toFixed(2)), y: parseFloat(ret.toFixed(2)) });
   }
   return frontier;
+}
+
+export type DashboardConnection = {
+  connected: boolean;
+  updatedAt?: string;
+  source?: string;
+  error?: string;
+};
+
+export const dashboardConnection: DashboardConnection = { connected: false };
+
+function mergeArray(target: any[], incoming: any[] | undefined) {
+  if (!incoming?.length) return;
+  const byId = new Map(incoming.map(item => [item.id ?? item.tenor, item]));
+  target.forEach((item, index) => {
+    const live = byId.get(item.id ?? item.tenor);
+    if (live) target[index] = { ...item, ...live };
+  });
+}
+
+export async function loadDashboardData(): Promise<DashboardConnection> {
+  try {
+    const response = await fetch('/api/dashboard');
+    if (!response.ok) throw new Error(`API ${response.status}`);
+    const data = await response.json();
+    mergeArray(marketIndices, data.marketIndices);
+    mergeArray(volatilityIndices, data.volatilityIndices);
+    mergeArray(macroVariables, data.macroVariables);
+    mergeArray(commodities, data.commodities);
+    mergeArray(yieldCurveUS, data.yieldCurveUS);
+    mergeArray(yieldCurveKR, data.yieldCurveKR);
+    mergeArray(freightIndices, data.freightIndices);
+    mergeArray(industryData, data.industryData);
+    if (data.sectorDataByCountry) {
+      Object.entries(data.sectorDataByCountry).forEach(([country, items]) => {
+        if (Array.isArray(items) && items.length) sectorDataByCountry[country] = items;
+      });
+    }
+    if (data.sentimentData) {
+      Object.entries(data.sentimentData).forEach(([key, value]) => {
+        if (value && typeof value === 'object' && key in sentimentData) {
+          Object.assign((sentimentData as any)[key], value);
+        }
+      });
+    }
+    Object.assign(dashboardConnection, {
+      connected: true,
+      updatedAt: data.updatedAt,
+      source: data.source,
+      error: undefined,
+    });
+  } catch (error) {
+    Object.assign(dashboardConnection, {
+      connected: false,
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+  return dashboardConnection;
 }

@@ -1,19 +1,27 @@
 import React, { useState } from "react";
-import { TrendingUp, TrendingDown, Newspaper } from "lucide-react";
-import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid } from "recharts";
-import { MiniLineChart, CandlestickChart } from "../CandlestickChart";
+import { ChevronRight, Newspaper } from "lucide-react";
+import { MiniLineChart } from "../CandlestickChart";
+import { TradingViewChart } from "../TradingViewChart";
 import {
-  marketIndices, volatilityIndices, sectorData, krSectorData,
+  marketIndices, volatilityIndices, sectorDataByCountry,
   newsFeed, sentimentData, generateOHLC
 } from "../../data/mockData";
+import { openDetail } from "../../detailNavigation";
 
-const fmt = (v: number, d = 2) => v.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+const fmt = (v: number | null | undefined, d = 2) => v == null ? '—' : v.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+
+const countries = [
+  { id: 'ALL', label: 'All Markets', flag: '🌐', indexCountries: ['US', 'KR', 'JP', 'CN', 'HK', 'DE', 'GB', 'FR'] },
+  { id: 'US', label: 'United States', flag: '🇺🇸', indexCountries: ['US'] },
+  { id: 'KR', label: 'South Korea', flag: '🇰🇷', indexCountries: ['KR'] },
+  { id: 'JP', label: 'Japan', flag: '🇯🇵', indexCountries: ['JP'] },
+  { id: 'CN', label: 'Greater China', flag: '🇨🇳', indexCountries: ['CN', 'HK'] },
+] as const;
 
 function FngGauge({ value, label }: { value: number; label: string }) {
-  const pct = value / 100;
+  const pct = Math.max(0, Math.min(100, value)) / 100;
   const color = value < 25 ? '#DC2626' : value < 45 ? '#F97316' : value < 55 ? '#EAB308' : value < 75 ? '#84CC16' : '#16A34A';
-  const angle = -90 + pct * 180;
-  const cx = 60, cy = 60, r = 46;
+  const cx = 80, cy = 72, r = 58;
   const startAngle = -180; const endAngle = 0;
   const toRad = (deg: number) => (deg * Math.PI) / 180;
   const arcPath = (s: number, e: number) => {
@@ -27,26 +35,40 @@ function FngGauge({ value, label }: { value: number; label: string }) {
   const needleY = cy + (r - 8) * Math.sin(toRad(startAngle + pct * 180));
 
   return (
-    <div className="flex flex-col items-center">
-      <svg width={120} height={72}>
-        <path d={arcPath(-180, 0)} fill="none" stroke="var(--muted)" strokeWidth={10} />
-        <path d={arcPath(-180, startAngle + pct * 180)} fill="none" stroke={color} strokeWidth={10} />
+    <div className="flex min-h-[178px] flex-col items-center justify-start pt-1">
+      <svg width={160} height={78} className="overflow-visible" aria-label={`Fear and Greed Index: ${value}`}>
+        <path d={arcPath(-180, 0)} fill="none" stroke="var(--muted)" strokeWidth={12} />
+        <path d={arcPath(-180, startAngle + pct * 180)} fill="none" stroke={color} strokeWidth={12} />
         <line x1={cx} y1={cy} x2={needleX} y2={needleY} stroke="var(--foreground)" strokeWidth={2} strokeLinecap="round" />
-        <circle cx={cx} cy={cy} r={3} fill="var(--foreground)" />
-        <text x={cx} y={cy + 18} textAnchor="middle" fontSize={16} fontWeight={700} fontFamily="JetBrains Mono" fill={color}>{value}</text>
+        <circle cx={cx} cy={cy} r={4} fill="var(--foreground)" />
       </svg>
-      <span className="text-xs font-semibold mt-1" style={{ color }}>{label}</span>
-      <span className="text-[10px] text-muted-foreground">CNN Fear & Greed</span>
+      <div className="mt-2 font-mono text-2xl font-bold leading-none" style={{ color }}>{fmt(value, 2)}</div>
+      <span className="mt-2 text-sm font-semibold leading-none" style={{ color }}>{label}</span>
+      <span className="mt-2 text-xs text-muted-foreground">CNN Fear &amp; Greed Index</span>
     </div>
   );
 }
 
 export function MarketTab() {
+  const [country, setCountry] = useState<string>('ALL');
   const [selectedIdx, setSelectedIdx] = useState(marketIndices[0]);
-  const ohlcData = generateOHLC(selectedIdx.value * 0.92, 60, selectedIdx.value * 0.01);
+  const countryConfig = countries.find(item => item.id === country) ?? countries[0];
+  const filteredIndices = marketIndices.filter(index => countryConfig.indexCountries.includes(index.country as never));
+  const sectors = sectorDataByCountry[country] ?? [];
+  const selectCountry = (next: typeof countries[number]) => {
+    setCountry(next.id);
+    const first = marketIndices.find(index => next.indexCountries.includes(index.country as never));
+    if (first) setSelectedIdx(first);
+  };
+  const ohlcData = (selectedIdx as any).ohlc?.length ? (selectedIdx as any).ohlc : generateOHLC(selectedIdx.value * 0.92, 60, selectedIdx.value * 0.01);
 
   return (
     <div className="p-4 space-y-4 max-w-screen-2xl mx-auto">
+      <div className="bg-card border border-border rounded p-1 flex gap-1 overflow-x-auto">
+        {countries.map(item => <button key={item.id} onClick={() => selectCountry(item)} className={`px-4 py-2 rounded text-xs font-semibold whitespace-nowrap transition-colors ${country === item.id ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:bg-secondary hover:text-foreground'}`}>
+          <span className="mr-1.5">{item.flag}</span>{item.label}
+        </button>)}
+      </div>
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
 
         {/* Left: Index selector + chart */}
@@ -63,7 +85,7 @@ export function MarketTab() {
                   </tr>
                 </thead>
                 <tbody>
-                  {marketIndices.map(idx => {
+                  {filteredIndices.map(idx => {
                     const up = idx.changePct >= 0;
                     const selected = idx.id === selectedIdx.id;
                     return (
@@ -107,68 +129,36 @@ export function MarketTab() {
                 </span>
               </div>
               <div className="text-[10px] text-muted-foreground bg-accent px-2 py-0.5 rounded">
-                TradingView integration pending · Simulated data
+                TradingView Lightweight Charts · Scroll to zoom
               </div>
+            </div>
+            <TradingViewChart data={ohlcData} height={320} />
+          </div>
+
+          {/* Country sector board */}
+          {country !== 'ALL' && <div className="bg-card border border-border rounded overflow-hidden">
+            <div className="px-3 py-2.5 border-b border-border flex items-center justify-between">
+              <div><div className="text-xs font-bold text-foreground">{countryConfig.flag} {countryConfig.label} Sector Performance</div><div className="text-[10px] text-muted-foreground mt-0.5">Select a sector for price history and detailed statistics</div></div>
+              <span className="text-[10px] font-mono text-muted-foreground">{sectors.length} SECTORS</span>
             </div>
             <div className="overflow-x-auto">
-              <CandlestickChart data={ohlcData} width={680} height={200} showAxes />
+              <table className="w-full text-[11px]">
+                <thead className="bg-secondary/60 text-muted-foreground"><tr><th className="text-left px-3 py-2">Sector</th><th className="text-right px-3 py-2">Last</th><th className="text-right px-3 py-2">Change</th><th className="text-right px-3 py-2">Change %</th><th className="text-right px-3 py-2">Range</th><th className="px-3 py-2"></th></tr></thead>
+                <tbody>{sectors.map((sector: any) => {
+                  const up = (sector.changePct ?? 0) >= 0;
+                  return <tr key={sector.id ?? sector.name} onClick={() => openDetail('sector', sector.id)} className="border-t border-border cursor-pointer hover:bg-accent transition-colors">
+                    <td className="px-3 py-2"><div className="font-semibold text-foreground">{sector.name}</div><div className="text-[9px] text-muted-foreground">{sector.symbol ?? sector.category ?? 'Sector index'}</div></td>
+                    <td className="px-3 py-2 text-right font-mono">{fmt(sector.value)}</td>
+                    <td className={`px-3 py-2 text-right font-mono ${up ? 'text-up' : 'text-down'}`}>{sector.change != null && up ? '+' : ''}{fmt(sector.change)}</td>
+                    <td className={`px-3 py-2 text-right font-mono font-semibold ${up ? 'text-up' : 'text-down'}`}>{up ? '+' : ''}{fmt(sector.changePct)}%</td>
+                    <td className="px-3 py-2 text-right font-mono text-muted-foreground">{fmt(sector.low)} – {fmt(sector.high)}</td>
+                    <td className="px-3 py-2 text-muted-foreground"><ChevronRight size={13}/></td>
+                  </tr>;
+                })}</tbody>
+              </table>
+              {!sectors.length && <div className="p-8 text-center text-xs text-muted-foreground">No sector series available for this market.</div>}
             </div>
-          </div>
-
-          {/* Sectors */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="bg-card border border-border rounded p-3">
-              <div className="text-xs font-bold text-foreground mb-2">🇺🇸 S&P 500 Sector Performance</div>
-              <div className="space-y-1">
-                {sectorData.map(s => {
-                  const up = s.changePct >= 0;
-                  const barW = Math.abs(s.changePct) / 2 * 100;
-                  return (
-                    <div key={s.name} className="flex items-center gap-2 text-[11px]">
-                      <span className="w-28 text-muted-foreground truncate">{s.name}</span>
-                      <div className="flex-1 flex items-center gap-1">
-                        <div className="flex-1 h-3 bg-secondary rounded-sm overflow-hidden">
-                          <div
-                            className="h-full rounded-sm"
-                            style={{ width: `${Math.min(barW, 100)}%`, background: up ? '#16A34A' : '#DC2626', opacity: 0.8 }}
-                          />
-                        </div>
-                        <span className={`w-14 text-right font-mono font-semibold ${up ? 'text-up' : 'text-down'}`}>
-                          {up ? '+' : ''}{fmt(s.changePct)}%
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="bg-card border border-border rounded p-3">
-              <div className="text-xs font-bold text-foreground mb-2">🇰🇷 KOSPI Sector Performance</div>
-              <div className="space-y-1">
-                {krSectorData.map(s => {
-                  const up = s.changePct >= 0;
-                  const barW = Math.abs(s.changePct) / 2.5 * 100;
-                  return (
-                    <div key={s.name} className="flex items-center gap-2 text-[11px]">
-                      <span className="w-20 text-muted-foreground">{s.name}</span>
-                      <div className="flex-1 flex items-center gap-1">
-                        <div className="flex-1 h-3 bg-secondary rounded-sm overflow-hidden">
-                          <div
-                            className="h-full rounded-sm"
-                            style={{ width: `${Math.min(barW, 100)}%`, background: up ? '#16A34A' : '#DC2626', opacity: 0.8 }}
-                          />
-                        </div>
-                        <span className={`w-14 text-right font-mono font-semibold ${up ? 'text-up' : 'text-down'}`}>
-                          {up ? '+' : ''}{fmt(s.changePct)}%
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
+          </div>}
         </div>
 
         {/* Right: Volatility + Sentiment + News */}
@@ -183,9 +173,9 @@ export function MarketTab() {
                 const lvl = v.value < 15 ? 'Low' : v.value < 25 ? 'Moderate' : 'High';
                 const lvlColor = v.value < 15 ? 'text-up' : v.value < 25 ? 'text-yellow-500' : 'text-down';
                 return (
-                  <div key={v.id} className="flex items-center justify-between py-1 border-b border-border last:border-0">
+                  <div key={v.id} onClick={() => openDetail('volatility', v.id)} className="flex items-center justify-between py-1 border-b border-border last:border-0 cursor-pointer hover:bg-accent px-1 rounded">
                     <div>
-                      <div className="text-xs font-semibold text-foreground">{v.name}</div>
+                      <div className="text-xs font-semibold text-foreground flex items-center gap-1.5">{v.name}<span className={`text-[8px] px-1 rounded ${(v as any).asOf ? 'bg-green-500/10 text-up' : 'bg-secondary text-muted-foreground'}`}>{(v as any).asOf ? 'DB' : 'SAMPLE'}</span></div>
                       <div className="text-[10px] text-muted-foreground">{v.desc}</div>
                     </div>
                     <div className="text-right">
@@ -204,32 +194,33 @@ export function MarketTab() {
           <div className="bg-card border border-border rounded p-3">
             <div className="text-xs font-bold text-foreground mb-3">Market Sentiment Indicators</div>
             <div className="flex justify-center mb-3">
-              <FngGauge value={sentimentData.fng.value} label={sentimentData.fng.label} />
+              {sentimentData.fng.connected !== false ? <FngGauge value={sentimentData.fng.value ?? 0} label={sentimentData.fng.label} /> : <div className="py-6 text-xs text-muted-foreground">Fear &amp; Greed data unavailable</div>}
             </div>
             <div className="space-y-2 border-t border-border pt-2">
               <div className="text-[10px] font-semibold text-muted-foreground mb-1">AAII Sentiment Survey</div>
               <div className="flex gap-2 text-[11px]">
                 <div className="flex-1 text-center">
-                  <div className="text-up font-mono font-bold">{sentimentData.aaii.bullish}%</div>
+                  <div className="text-up font-mono font-bold">{fmt(sentimentData.aaii.bullish, 1)}%</div>
                   <div className="text-muted-foreground">Bullish</div>
                 </div>
                 <div className="flex-1 text-center">
-                  <div className="text-muted-foreground font-mono font-bold">{sentimentData.aaii.neutral}%</div>
+                  <div className="text-muted-foreground font-mono font-bold">{fmt(sentimentData.aaii.neutral, 1)}%</div>
                   <div className="text-muted-foreground">Neutral</div>
                 </div>
                 <div className="flex-1 text-center">
-                  <div className="text-down font-mono font-bold">{sentimentData.aaii.bearish}%</div>
+                  <div className="text-down font-mono font-bold">{fmt(sentimentData.aaii.bearish, 1)}%</div>
                   <div className="text-muted-foreground">Bearish</div>
                 </div>
               </div>
               <div className="border-t border-border pt-2 flex justify-between items-center">
                 <div>
                   <div className="text-[10px] text-muted-foreground">NAAIM Exposure</div>
-                  <div className="text-sm font-mono font-bold text-foreground">{sentimentData.naaim.value}</div>
+                  <div className="text-sm font-mono font-bold text-foreground">{fmt(sentimentData.naaim.value, 1)}</div>
                 </div>
                 <div className="text-right">
                   <div className="text-[10px] text-muted-foreground">Put/Call Ratio</div>
-                  <div className="text-sm font-mono font-bold text-foreground">{sentimentData.putcall.value}</div>
+                  <div className="text-sm font-mono font-bold text-foreground">{fmt(sentimentData.putcall.value, 2)}</div>
+                  {sentimentData.putcall.connected === false && <div className="text-[8px] text-muted-foreground">Not in database</div>}
                 </div>
               </div>
             </div>

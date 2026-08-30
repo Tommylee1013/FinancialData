@@ -3,6 +3,8 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { MiniLineChart } from "../CandlestickChart";
 import { industryData } from "../../data/mockData";
 import { TrendingUp, TrendingDown, Search } from "lucide-react";
+import { openDetail } from "../../detailNavigation";
+import { paddedDomain } from "../../chartUtils";
 
 const fmt = (v: number, d = 2) => v.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
 
@@ -57,7 +59,8 @@ function IndustryBoardRow({ item, isSelected, onClick }: { item: typeof industry
 
 function DetailPanel({ item }: { item: typeof industryData[0] }) {
   const up = item.changePct >= 0;
-  const chartData = item.trend.map((d, i) => ({ t: i, v: parseFloat(d.v.toFixed(4)) }));
+  const chartData = item.trend.map((d) => ({ t: d.date, v: parseFloat(d.v.toFixed(2)) }));
+  const domain = paddedDomain(chartData.map(point => point.v));
   const catColor = categoryColors[item.category] ?? '#6B7280';
 
   return (
@@ -99,8 +102,8 @@ function DetailPanel({ item }: { item: typeof industryData[0] }) {
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-            <XAxis dataKey="t" hide />
-            <YAxis tick={{ fontSize: 10, fill: 'var(--muted-foreground)' }} width={55} tickFormatter={v => v.toLocaleString()} />
+            <XAxis dataKey="t" tick={{ fontSize: 9, fill: 'var(--muted-foreground)' }} minTickGap={28} tickFormatter={v => String(v).slice(2, 10)} />
+            <YAxis domain={domain} tick={{ fontSize: 10, fill: 'var(--muted-foreground)' }} width={62} tickFormatter={v => Number(v).toLocaleString(undefined, { maximumFractionDigits: 2 })} />
             <Tooltip
               contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', fontSize: 11 }}
               formatter={(v: any) => [v.toLocaleString(), item.name]}
@@ -109,6 +112,9 @@ function DetailPanel({ item }: { item: typeof industryData[0] }) {
           </AreaChart>
         </ResponsiveContainer>
       </div>
+      <button onClick={() => openDetail('industry', item.id)} className="w-full rounded bg-primary text-primary-foreground py-2 text-xs font-semibold hover:opacity-90">
+        Open professional research view →
+      </button>
     </div>
   );
 }
@@ -138,6 +144,19 @@ function CategorySummary() {
       </div>
     </div>
   );
+}
+
+function IndustryOverview() {
+  const sorted = [...industryData].sort((a, b) => b.changePct - a.changePct);
+  const advancing = industryData.filter(item => item.changePct >= 0).length;
+  const average = industryData.reduce((sum, item) => sum + item.changePct, 0) / industryData.length;
+  return <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
+    {[{ label: 'Breadth', value: `${advancing} / ${industryData.length}`, note: 'Advancing indicators', tone: advancing >= industryData.length / 2 ? 'text-up' : 'text-down' }, { label: 'Average Change', value: `${average >= 0 ? '+' : ''}${fmt(average)}%`, note: 'Across all industries', tone: average >= 0 ? 'text-up' : 'text-down' }, { label: 'Momentum Leader', value: sorted[0].name, note: `+${fmt(sorted[0].changePct)}%`, tone: 'text-up' }, { label: 'Largest Drag', value: sorted.at(-1)!.name, note: `${fmt(sorted.at(-1)!.changePct)}%`, tone: 'text-down' }].map(stat => <div key={stat.label} className="bg-card border border-border rounded p-3"><div className="text-[10px] uppercase tracking-wider text-muted-foreground">{stat.label}</div><div className={`text-sm font-semibold mt-1 truncate ${stat.tone}`}>{stat.value}</div><div className="text-[10px] text-muted-foreground mt-0.5">{stat.note}</div></div>)}
+  </div>;
+}
+
+function IndustryHeatmap() {
+  return <div className="bg-card border border-border rounded p-4"><div className="flex justify-between items-end mb-3"><div><h3 className="text-sm font-bold">Industry Momentum Map</h3><p className="text-[10px] text-muted-foreground mt-0.5">Size represents relative move · color represents direction</p></div><span className="text-[10px] text-muted-foreground">DAILY CHANGE</span></div><div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-2">{industryData.map(item => { const intensity = Math.min(0.92, 0.18 + Math.abs(item.changePct) / 4); return <button key={item.id} onClick={() => openDetail('industry', item.id)} className="rounded p-3 text-left min-h-20 transition-transform hover:scale-[1.02]" style={{ background: item.changePct >= 0 ? `rgba(22,163,74,${intensity})` : `rgba(220,38,38,${intensity})`, color: intensity > .5 ? 'white' : 'var(--foreground)' }}><div className="text-[9px] opacity-75 truncate">{item.category}</div><div className="text-xs font-semibold mt-1 line-clamp-2">{item.name}</div><div className="text-sm font-mono font-bold mt-2">{item.changePct >= 0 ? '+' : ''}{fmt(item.changePct)}%</div></button>; })}</div></div>;
 }
 
 const allCategories = ['All', ...new Set(industryData.map(d => d.category))];
@@ -175,6 +194,8 @@ export function IndustryTab() {
         ))}
       </div>
 
+      <IndustryOverview />
+
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
         <div className="xl:col-span-2 space-y-3">
           <div className="bg-card border border-border rounded overflow-hidden">
@@ -210,6 +231,7 @@ export function IndustryTab() {
           <CategorySummary />
         </div>
       </div>
+      <IndustryHeatmap />
     </div>
   );
 }

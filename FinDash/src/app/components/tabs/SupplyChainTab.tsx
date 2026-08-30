@@ -3,6 +3,8 @@ import { AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
 import { FreightWorldMap } from "../WorldMap";
 import { freightIndices, portMarkers } from "../../data/mockData";
 import { TrendingUp, TrendingDown } from "lucide-react";
+import { openDetail } from "../../detailNavigation";
+import { paddedDomain } from "../../chartUtils";
 
 const fmt = (v: number) => v.toLocaleString('en-US');
 
@@ -36,16 +38,20 @@ function FreightIndexCard({ fi }: { fi: typeof freightIndices[0] }) {
       <div className={`text-xs font-mono ${up ? 'text-up' : 'text-down'}`}>
         {up ? '+' : ''}{fmt(fi.change)} pts
       </div>
+      <button onClick={(event) => { event.stopPropagation(); openDetail('freight', fi.id); }} className="mt-2 text-[10px] font-semibold text-primary hover:underline">
+        Research details →
+      </button>
     </div>
   );
 }
 
 function FreightLineChart({ selected }: { selected: string }) {
   const idx = freightIndices.find(f => f.id === selected) ?? freightIndices[0];
-  const data = idx.trend.map((d, i) => ({
-    period: i,
+  const data = idx.trend.map((d) => ({
+    period: d.date,
     [idx.name]: Math.round(d.v),
   }));
+  const domain = paddedDomain(data.map(point => point[idx.name]));
 
   return (
     <div className="bg-card border border-border rounded p-4">
@@ -70,8 +76,8 @@ function FreightLineChart({ selected }: { selected: string }) {
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-          <XAxis dataKey="period" hide />
-          <YAxis tick={{ fontSize: 10, fill: 'var(--muted-foreground)' }} tickFormatter={fmt} width={55} />
+          <XAxis dataKey="period" tick={{ fontSize: 9, fill: 'var(--muted-foreground)' }} minTickGap={28} tickFormatter={v => String(v).slice(2, 10)} />
+          <YAxis domain={domain} tick={{ fontSize: 10, fill: 'var(--muted-foreground)' }} tickFormatter={fmt} width={55} />
           <Tooltip content={<CustomTooltip />} />
           <Area key={`freight-area-${idx.id}`} type="monotone" dataKey={idx.name} name={idx.name} stroke="var(--primary)" fill="url(#freightGrad)" strokeWidth={2} dot={false} />
         </AreaChart>
@@ -83,7 +89,7 @@ function FreightLineChart({ selected }: { selected: string }) {
 function AllFreightChart() {
   const len = freightIndices[0].trend.length;
   const data = Array.from({ length: len }, (_, i) => {
-    const point: Record<string, any> = { period: i };
+    const point: Record<string, any> = { period: freightIndices[0].trend[i]?.date };
     freightIndices.forEach(fi => {
       point[fi.name] = Math.round(fi.trend[i]?.v ?? 0);
     });
@@ -91,6 +97,7 @@ function AllFreightChart() {
   });
 
   const colors = ['var(--primary)', 'var(--up)', 'var(--down)', '#F59E0B', '#8B5CF6', '#06B6D4'];
+  const domain = paddedDomain(data.flatMap(point => freightIndices.map(fi => point[fi.name])));
 
   return (
     <div className="bg-card border border-border rounded p-4">
@@ -98,8 +105,8 @@ function AllFreightChart() {
       <ResponsiveContainer width="100%" height={200}>
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-          <XAxis dataKey="period" hide />
-          <YAxis tick={{ fontSize: 9, fill: 'var(--muted-foreground)' }} width={50} tickFormatter={fmt} />
+          <XAxis dataKey="period" tick={{ fontSize: 9, fill: 'var(--muted-foreground)' }} minTickGap={28} tickFormatter={v => String(v).slice(2, 10)} />
+          <YAxis domain={domain} tick={{ fontSize: 9, fill: 'var(--muted-foreground)' }} width={50} tickFormatter={fmt} />
           <Tooltip content={<CustomTooltip />} />
           <Legend wrapperStyle={{ fontSize: 10 }} />
           {freightIndices.map((fi, i) => (

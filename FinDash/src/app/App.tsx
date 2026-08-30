@@ -8,6 +8,9 @@ import { MacroEconomicsTab } from "./components/tabs/MacroEconomicsTab";
 import { CommoditiesTab } from "./components/tabs/CommoditiesTab";
 import { IndustryTab } from "./components/tabs/IndustryTab";
 import { AssetAllocationTab } from "./components/tabs/AssetAllocationTab";
+import { dashboardConnection, marketIndices, commodities, freightIndices, volatilityIndices } from "./data/mockData";
+import { DetailPage } from "./components/DetailPage";
+import { readDetailRoute } from "./detailNavigation";
 
 const TAB_LABELS: Record<Tab, string> = {
   home:               'Overview — Global Market Summary',
@@ -21,20 +24,11 @@ const TAB_LABELS: Record<Tab, string> = {
 };
 
 function TickerBar() {
-  const items = [
-    'S&P 500  5,234.18  +0.83%',
-    'KOSPI  2,743.82  -0.23%',
-    'Nikkei 225  38,236.07  +0.92%',
-    'BDI  1,842  +1.27%',
-    'WTI  $78.23  +1.12%',
-    'Gold  $2,341.50  +0.53%',
-    'US 10Y  4.25%  -6bp',
-    'EURUSD  1.0843  +0.12%',
-    'USDJPY  156.34  -0.23%',
-    'USDKRW  1,384.5  +0.08%',
-    'VIX  13.42  -6.09%',
-    'SCFI  2,456  -1.80%',
-  ];
+  const selected = [marketIndices[0], marketIndices[3], marketIndices[5], freightIndices[0],
+    commodities[0], commodities[3], volatilityIndices[0]].filter(Boolean);
+  const items = selected.map(item =>
+    `${item.name}  ${item.value.toLocaleString('en-US', { maximumFractionDigits: 2 })}  ${item.changePct >= 0 ? '+' : ''}${item.changePct.toFixed(2)}%`
+  );
   const doubled = [...items, ...items];
 
   return (
@@ -78,6 +72,7 @@ function TabHeader({ tab }: { tab: Tab }) {
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>('home');
   const [isDark, setIsDark] = useState(false);
+  const [detail, setDetail] = useState(readDetailRoute());
 
   useEffect(() => {
     const saved = localStorage.getItem('findash-theme');
@@ -85,6 +80,12 @@ export default function App() {
       setIsDark(true);
       document.documentElement.classList.add('dark');
     }
+  }, []);
+
+  useEffect(() => {
+    const onHashChange = () => setDetail(readDetailRoute());
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
 
   const toggleDark = () => {
@@ -99,13 +100,19 @@ export default function App() {
     }
   };
 
+  const changeTab = (tab: Tab) => {
+    if (window.location.hash) window.location.hash = '';
+    setActiveTab(tab);
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
       <TickerBar />
-      <NavBar activeTab={activeTab} setActiveTab={setActiveTab} isDark={isDark} toggleDark={toggleDark} />
+      <NavBar activeTab={activeTab} setActiveTab={changeTab} isDark={isDark} toggleDark={toggleDark} />
       <TabHeader tab={activeTab} />
       <main className="flex-1 overflow-auto">
-        {activeTab === 'home' && <MainDashboard setActiveTab={setActiveTab} />}
+        {detail ? <DetailPage kind={detail.kind} id={detail.id} onBack={() => { history.back(); }} /> : <>
+        {activeTab === 'home' && <MainDashboard setActiveTab={changeTab} />}
         {activeTab === 'market' && <MarketTab />}
         {activeTab === 'fixed-income' && <FixedIncomeTab />}
         {activeTab === 'supply-chain' && <SupplyChainTab />}
@@ -113,12 +120,14 @@ export default function App() {
         {activeTab === 'commodities' && <CommoditiesTab />}
         {activeTab === 'industry' && <IndustryTab />}
         {activeTab === 'asset-allocation' && <AssetAllocationTab />}
+        </>}
       </main>
       <footer className="border-t border-border px-4 py-2 flex items-center justify-between text-[10px] text-muted-foreground">
         <span>FINDASH PRO · Personal Finance Data Dashboard</span>
         <span className="font-mono">
-          {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} ·
-          Simulated data only · Not for actual investment decisions
+          {dashboardConnection.connected ? '● DuckDB live' : '○ Demo fallback'} · {' '}
+          {dashboardConnection.updatedAt ? new Date(dashboardConnection.updatedAt).toLocaleString() : 'API not connected'} ·
+          {' '}Not for actual investment decisions
         </span>
       </footer>
     </div>
