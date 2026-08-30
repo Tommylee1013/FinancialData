@@ -8,7 +8,7 @@ import { MacroEconomicsTab } from "./components/tabs/MacroEconomicsTab";
 import { CommoditiesTab } from "./components/tabs/CommoditiesTab";
 import { IndustryTab } from "./components/tabs/IndustryTab";
 import { AssetAllocationTab } from "./components/tabs/AssetAllocationTab";
-import { dashboardConnection, marketIndices, commodities, freightIndices, volatilityIndices } from "./data/mockData";
+import { dashboardConnection, tickerTape } from "./data/mockData";
 import { DetailPage } from "./components/DetailPage";
 import { readDetailRoute } from "./detailNavigation";
 
@@ -24,26 +24,25 @@ const TAB_LABELS: Record<Tab, string> = {
 };
 
 function TickerBar() {
-  const selected = [marketIndices[0], marketIndices[3], marketIndices[5], freightIndices[0],
-    commodities[0], commodities[3], volatilityIndices[0]].filter(Boolean);
-  const items = selected.map(item =>
-    `${item.name}  ${item.value.toLocaleString('en-US', { maximumFractionDigits: 2 })}  ${item.changePct >= 0 ? '+' : ''}${item.changePct.toFixed(2)}%`
-  );
-  const doubled = [...items, ...items];
+  const doubled = [...tickerTape, ...tickerTape];
 
   return (
-    <div className="bg-primary text-primary-foreground overflow-hidden h-6 flex items-center text-[10px] font-mono">
+    <div className="bg-primary text-primary-foreground overflow-hidden h-8 flex items-center text-[11px] font-mono border-b border-white/10">
       <div
-        className="whitespace-nowrap flex gap-8 animate-marquee"
-        style={{ animation: 'marquee 40s linear infinite' }}
+        className="whitespace-nowrap flex gap-7 animate-marquee hover:[animation-play-state:paused]"
+        style={{ animation: 'marquee 125s linear infinite' }}
       >
         {doubled.map((item, i) => {
-          const isNeg = item.includes('-') && !item.includes('-%');
-          const isPos = item.match(/\+\d/);
-          const color = isNeg ? '#FCA5A5' : isPos ? '#86EFAC' : 'inherit';
+          const isNeg = item.changePct != null && item.changePct < 0;
+          const isPos = item.changePct != null && item.changePct > 0;
+          const color = isNeg ? '#FCA5A5' : isPos ? '#86EFAC' : item.connected ? 'inherit' : '#BFDBFE';
+          const value = item.value == null ? 'N/A' : item.value.toLocaleString('en-US', { maximumFractionDigits: item.category === 'Rates' ? 3 : 2 });
+          const change = item.changePct == null ? '' : `  ${item.changePct >= 0 ? '+' : ''}${item.changePct.toFixed(2)}%`;
           return (
-            <span key={i} style={{ color }}>
-              {item}
+            <span key={`${item.id}-${i}`} style={{ color }} className="inline-flex items-center gap-1.5">
+              <span className="text-[8px] tracking-wide text-blue-200/70">{item.category.toUpperCase()}</span>
+              <span className="font-semibold">{item.name}</span>
+              <span>{value}{change}</span>
             </span>
           );
         })}

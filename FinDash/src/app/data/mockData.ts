@@ -200,10 +200,29 @@ export const industryData = [
 
 export const sentimentData = {
   fng: { value: 62, label: 'Greed', connected: true, color: '#16A34A', trend: generateTrend(45, 30, 8, 0.03) },
-  aaii: { bullish: 45.2, bearish: 28.6, neutral: 26.2, connected: true, trend: generateTrend(38, 30, 4, 0.02) },
+  aaii: { value: 45.2, prev: 44.1, bullish: 45.2, bearish: 28.6, neutral: 26.2, connected: true, trend: generateTrend(38, 30, 4, 0.02) },
   naaim: { value: 68.3, change: 3.2, connected: true, trend: generateTrend(60, 30, 5, 0.02) },
   putcall: { value: 0.82 as number | null, change: -0.05, connected: true, reason: '', trend: generateTrend(1.0, 30, 0.08, -0.02) },
 };
+
+const tickerDefinitions = [
+  ['spx','SPX','Equity'], ['nasdaq','NASDAQ','Equity'], ['russell2000','RUSSELL 2000','Equity'], ['soxx','SOXX','Equity'],
+  ['kospi','KOSPI','Equity'], ['kosdaq','KOSDAQ','Equity'], ['nikkei225','NIKKEI 225','Equity'], ['topix','TOPIX','Equity'],
+  ['csi300','CSI 300','Equity'], ['shenzhen','SHENZHEN','Equity'], ['hsi','HSI','Equity'], ['eurostoxx50','EURO STOXX 50','Equity'],
+  ['vix','VIX','Volatility'], ['vvix','VVIX','Volatility'], ['skew','SKEW','Volatility'], ['vkospi','VKOSPI','Volatility'], ['nkvi','NKVI','Volatility'],
+  ['us3m','US 3M','Rates'], ['us2y','US 2Y','Rates'], ['us10y','US 10Y','Rates'], ['kr3y','KR 3Y','Rates'], ['kr10y','KR 10Y','Rates'],
+  ['wti','WTI','Commodity'], ['gold','GOLD','Commodity'], ['silver','SILVER','Commodity'],
+  ['dxi','DXI','Industry'],
+  ['bdi','BDI','Freight'], ['bci','BCI','Freight'], ['bdti','BDTI','Freight'], ['bhsi','BHSI','Freight'], ['blng','BLNG','Freight'], ['blpg','BLPG','Freight'],
+  ['ccfi','CCFI','Freight'], ['scfi','SCFI','Freight'], ['wci','WCI','Freight'],
+  ['bitcoin','BITCOIN','Crypto'], ['ethereum','ETHEREUM','Crypto'],
+  ['dxy','DOLLAR INDEX','FX'], ['jxy','YEN INDEX','FX'], ['exy','EURO INDEX','FX'],
+] as const;
+
+export const tickerTape = tickerDefinitions.map(([id, name, category]) => ({
+  id, name, category, value: null as number | null, change: null as number | null,
+  changePct: null as number | null, connected: false, asOf: null as string | null,
+}));
 
 export const newsFeed = [
   { id: 1, time: '13:42', source: 'Reuters', title: 'Fed official signals cautious approach to rate cuts this year', tag: 'Monetary Policy', sentiment: 'neutral' },
@@ -457,6 +476,7 @@ export async function loadDashboardData(): Promise<DashboardConnection> {
     mergeArray(yieldCurveKR, data.yieldCurveKR);
     mergeArray(freightIndices, data.freightIndices);
     mergeArray(industryData, data.industryData);
+    mergeArray(tickerTape, data.tickerTape);
     if (data.sectorDataByCountry) {
       Object.entries(data.sectorDataByCountry).forEach(([country, items]) => {
         if (Array.isArray(items) && items.length) sectorDataByCountry[country] = items;

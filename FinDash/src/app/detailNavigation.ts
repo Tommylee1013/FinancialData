@@ -1,4 +1,4 @@
-export type DetailKind = 'benchmark' | 'market' | 'volatility' | 'macro' | 'commodity' | 'freight' | 'industry' | 'fixed-income' | 'sector';
+export type DetailKind = 'benchmark' | 'market' | 'volatility' | 'macro' | 'commodity' | 'freight' | 'industry' | 'fixed-income' | 'sector' | 'sentiment';
 
 export function openDetail(kind: DetailKind, id: string) {
   window.location.hash = `detail/${kind}/${encodeURIComponent(id)}`;

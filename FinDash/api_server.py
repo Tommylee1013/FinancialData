@@ -25,20 +25,20 @@ MARKETS = {
     "DJI": ("dow", "Dow Jones", "US", "🇺🇸"),
     "KOSPI": ("kospi", "KOSPI", "KR", "🇰🇷"),
     "KOSDAQ": ("kosdaq", "KOSDAQ", "KR", "🇰🇷"),
-    "NKY": ("nikkei", "Nikkei 225", "JP", "🇯🇵"),
+    "NI225": ("nikkei", "Nikkei 225", "JP", "🇯🇵"),
     "TOPIX": ("topix", "TOPIX", "JP", "🇯🇵"),
     "DAX": ("dax", "DAX", "DE", "🇩🇪"),
     "UKX": ("ftse", "FTSE 100", "GB", "🇬🇧"),
     "CAC": ("cac", "CAC 40", "FR", "🇫🇷"),
     "HSI": ("hsi", "Hang Seng", "HK", "🇭🇰"),
-    "SHSZ300": ("csi300", "CSI 300", "CN", "🇨🇳"),
+    "CSI300": ("csi300", "CSI 300", "CN", "🇨🇳"),
 }
 
 VOLATILITY = {
     "VIX": ("vix", "VIX", "S&P 500 Volatility"),
     "VKOSPI": ("vkospi", "VKOSPI", "KOSPI Volatility"),
     "V2X": ("vstoxx", "VSTOXX", "Euro Stoxx 50 Volatility"),
-    "JNIV": ("nkvi", "NKVI", "Nikkei 225 Volatility"),
+    "NKVI": ("nkvi", "NKVI", "Nikkei 225 Volatility"),
     "RVX": ("rvx", "RVX", "Russell 2000 Volatility"),
     "MOVE": ("move", "MOVE", "US Bond Market Volatility"),
 }
@@ -122,6 +122,47 @@ SECTORS = {
     },
 }
 
+TICKER_SPECS = [
+    ("spx", "SPX", "market.index_data", "SP500", "close", "Equity"),
+    ("nasdaq", "NASDAQ", "market.index_data", "NASDAQ", "close", "Equity"),
+    ("russell2000", "RUSSELL 2000", "market.index_data", "RUS2000", "close", "Equity"),
+    ("soxx", "SOXX", "market.index_data", "SOX", "close", "Equity"),
+    ("kospi", "KOSPI", "market.index_data", "KOSPI", "close", "Equity"),
+    ("kosdaq", "KOSDAQ", "market.index_data", "KOSDAQ", "close", "Equity"),
+    ("nikkei225", "NIKKEI 225", "market.index_data", "NI225", "close", "Equity"),
+    ("topix", "TOPIX", "market.index_data", "TOPIX", "close", "Equity"),
+    ("csi300", "CSI 300", "market.index_data", "CSI300", "close", "Equity"),
+    ("shenzhen", "SHENZHEN", "market.index_data", "SZSE", "close", "Equity"),
+    ("hsi", "HSI", "market.index_data", "HSI", "close", "Equity"),
+    ("eurostoxx50", "EURO STOXX 50", None, None, None, "Equity"),
+    ("vix", "VIX", "market.volatility_data", "VIX", "close", "Volatility"),
+    ("vvix", "VVIX", "market.volatility_data", "VVIX", "close", "Volatility"),
+    ("skew", "SKEW", "market.volatility_data", "SKEW", "close", "Volatility"),
+    ("vkospi", "VKOSPI", "market.volatility_data", "VKOSPI", "close", "Volatility"),
+    ("nkvi", "NKVI", "market.volatility_data", "NKVI", "close", "Volatility"),
+    ("us3m", "US 3M", None, None, None, "Rates"), ("us2y", "US 2Y", None, None, None, "Rates"),
+    ("us10y", "US 10Y", None, None, None, "Rates"),
+    ("kr3y", "KR 3Y", "fixed_income.fixed_income_data", "KTB03", "value", "Rates"),
+    ("kr10y", "KR 10Y", "fixed_income.fixed_income_data", "KTB10", "value", "Rates"),
+    ("wti", "WTI", "industry.index_data", "CL", "value", "Commodity"),
+    ("gold", "GOLD", "industry.index_data", "GC", "value", "Commodity"),
+    ("silver", "SILVER", "industry.index_data", "SI", "value", "Commodity"),
+    ("dxi", "DXI", "industry.index_data", "DXI", "value", "Industry"),
+    ("bdi", "BDI", "freight.freight_data", "BDI", "value", "Freight"),
+    ("bci", "BCI", "freight.freight_data", "BCI", "value", "Freight"),
+    ("bdti", "BDTI", "freight.freight_data", "BDTI", "value", "Freight"),
+    ("bhsi", "BHSI", "freight.freight_data", "BHSI", "value", "Freight"),
+    ("blng", "BLNG", "freight.freight_data", "BLNG", "value", "Freight"),
+    ("blpg", "BLPG", "freight.freight_data", "BLPG", "value", "Freight"),
+    ("ccfi", "CCFI", "freight.freight_data", "CCFI", "value", "Freight"),
+    ("scfi", "SCFI", "freight.freight_data", "SCFI", "value", "Freight"),
+    ("wci", "WCI", "freight.freight_data", "WCI", "value", "Freight"),
+    ("bitcoin", "BITCOIN", None, None, None, "Crypto"), ("ethereum", "ETHEREUM", None, None, None, "Crypto"),
+    ("dxy", "DOLLAR INDEX", "market.fx_data", "DXY", "close", "FX"),
+    ("jxy", "YEN INDEX", "market.fx_data", "JXY", "close", "FX"),
+    ("exy", "EURO INDEX", "market.fx_data", "EXY", "close", "FX"),
+]
+
 
 def _json_default(value):
     if isinstance(value, (date, datetime, time)):
@@ -129,15 +170,15 @@ def _json_default(value):
     raise TypeError(type(value).__name__)
 
 
-def _ohlcv(con, table: str, mapping: dict, periods: int = 365) -> list[dict]:
+def _ohlcv(con, table: str, mapping: dict, periods: int | None = 365) -> list[dict]:
     symbols = list(mapping)
     rows = con.execute(f"""
         with ranked as (
           select *, row_number() over (partition by symbol order by base_date desc, release_date desc, time desc) rn
           from {table} where symbol in (select unnest(?)) and close is not null
         ) select symbol, base_date, open, high, low, close, volume
-          from ranked where rn <= ? order by symbol, base_date
-    """, [symbols, periods]).fetchall()
+          from ranked where (? is null or rn <= ?) order by symbol, base_date
+    """, [symbols, periods, periods]).fetchall()
     grouped = {}
     for symbol, base_date, op, hi, lo, close, volume in rows:
         grouped.setdefault(symbol, []).append((base_date, op, hi, lo, close, volume))
@@ -154,7 +195,7 @@ def _ohlcv(con, table: str, mapping: dict, periods: int = 365) -> list[dict]:
                 "high": latest[2] if latest[2] is not None else value,
                 "low": latest[3] if latest[3] is not None else value,
                 "volume": f"{latest[5]:,.0f}" if latest[5] is not None else "—",
-                "trend": [{"t": i, "date": row[0], "v": row[4]} for i, row in enumerate(series) if row[4] is not None],
+                "trend": [{"t": i, "date": row[0], "v": row[4]} for i, row in enumerate(series[-365:]) if row[4] is not None],
                 "ohlc": [{"time": row[0], "open": row[1], "high": row[2], "low": row[3], "close": row[4]}
                          for row in series if all(value is not None for value in row[1:5])],
                 "asOf": latest[0]}
@@ -257,7 +298,7 @@ def _sentiment(con) -> dict:
         select symbol, base_date, value,
                row_number() over(partition by symbol order by base_date desc, release_date desc, time desc) rn
         from behavior.behavior_data where symbol in (select unnest(?)) and value is not null
-      ) select symbol, base_date, value, rn from ranked where rn <= 2
+      ) select symbol, base_date, value, rn from ranked where rn <= 365
     """, [symbols]).fetchall()
     values = {}
     for symbol, base_date, value, rank in rows:
@@ -267,20 +308,46 @@ def _sentiment(con) -> dict:
         previous = values.get(symbol, {}).get(2, current)
         return ((current[0] * scale if current else None), (previous[0] * scale if previous else None),
                 (current[1] if current else None))
+    def trend(symbol, scale=1):
+        return [{"date": row[1], "v": row[0] * scale}
+                for _, row in sorted(values.get(symbol, {}).items(), reverse=True)]
     fng, fng_prev, fng_date = latest("CNNFNGI")
     naaim, naaim_prev, naaim_date = latest("NAAIMAVG")
-    bull, _, aaii_date = latest("AAIIBULL", 100)
+    bull, bull_prev, aaii_date = latest("AAIIBULL", 100)
     neutral, _, _ = latest("AAIINEUT", 100)
     bear, _, _ = latest("AAIIBEAR", 100)
     label = "Unavailable" if fng is None else ("Extreme Fear" if fng < 25 else "Fear" if fng < 45 else "Neutral" if fng < 55 else "Greed" if fng < 75 else "Extreme Greed")
     return {
-        "fng": {"value": fng, "prev": fng_prev, "label": label, "asOf": fng_date, "connected": fng is not None},
-        "aaii": {"bullish": bull, "neutral": neutral, "bearish": bear, "asOf": aaii_date,
+        "fng": {"value": fng, "prev": fng_prev, "label": label, "asOf": fng_date,
+                "trend": trend("CNNFNGI"), "connected": fng is not None},
+        "aaii": {"value": bull, "prev": bull_prev, "bullish": bull, "neutral": neutral, "bearish": bear,
+                 "trend": trend("AAIIBULL", 100), "asOf": aaii_date,
                  "connected": all(v is not None for v in (bull, neutral, bear))},
         "naaim": {"value": naaim, "prev": naaim_prev, "change": naaim - naaim_prev if naaim is not None and naaim_prev is not None else None,
-                  "asOf": naaim_date, "connected": naaim is not None},
+                  "trend": trend("NAAIMAVG"), "asOf": naaim_date, "connected": naaim is not None},
         "putcall": {"value": None, "connected": False, "reason": "Series not available in DuckDB"},
     }
+
+
+def _ticker_tape(con) -> list[dict]:
+    items = []
+    for item_id, name, table, symbol, field, category in TICKER_SPECS:
+        item = {"id": item_id, "name": name, "category": category, "value": None,
+                "change": None, "changePct": None, "asOf": None, "connected": False}
+        if table:
+            rows = con.execute(f"""
+              select base_date, {field} from {table}
+              where symbol = ? and {field} is not null
+              order by base_date desc, release_date desc, time desc limit 2
+            """, [symbol]).fetchall()
+            if rows:
+                value = rows[0][1]
+                previous = rows[1][1] if len(rows) > 1 else value
+                change = value - previous
+                item.update(value=value, change=change, changePct=change / previous * 100 if previous else 0,
+                            asOf=rows[0][0], connected=True)
+        items.append(item)
+    return items
 
 
 def dashboard_payload() -> dict:
@@ -297,9 +364,10 @@ def dashboard_payload() -> dict:
             meta = next(v for v in FREIGHT.values() if v[0] == item["id"])
             item.update(fullName=meta[2], desc=meta[3])
         return {"source": str(DB_PATH), "updatedAt": datetime.now().isoformat(timespec="seconds"),
-                "marketIndices": _ohlcv(con, "market.index_data", MARKETS),
+                "marketIndices": _ohlcv(con, "market.index_data", MARKETS, None),
                 "volatilityIndices": _ohlcv(con, "market.volatility_data", VOLATILITY),
                 "sectorDataByCountry": _sector_data(con), "sentimentData": _sentiment(con),
+                "tickerTape": _ticker_tape(con),
                 "macroVariables": _macro(con),
                 "commodities": _values(con, "industry.index_data", COMMODITIES),
                 "freightIndices": freight, "industryData": industry,

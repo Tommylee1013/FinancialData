@@ -1,7 +1,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --font-size: 14px;
+  --font-size: 16px;
   --background: #F0F2F5;
   --foreground: #0A0E1A;
   --card: #FFFFFF;
@@ -41,6 +41,22 @@
   --sidebar-accent-foreground: #374151;
   --sidebar-border: rgba(0,0,0,0.08);
   --sidebar-ring: #93C5FD;
+}
+
+/* Scale the dashboard progressively on high-density and 4K workspaces. */
+@media (min-width: 1800px) and (min-resolution: 1.5dppx) {
+  :root { --font-size: 18px; }
+  .max-w-screen-2xl { max-width: 1760px !important; }
+}
+
+@media (min-width: 2400px) {
+  :root { --font-size: 18px; }
+  .max-w-screen-2xl { max-width: 2280px !important; }
+}
+
+@media (min-width: 3200px) {
+  :root { --font-size: 20px; }
+  .max-w-screen-2xl { max-width: 3400px !important; }
 }
 
 .dark {

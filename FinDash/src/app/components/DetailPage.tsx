@@ -6,7 +6,7 @@ import { paddedDomain } from '../chartUtils';
 import {
   commodities, dashboardConnection, freightIndices, globalBenchmarks,
   industryData, macroVariables, marketIndices, volatilityIndices,
-  yieldCurveUS, yieldCurveKR, krSwapRates, moneyMarket, sectorDataByCountry,
+  yieldCurveUS, yieldCurveKR, krSwapRates, moneyMarket, sectorDataByCountry, sentimentData,
 } from '../data/mockData';
 
 const fixedIncomeItems = [
@@ -29,13 +29,24 @@ const collections: Record<DetailKind, any[]> = {
   industry: industryData,
   'fixed-income': fixedIncomeItems,
   sector: Object.values(sectorDataByCountry).flat(),
+  sentiment: [],
 };
+
+function getCollection(kind: DetailKind) {
+  if (kind !== 'sentiment') return collections[kind];
+  return [
+    { ...sentimentData.fng, id: 'fear-greed', name: 'CNN Fear & Greed Index', category: 'Market Sentiment', unit: 'pt' },
+    { ...sentimentData.aaii, id: 'aaii', name: 'AAII Bullish Sentiment', category: 'Investor Survey', unit: '%' },
+    { ...sentimentData.naaim, id: 'naaim', name: 'NAAIM Exposure Index', category: 'Manager Exposure', unit: '%' },
+  ];
+}
 
 const labels: Record<DetailKind, string> = {
   benchmark: 'GLOBAL BENCHMARK', market: 'MARKET INDEX', volatility: 'VOLATILITY',
   macro: 'MACRO INDICATOR', commodity: 'COMMODITY', freight: 'FREIGHT INDEX', industry: 'INDUSTRY DATA',
   'fixed-income': 'FIXED INCOME',
   sector: 'SECTOR INDEX',
+  sentiment: 'MARKET SENTIMENT',
 };
 
 const fmt = (value: number | null | undefined, digits = 2) =>
@@ -53,7 +64,7 @@ export function DetailPage({ kind, id, onBack }: { kind: DetailKind; id: string;
   const [range, setRange] = useState<'1M' | '3M' | '6M' | '1Y' | 'MAX' | 'CUSTOM'>('6M');
   const [customStart, setCustomStart] = useState('');
   const [customEnd, setCustomEnd] = useState('');
-  const item = collections[kind]?.find(entry => entry.id === id);
+  const item = getCollection(kind)?.find(entry => entry.id === id);
   if (!item) return <div className="p-10 text-center"><p className="text-muted-foreground">This indicator could not be found.</p><button className="mt-4 text-primary" onClick={onBack}>Go back</button></div>;
 
   const change = item.change ?? (item.value != null && item.prev != null ? item.value - item.prev : 0);

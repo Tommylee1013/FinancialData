@@ -132,7 +132,7 @@ export function MarketTab() {
                 TradingView Lightweight Charts · Scroll to zoom
               </div>
             </div>
-            <TradingViewChart data={ohlcData} height={320} />
+            <TradingViewChart data={ohlcData} height={480} initialMonths={3} />
           </div>
 
           {/* Country sector board */}
@@ -193,11 +193,12 @@ export function MarketTab() {
           {/* Sentiment */}
           <div className="bg-card border border-border rounded p-3">
             <div className="text-xs font-bold text-foreground mb-3">Market Sentiment Indicators</div>
-            <div className="flex justify-center mb-3">
+            <div onClick={() => openDetail('sentiment', 'fear-greed')} className="flex justify-center mb-3 rounded cursor-pointer hover:bg-accent transition-colors" role="button" tabIndex={0}>
               {sentimentData.fng.connected !== false ? <FngGauge value={sentimentData.fng.value ?? 0} label={sentimentData.fng.label} /> : <div className="py-6 text-xs text-muted-foreground">Fear &amp; Greed data unavailable</div>}
             </div>
             <div className="space-y-2 border-t border-border pt-2">
-              <div className="text-[10px] font-semibold text-muted-foreground mb-1">AAII Sentiment Survey</div>
+              <div onClick={() => openDetail('sentiment', 'aaii')} className="rounded p-1 cursor-pointer hover:bg-accent transition-colors" role="button" tabIndex={0}>
+              <div className="text-[10px] font-semibold text-muted-foreground mb-1 flex items-center justify-between"><span>AAII Sentiment Survey</span><ChevronRight size={12}/></div>
               <div className="flex gap-2 text-[11px]">
                 <div className="flex-1 text-center">
                   <div className="text-up font-mono font-bold">{fmt(sentimentData.aaii.bullish, 1)}%</div>
@@ -212,9 +213,10 @@ export function MarketTab() {
                   <div className="text-muted-foreground">Bearish</div>
                 </div>
               </div>
+              </div>
               <div className="border-t border-border pt-2 flex justify-between items-center">
-                <div>
-                  <div className="text-[10px] text-muted-foreground">NAAIM Exposure</div>
+                <div onClick={() => openDetail('sentiment', 'naaim')} className="rounded p-1 cursor-pointer hover:bg-accent transition-colors" role="button" tabIndex={0}>
+                  <div className="text-[10px] text-muted-foreground flex items-center gap-1">NAAIM Exposure <ChevronRight size={11}/></div>
                   <div className="text-sm font-mono font-bold text-foreground">{fmt(sentimentData.naaim.value, 1)}</div>
                 </div>
                 <div className="text-right">

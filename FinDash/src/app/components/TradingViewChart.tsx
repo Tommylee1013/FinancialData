@@ -3,7 +3,7 @@ import { CandlestickSeries, ColorType, LineSeries, createChart, type Candlestick
 
 type Candle = { time?: string; date?: string; open: number; high: number; low: number; close: number };
 
-export function TradingViewChart({ data, height = 320 }: { data: Candle[]; height?: number }) {
+export function TradingViewChart({ data, height = 440, initialMonths = 3 }: { data: Candle[]; height?: number; initialMonths?: number }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -54,11 +54,21 @@ export function TradingViewChart({ data, height = 320 }: { data: Candle[]; heigh
     bbMid.setData(bollinger.map(point => ({ time: point.time, value: point.middle })) as LineData<Time>[]);
     bbUpper.setData(bollinger.map(point => ({ time: point.time, value: point.upper })) as LineData<Time>[]);
     bbLower.setData(bollinger.map(point => ({ time: point.time, value: point.lower })) as LineData<Time>[]);
-    chart.timeScale().fitContent();
+    if (normalized.length > 1) {
+      const latestTime = normalized[normalized.length - 1].time;
+      const latestDate = new Date(String(latestTime));
+      const rangeStart = new Date(latestDate);
+      rangeStart.setMonth(rangeStart.getMonth() - initialMonths);
+      const firstTime = normalized[0].time;
+      const from = rangeStart > new Date(String(firstTime)) ? rangeStart.toISOString().slice(0, 10) as Time : firstTime;
+      chart.timeScale().setVisibleRange({ from, to: latestTime });
+    } else {
+      chart.timeScale().fitContent();
+    }
     const observer = new ResizeObserver(() => chart.applyOptions({ width: container.clientWidth }));
     observer.observe(container);
     return () => { observer.disconnect(); chart.remove(); };
-  }, [data, height]);
+  }, [data, height, initialMonths]);
 
   return <div className="relative w-full"><div className="absolute z-10 top-2 left-3 flex gap-3 text-[10px] font-mono pointer-events-none"><span className="flex items-center gap-1 text-muted-foreground"><i className="w-3 h-0.5 bg-yellow-500"/>MA 5</span><span className="flex items-center gap-1 text-muted-foreground"><i className="w-3 h-0.5 bg-violet-500"/>BB 20 · 2σ</span></div><div ref={containerRef} className="w-full" style={{ height }} /></div>;
 }
