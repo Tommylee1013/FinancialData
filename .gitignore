@@ -1,2 +1,9 @@
 gdelt*
 *.parquet
+
+# Local credentials and FinDash AI conversation state
+config/*.key
+database/findash_chat.sqlite3*
+**/__pycache__/
+*.py[cod]
+.DS_Store

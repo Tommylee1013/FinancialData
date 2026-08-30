@@ -8,6 +8,7 @@ import { MacroEconomicsTab } from "./components/tabs/MacroEconomicsTab";
 import { CommoditiesTab } from "./components/tabs/CommoditiesTab";
 import { IndustryTab } from "./components/tabs/IndustryTab";
 import { AssetAllocationTab } from "./components/tabs/AssetAllocationTab";
+import { AIResearchTab } from "./components/tabs/AIResearchTab";
 import { dashboardConnection, tickerTape } from "./data/mockData";
 import { DetailPage } from "./components/DetailPage";
 import { readDetailRoute } from "./detailNavigation";
@@ -21,6 +22,7 @@ const TAB_LABELS: Record<Tab, string> = {
   commodities:        'Commodities — Raw Materials & Goods',
   industry:           'Industry — Semiconductors · Real Estate · Energy',
   'asset-allocation': 'Asset Allocation — Portfolio Optimization',
+  'ai-research':      'AI Research — Financial Data Agent',
 };
 
 function TickerBar() {
@@ -110,7 +112,7 @@ export default function App() {
       <NavBar activeTab={activeTab} setActiveTab={changeTab} isDark={isDark} toggleDark={toggleDark} />
       <TabHeader tab={activeTab} />
       <main className="flex-1 overflow-auto">
-        {detail ? <DetailPage kind={detail.kind} id={detail.id} onBack={() => { history.back(); }} /> : <>
+        {detail ? <DetailPage kind={detail.kind} id={detail.id} onBack={() => { history.back(); }} onAskAI={(context) => { localStorage.setItem('findash-ai-context', JSON.stringify(context)); window.location.hash = ''; setActiveTab('ai-research'); }} /> : <>
         {activeTab === 'home' && <MainDashboard setActiveTab={changeTab} />}
         {activeTab === 'market' && <MarketTab />}
         {activeTab === 'fixed-income' && <FixedIncomeTab />}
@@ -119,6 +121,7 @@ export default function App() {
         {activeTab === 'commodities' && <CommoditiesTab />}
         {activeTab === 'industry' && <IndustryTab />}
         {activeTab === 'asset-allocation' && <AssetAllocationTab />}
+        {activeTab === 'ai-research' && <AIResearchTab />}
         </>}
       </main>
       <footer className="border-t border-border px-4 py-2 flex items-center justify-between text-[10px] text-muted-foreground">

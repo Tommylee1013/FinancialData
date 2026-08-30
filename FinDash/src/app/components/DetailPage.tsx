@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, ArrowUpRight, ArrowDownRight, CalendarDays, Database, Gauge, Layers3 } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, ArrowDownRight, Bot, CalendarDays, Database, Gauge, Layers3 } from 'lucide-react';
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import type { DetailKind } from '../detailNavigation';
 import { paddedDomain } from '../chartUtils';
@@ -60,7 +60,7 @@ function Stat({ label, value, note }: { label: string; value: string; note?: str
   </div>;
 }
 
-export function DetailPage({ kind, id, onBack }: { kind: DetailKind; id: string; onBack: () => void }) {
+export function DetailPage({ kind, id, onBack, onAskAI }: { kind: DetailKind; id: string; onBack: () => void; onAskAI?: (context: Record<string, unknown>) => void }) {
   const [range, setRange] = useState<'1M' | '3M' | '6M' | '1Y' | 'MAX' | 'CUSTOM'>('6M');
   const [customStart, setCustomStart] = useState('');
   const [customEnd, setCustomEnd] = useState('');
@@ -124,6 +124,7 @@ export function DetailPage({ kind, id, onBack }: { kind: DetailKind; id: string;
           <div className={`mt-1 inline-flex items-center gap-1 font-mono text-sm font-semibold ${up ? 'text-up' : 'text-down'}`}>
             {up ? <ArrowUpRight size={15}/> : <ArrowDownRight size={15}/>}{up ? '+' : ''}{fmt(change)} ({up ? '+' : ''}{fmt(changePct)}%)
           </div>
+          {onAskAI && <button onClick={() => onAskAI({ kind, id, name: item.name, value: item.value, asOf: item.asOf ?? item.period })} className="mt-3 inline-flex items-center gap-1.5 rounded bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground"><Bot size={13}/>Ask AI</button>}
         </div>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 bg-secondary/30">

@@ -297,153 +297,26 @@ export const globalBenchmarks = [
 
 // Asset Allocation — Portfolio Optimization
 export const portfolioAssets = [
-  { id: 'us_eq',  name: 'US Equities',      ticker: 'SPY',      expectedReturn: 9.2,  volatility: 15.8, region: 'Developed',   color: '#1A56DB' },
-  { id: 'kr_eq',  name: 'Korea Equities',   ticker: 'KOSPI',    expectedReturn: 8.5,  volatility: 18.2, region: 'Developed',   color: '#3B82F6' },
-  { id: 'jp_eq',  name: 'Japan Equities',   ticker: 'N225',     expectedReturn: 7.8,  volatility: 16.5, region: 'Developed',   color: '#60A5FA' },
-  { id: 'eu_eq',  name: 'Europe Equities',  ticker: 'EuroStoxx', expectedReturn: 7.2, volatility: 17.1, region: 'Developed',   color: '#93C5FD' },
-  { id: 'em_eq',  name: 'EM Equities',      ticker: 'MSCI EM',  expectedReturn: 10.5, volatility: 22.3, region: 'Emerging',    color: '#F59E0B' },
-  { id: 'us_bd',  name: 'US Treasuries',    ticker: 'TLT',      expectedReturn: 4.8,  volatility: 12.1, region: 'Bonds',       color: '#16A34A' },
-  { id: 'kr_bd',  name: 'Korea Gov Bonds',  ticker: 'KTB',      expectedReturn: 3.9,  volatility: 5.2,  region: 'Bonds',       color: '#22C55E' },
-  { id: 'gold',   name: 'Gold',             ticker: 'GLD',      expectedReturn: 6.2,  volatility: 13.8, region: 'Alternatives', color: '#EAB308' },
-  { id: 'comm',   name: 'Commodities',      ticker: 'DJP',      expectedReturn: 5.8,  volatility: 16.4, region: 'Alternatives', color: '#F97316' },
-  { id: 'reit',   name: 'REITs',            ticker: 'VNQ',      expectedReturn: 8.1,  volatility: 19.2, region: 'Alternatives', color: '#A855F7' },
-];
-
-export const correlationMatrix = [
-//  us    kr    jp    eu    em    us_bd kr_bd gold  comm  reit
-  [ 1.00, 0.52, 0.58, 0.68, 0.60,-0.22,-0.08, 0.02, 0.28, 0.65],
-  [ 0.52, 1.00, 0.62, 0.48, 0.72,-0.18, 0.15,-0.05, 0.21, 0.45],
-  [ 0.58, 0.62, 1.00, 0.54, 0.64,-0.20, 0.08,-0.02, 0.25, 0.52],
-  [ 0.68, 0.48, 0.54, 1.00, 0.56,-0.15,-0.12, 0.05, 0.32, 0.60],
-  [ 0.60, 0.72, 0.64, 0.56, 1.00,-0.25, 0.05, 0.08, 0.38, 0.55],
-  [-0.22,-0.18,-0.20,-0.15,-0.25, 1.00, 0.42, 0.32,-0.12,-0.15],
-  [-0.08, 0.15, 0.08,-0.12, 0.05, 0.42, 1.00, 0.18,-0.05, 0.02],
-  [ 0.02,-0.05,-0.02, 0.05, 0.08, 0.32, 0.18, 1.00, 0.42, 0.12],
-  [ 0.28, 0.21, 0.25, 0.32, 0.38,-0.12,-0.05, 0.42, 1.00, 0.30],
-  [ 0.65, 0.45, 0.52, 0.60, 0.55,-0.15, 0.02, 0.12, 0.30, 1.00],
+  { id: 'us_eq', name: 'US Equities', ticker: 'SPX', assetClass: 'Market', expectedReturn: 0, volatility: 0, region: 'United States', color: '#1A56DB' },
+  { id: 'kr_eq', name: 'Korea Equities', ticker: 'KOSPI', assetClass: 'Market', expectedReturn: 0, volatility: 0, region: 'South Korea', color: '#3B82F6' },
+  { id: 'jp_eq', name: 'Japan Equities', ticker: 'N225', assetClass: 'Market', expectedReturn: 0, volatility: 0, region: 'Japan', color: '#60A5FA' },
+  { id: 'cn_eq', name: 'China Equities', ticker: 'CSI300', assetClass: 'Market', expectedReturn: 0, volatility: 0, region: 'China', color: '#F59E0B' },
+  { id: 'us_small', name: 'US Small Cap', ticker: 'RUS2000', assetClass: 'Market', expectedReturn: 0, volatility: 0, region: 'United States', color: '#06B6D4' },
+  { id: 'semi', name: 'Semiconductors', ticker: 'SOX', assetClass: 'Market', expectedReturn: 0, volatility: 0, region: 'United States', color: '#8B5CF6' },
+  { id: 'reit', name: 'US Real Estate', ticker: 'SPX RE', assetClass: 'Market', expectedReturn: 0, volatility: 0, region: 'United States', color: '#A855F7' },
+  { id: 'kr_bond_3y', name: 'Korea Treasury 3Y', ticker: 'KTB 3Y', assetClass: 'Bond', expectedReturn: 0, volatility: 0, region: 'South Korea', color: '#22C55E' },
+  { id: 'kr_bond_10y', name: 'Korea Treasury 10Y', ticker: 'KTB 10Y', assetClass: 'Bond', expectedReturn: 0, volatility: 0, region: 'South Korea', color: '#15803D' },
+  { id: 'dxy', name: 'US Dollar Index', ticker: 'DXY', assetClass: 'FX', expectedReturn: 0, volatility: 0, region: 'FX', color: '#16A34A' },
+  { id: 'jxy', name: 'Japanese Yen Index', ticker: 'JXY', assetClass: 'FX', expectedReturn: 0, volatility: 0, region: 'FX', color: '#E11D48' },
+  { id: 'exy', name: 'Euro Currency Index', ticker: 'EXY', assetClass: 'FX', expectedReturn: 0, volatility: 0, region: 'FX', color: '#0EA5E9' },
 ];
 
 export type PortfolioMethod = 'mvo' | 'hrp' | 'nco' | 'bl';
 
-export interface MVOParams  { riskAversion: number; minWeight: number; maxWeight: number; longOnly: boolean }
+export interface MVOParams  { objective: 'mean_variance'|'min_variance'|'max_sharpe'; riskAversion: number; minWeight: number; maxWeight: number; longOnly: boolean }
 export interface HRPParams  { linkage: string; distanceMetric: string }
 export interface NCOParams  { nClusters: number; withinCluster: string; covEstimator: string }
 export interface BLParams   { delta: number; tau: number; views: { assetId: string; direction: 'up'|'down'; magnitude: number; confidence: number }[] }
-
-function clamp(v: number, lo: number, hi: number) { return Math.max(lo, Math.min(hi, v)); }
-
-export function computeMVOWeights(params: MVOParams, activeIds: string[]): Record<string, number> {
-  const λ = params.riskAversion;
-  const base: Record<string, number> = {
-    us_eq: clamp(0.28 - λ * 0.025, 0.05, 0.45),
-    kr_eq: clamp(0.07 - λ * 0.005, 0.02, 0.15),
-    jp_eq: clamp(0.08 - λ * 0.006, 0.02, 0.15),
-    eu_eq: clamp(0.10 - λ * 0.008, 0.02, 0.18),
-    em_eq: clamp(0.05 - λ * 0.006, 0.00, 0.12),
-    us_bd: clamp(0.20 + λ * 0.040, 0.05, 0.55),
-    kr_bd: clamp(0.08 + λ * 0.010, 0.02, 0.20),
-    gold:  clamp(0.06 + λ * 0.008, 0.02, 0.18),
-    comm:  clamp(0.04 - λ * 0.002, 0.00, 0.10),
-    reit:  clamp(0.04 - λ * 0.004, 0.00, 0.10),
-  };
-  return normalizeWeights(base, activeIds, params.minWeight, params.maxWeight);
-}
-
-export function computeHRPWeights(params: HRPParams, activeIds: string[]): Record<string, number> {
-  const linkageBoost: Record<string, number> = { ward: 1.0, complete: 0.95, single: 0.85, average: 0.9 };
-  const k = linkageBoost[params.linkage] ?? 1.0;
-  const base: Record<string, number> = {
-    us_eq: 0.175 * k, kr_eq: 0.090, jp_eq: 0.095, eu_eq: 0.105, em_eq: 0.070,
-    us_bd: 0.165 / k, kr_bd: 0.080, gold: 0.115, comm: 0.060, reit: 0.045,
-  };
-  return normalizeWeights(base, activeIds, 0, 1);
-}
-
-export function computeNCOWeights(params: NCOParams, activeIds: string[]): Record<string, number> {
-  const nc = params.nClusters;
-  const equityShare = nc >= 4 ? 0.40 : nc === 3 ? 0.45 : 0.50;
-  const bondShare   = nc >= 4 ? 0.35 : nc === 3 ? 0.32 : 0.30;
-  const altShare    = 1 - equityShare - bondShare;
-  const equityTotal = ['us_eq','kr_eq','jp_eq','eu_eq','em_eq','reit'];
-  const bondTotal   = ['us_bd','kr_bd'];
-  const altTotal    = ['gold','comm'];
-  const equityW = [0.40, 0.20, 0.18, 0.14, 0.05, 0.03].map(w => w * equityShare);
-  const bondW   = [0.65, 0.35].map(w => w * bondShare);
-  const altW    = [0.60, 0.40].map(w => w * altShare);
-  const base: Record<string, number> = {};
-  equityTotal.forEach((id, i) => { base[id] = equityW[i]; });
-  bondTotal.forEach((id, i)   => { base[id] = bondW[i]; });
-  altTotal.forEach((id, i)    => { base[id] = altW[i]; });
-  return normalizeWeights(base, activeIds, 0, 1);
-}
-
-export function computeBLWeights(params: BLParams, activeIds: string[]): Record<string, number> {
-  const mktCap: Record<string, number> = {
-    us_eq: 0.35, kr_eq: 0.06, jp_eq: 0.09, eu_eq: 0.14, em_eq: 0.08,
-    us_bd: 0.12, kr_bd: 0.04, gold: 0.04, comm: 0.02, reit: 0.06,
-  };
-  const base = { ...mktCap };
-  params.views.forEach(v => {
-    const multiplier = v.direction === 'up'
-      ? 1 + v.magnitude * 0.01 * v.confidence * 0.01
-      : 1 - v.magnitude * 0.01 * v.confidence * 0.01;
-    if (base[v.assetId] !== undefined) base[v.assetId] *= multiplier;
-  });
-  return normalizeWeights(base, activeIds, 0, 1);
-}
-
-function normalizeWeights(base: Record<string, number>, activeIds: string[], minW: number, maxW: number): Record<string, number> {
-  const filtered: Record<string, number> = {};
-  activeIds.forEach(id => { filtered[id] = Math.max(base[id] ?? 0, minW); });
-  let sum = Object.values(filtered).reduce((s, v) => s + v, 0);
-  if (sum === 0) {
-    activeIds.forEach(id => { filtered[id] = 1 / activeIds.length; });
-    sum = 1;
-  }
-  const result: Record<string, number> = {};
-  activeIds.forEach(id => { result[id] = filtered[id] / sum; });
-  return result;
-}
-
-export function computePortfolioMetrics(weights: Record<string, number>) {
-  const ids = Object.keys(weights);
-  const assets = portfolioAssets.filter(a => ids.includes(a.id));
-  const ret = assets.reduce((s, a) => s + (weights[a.id] ?? 0) * a.expectedReturn, 0);
-  let variance = 0;
-  assets.forEach((a, i) => {
-    assets.forEach((b, j) => {
-      const wi = weights[a.id] ?? 0;
-      const wj = weights[b.id] ?? 0;
-      const aIdx = portfolioAssets.findIndex(x => x.id === a.id);
-      const bIdx = portfolioAssets.findIndex(x => x.id === b.id);
-      variance += wi * wj * (a.volatility / 100) * (b.volatility / 100) * (correlationMatrix[aIdx]?.[bIdx] ?? 0);
-    });
-  });
-  const vol  = Math.sqrt(variance) * 100;
-  const rf   = 3.5;
-  const sharpe  = (ret - rf) / vol;
-  const maxDD   = -(vol * 1.45);
-  const calmar  = ret / Math.abs(maxDD);
-  const sortino = (ret - rf) / (vol * 0.72);
-  const var95   = -(vol / Math.sqrt(12) * 1.645);
-  const cvar95  = var95 * 1.22;
-  return { ret, vol, sharpe, maxDD, calmar, sortino, var95, cvar95, rf };
-}
-
-export function generateEfficientFrontier(activeIds: string[]) {
-  const assets = portfolioAssets.filter(a => activeIds.includes(a.id));
-  const minRet  = Math.min(...assets.map(a => a.expectedReturn));
-  const maxRet  = Math.max(...assets.map(a => a.expectedReturn));
-  const minVol  = Math.min(...assets.map(a => a.volatility)) * 0.7;
-  const frontier: { x: number; y: number }[] = [];
-  for (let i = 0; i <= 40; i++) {
-    const t = i / 40;
-    const ret = minRet + t * (maxRet - minRet);
-    const vol = minVol + (minVol * 0.3) * Math.pow(t * 2 - 0.6, 2) + t * (Math.max(...assets.map(a => a.volatility)) - minVol) * 0.6;
-    frontier.push({ x: parseFloat(vol.toFixed(2)), y: parseFloat(ret.toFixed(2)) });
-  }
-  return frontier;
-}
 
 export type DashboardConnection = {
   connected: boolean;

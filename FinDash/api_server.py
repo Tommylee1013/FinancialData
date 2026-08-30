@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 from datetime import date, datetime, time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -14,9 +15,18 @@ import duckdb
 
 
 ROOT = Path(__file__).resolve().parent
+PROJECT_ROOT = ROOT.parent
+sys.path.insert(0, str(PROJECT_ROOT / "src"))
+from agent import AgentService
+from allocation import AllocationService
+from backtest import WalkForwardBacktester
+
 DB_PATH = Path(os.environ.get("FINDASH_DB_PATH", ROOT.parent / "database" / "alternative_data.duckdb"))
 HOST = os.environ.get("FINDASH_API_HOST", "127.0.0.1")
 PORT = int(os.environ.get("FINDASH_API_PORT", "8787"))
+AGENT = AgentService(finance_db=DB_PATH)
+ALLOCATION = AllocationService(DB_PATH)
+BACKTEST = WalkForwardBacktester(DB_PATH)
 
 
 MARKETS = {
@@ -393,10 +403,54 @@ class Handler(BaseHTTPRequestHandler):
                 self._send(200, {"ok": DB_PATH.is_file(), "database": str(DB_PATH)})
             elif path == "/api/dashboard":
                 self._send(200, dashboard_payload())
+            elif path == "/api/agent/status":
+                self._send(200, AGENT.status())
+            elif path == "/api/agent/conversations":
+                self._send(200, {"conversations": AGENT.list_conversations()})
+            elif path == "/api/allocation/universe":
+                self._send(200, {"assets": ALLOCATION.universe()})
+            elif path.startswith("/api/agent/conversations/"):
+                conversation_id = path.rsplit("/", 1)[-1]
+                conversation = AGENT.get_conversation(conversation_id)
+                self._send(200 if conversation else 404, conversation or {"error": "Conversation not found"})
             else:
                 self._send(404, {"error": "Not found"})
         except Exception as exc:
             self._send(500, {"error": str(exc)})
+
+    def _body(self):
+        length = int(self.headers.get("Content-Length", "0"))
+        return json.loads(self.rfile.read(length) or b"{}")
+
+    def do_POST(self):
+        path = urlparse(self.path).path
+        try:
+            body = self._body()
+            if path == "/api/agent/conversations":
+                self._send(201, AGENT.create_conversation(body.get("title", "New research"), body.get("context")))
+            elif path == "/api/agent/chat":
+                if not body.get("conversationId") or not body.get("message", "").strip():
+                    self._send(400, {"error": "conversationId and message are required"})
+                    return
+                self._send(200, AGENT.chat(body["conversationId"], body["message"].strip(), body.get("context")))
+            elif path == "/api/allocation/optimize":
+                self._send(200, ALLOCATION.optimize(body))
+            elif path == "/api/backtest/walk-forward":
+                self._send(200, BACKTEST.run(body))
+            else:
+                self._send(404, {"error": "Not found"})
+        except KeyError as exc:
+            self._send(404, {"error": str(exc)})
+        except Exception as exc:
+            self._send(500, {"error": str(exc)})
+
+    def do_DELETE(self):
+        path = urlparse(self.path).path
+        if path.startswith("/api/agent/conversations/"):
+            deleted = AGENT.delete_conversation(path.rsplit("/", 1)[-1])
+            self._send(200 if deleted else 404, {"deleted": deleted})
+        else:
+            self._send(404, {"error": "Not found"})
 
     def log_message(self, fmt, *args):
         print(f"[FinDash API] {self.address_string()} {fmt % args}")

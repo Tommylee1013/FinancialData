@@ -1,6 +1,6 @@
-import { Sun, Moon, BarChart2, Activity, Globe, TrendingUp, Package, Factory, PieChart } from "lucide-react";
+import { Sun, Moon, BarChart2, Activity, Globe, TrendingUp, Package, Factory, PieChart, Bot } from "lucide-react";
 
-type Tab = 'home' | 'market' | 'fixed-income' | 'supply-chain' | 'macro' | 'commodities' | 'industry' | 'asset-allocation';
+type Tab = 'home' | 'market' | 'fixed-income' | 'supply-chain' | 'macro' | 'commodities' | 'industry' | 'asset-allocation' | 'ai-research';
 
 interface NavBarProps {
   activeTab: Tab;
@@ -18,6 +18,7 @@ const navItems: { id: Tab; label: string; icon: React.ReactNode }[] = [
   { id: 'commodities',      label: 'Commodities',    icon: <Package   size={13} /> },
   { id: 'industry',         label: 'Industry',       icon: <Factory   size={13} /> },
   { id: 'asset-allocation', label: 'Asset Alloc.',   icon: <PieChart  size={13} /> },
+  { id: 'ai-research',      label: 'AI Research',    icon: <Bot size={13} /> },
 ];
 
 export function NavBar({ activeTab, setActiveTab, isDark, toggleDark }: NavBarProps) {
