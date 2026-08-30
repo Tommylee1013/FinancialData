@@ -84,3 +84,11 @@
 2026-08-18 00:44:20 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loading | symbol=AXVI | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/volatility/VOL.xlsx
 2026-08-18 00:44:20 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loaded | symbol=AXVI | rows=4794 | columns=8
 2026-08-18 00:44:20 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | volatility Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_warehouse/raw/risk/volatility_excel.parquet | rows=16296
+2026-08-30 11:45:52 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | volatility data_lake job started | input_dir=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/volatility
+2026-08-30 11:45:52 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loading | symbol=NKVI | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/volatility/NKVI.xlsx
+2026-08-30 11:45:53 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loaded | symbol=NKVI | rows=6328 | columns=8
+2026-08-30 11:45:53 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loading | symbol=VSTOXX | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/volatility/VSTOXX.xlsx
+2026-08-30 11:45:53 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loaded | symbol=VSTOXX | rows=5193 | columns=8
+2026-08-30 11:45:53 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loading | symbol=AXVI | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/volatility/VOL.xlsx
+2026-08-30 11:45:53 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loaded | symbol=AXVI | rows=4803 | columns=8
+2026-08-30 11:45:53 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | volatility Parquet saved | output_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_warehouse/raw/risk/volatility_excel.parquet | rows=16323
