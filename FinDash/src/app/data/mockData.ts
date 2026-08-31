@@ -336,19 +336,24 @@ function mergeArray(target: any[], incoming: any[] | undefined) {
   });
 }
 
+function replaceArray(target: any[], incoming: any[] | undefined) {
+  if (!incoming?.length) return;
+  target.splice(0, target.length, ...incoming);
+}
+
 export async function loadDashboardData(): Promise<DashboardConnection> {
   try {
     const response = await fetch('/api/dashboard');
     if (!response.ok) throw new Error(`API ${response.status}`);
     const data = await response.json();
-    mergeArray(marketIndices, data.marketIndices);
-    mergeArray(volatilityIndices, data.volatilityIndices);
-    mergeArray(macroVariables, data.macroVariables);
-    mergeArray(commodities, data.commodities);
+    replaceArray(marketIndices, data.marketIndices);
+    replaceArray(volatilityIndices, data.volatilityIndices);
+    replaceArray(macroVariables, data.macroVariables);
+    replaceArray(commodities, data.commodities);
     mergeArray(yieldCurveUS, data.yieldCurveUS);
     mergeArray(yieldCurveKR, data.yieldCurveKR);
-    mergeArray(freightIndices, data.freightIndices);
-    mergeArray(industryData, data.industryData);
+    replaceArray(freightIndices, data.freightIndices);
+    replaceArray(industryData, data.industryData);
     mergeArray(tickerTape, data.tickerTape);
     if (data.sectorDataByCountry) {
       Object.entries(data.sectorDataByCountry).forEach(([country, items]) => {

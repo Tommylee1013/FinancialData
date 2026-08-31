@@ -75,9 +75,9 @@ export function MarketTab() {
         <div className="xl:col-span-2 space-y-3">
           {/* Index list */}
           <div className="bg-card border border-border rounded overflow-hidden">
-            <div className="overflow-x-auto">
+            <div className="max-h-[443px] overflow-auto">
               <table className="w-full text-xs">
-                <thead className="bg-secondary">
+                <thead className="sticky top-0 z-10 bg-secondary">
                   <tr>
                     {['Index', 'Price', 'Change', 'Change%', '52W High', '52W Low', 'Volume', 'Chart'].map(h => (
                       <th key={h} className="text-left px-3 py-2 text-muted-foreground font-semibold whitespace-nowrap">{h}</th>
@@ -141,9 +141,9 @@ export function MarketTab() {
               <div><div className="text-xs font-bold text-foreground">{countryConfig.flag} {countryConfig.label} Sector Performance</div><div className="text-[10px] text-muted-foreground mt-0.5">Select a sector for price history and detailed statistics</div></div>
               <span className="text-[10px] font-mono text-muted-foreground">{sectors.length} SECTORS</span>
             </div>
-            <div className="overflow-x-auto">
+            <div className="max-h-[443px] overflow-auto">
               <table className="w-full text-[11px]">
-                <thead className="bg-secondary/60 text-muted-foreground"><tr><th className="text-left px-3 py-2">Sector</th><th className="text-right px-3 py-2">Last</th><th className="text-right px-3 py-2">Change</th><th className="text-right px-3 py-2">Change %</th><th className="text-right px-3 py-2">Range</th><th className="px-3 py-2"></th></tr></thead>
+                <thead className="sticky top-0 z-10 bg-secondary text-muted-foreground"><tr><th className="text-left px-3 py-2">Sector</th><th className="text-right px-3 py-2">Last</th><th className="text-right px-3 py-2">Change</th><th className="text-right px-3 py-2">Change %</th><th className="text-right px-3 py-2">Range</th><th className="px-3 py-2"></th></tr></thead>
                 <tbody>{sectors.map((sector: any) => {
                   const up = (sector.changePct ?? 0) >= 0;
                   return <tr key={sector.id ?? sector.name} onClick={() => openDetail('sector', sector.id)} className="border-t border-border cursor-pointer hover:bg-accent transition-colors">

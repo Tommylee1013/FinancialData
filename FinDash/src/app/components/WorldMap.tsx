@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from "react-simple-maps";
-import { X } from "lucide-react";
+import { Minus, Plus, RotateCcw, X } from "lucide-react";
 
 const GEO_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
@@ -24,15 +24,17 @@ interface FreightMapProps {
 
 export function FreightWorldMap({ markers }: FreightMapProps) {
   const [selected, setSelected] = useState<PortMarker | null>(null);
+  const [position, setPosition] = useState<{ coordinates: [number, number]; zoom: number }>({ coordinates: [12, 18], zoom: 1 });
+  const changeZoom = (amount: number) => setPosition(current => ({ ...current, zoom: Math.max(1, Math.min(4, current.zoom + amount)) }));
 
   return (
-    <div className="relative w-full bg-card rounded border border-border overflow-hidden">
+    <div className="relative w-full bg-gradient-to-b from-primary/[0.04] to-card overflow-hidden">
       <ComposableMap
         projection="geoNaturalEarth1"
         projectionConfig={{ scale: 140 }}
-        style={{ width: '100%', height: '360px' }}
+        style={{ width: '100%', height: '390px' }}
       >
-        <ZoomableGroup zoom={1}>
+        <ZoomableGroup center={position.coordinates} zoom={position.zoom} onMoveEnd={({ coordinates, zoom }) => setPosition({ coordinates: coordinates as [number, number], zoom })}>
           <Geographies geography={GEO_URL}>
             {({ geographies }) =>
               geographies.map(geo => (
@@ -54,7 +56,7 @@ export function FreightWorldMap({ markers }: FreightMapProps) {
           {markers.map(m => (
             <Marker key={m.id} coordinates={m.coords} onClick={() => setSelected(m)}>
               <circle
-                r={7}
+                r={selected?.id === m.id ? 9 : 6}
                 fill={m.change >= 0 ? '#16A34A' : '#DC2626'}
                 fillOpacity={0.9}
                 stroke="white"
@@ -63,7 +65,7 @@ export function FreightWorldMap({ markers }: FreightMapProps) {
               />
               <text
                 textAnchor="middle"
-                y={-12}
+                y={-11}
                 style={{
                   fontSize: '9px',
                   fontFamily: 'Inter, sans-serif',
@@ -78,6 +80,12 @@ export function FreightWorldMap({ markers }: FreightMapProps) {
           ))}
         </ZoomableGroup>
       </ComposableMap>
+
+      <div className="absolute top-3 left-3 flex flex-col rounded border border-border bg-card/95 shadow-sm overflow-hidden">
+        <button onClick={() => changeZoom(0.5)} className="p-2 hover:bg-secondary" aria-label="Zoom in"><Plus size={13}/></button>
+        <button onClick={() => changeZoom(-0.5)} className="p-2 border-t border-border hover:bg-secondary" aria-label="Zoom out"><Minus size={13}/></button>
+        <button onClick={() => setPosition({ coordinates: [12, 18], zoom: 1 })} className="p-2 border-t border-border hover:bg-secondary" aria-label="Reset map"><RotateCcw size={13}/></button>
+      </div>
 
       {selected && (
         <div className="absolute top-3 right-3 bg-card border border-border rounded shadow-lg p-3 w-52 z-10">
@@ -113,10 +121,10 @@ export function FreightWorldMap({ markers }: FreightMapProps) {
         </div>
       )}
 
-      <div className="absolute bottom-2 left-2 flex items-center gap-3 text-[10px] text-muted-foreground bg-card/80 px-2 py-1 rounded">
+      <div className="absolute bottom-3 left-3 flex items-center gap-3 text-[10px] text-muted-foreground bg-card/90 border border-border px-2.5 py-1.5 rounded shadow-sm">
         <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-up inline-block" />Rise</span>
         <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-down inline-block" />Fall</span>
-        <span>Click for details</span>
+        <span>Drag to pan · scroll to zoom</span>
       </div>
     </div>
   );

@@ -169,9 +169,9 @@ export function CommoditiesTab() {
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
         <div className="xl:col-span-2">
           <div className="bg-card border border-border rounded overflow-hidden">
-            <div className="overflow-x-auto">
+            <div className="max-h-[443px] overflow-auto">
               <table className="w-full text-xs">
-                <thead className="bg-secondary">
+                <thead className="sticky top-0 z-10 bg-secondary">
                   <tr>
                     {['Category', 'Commodity', 'Unit', 'Price', 'Change', 'Change%', 'High', 'Low', 'Trend'].map(h => (
                       <th key={h} className="text-left px-3 py-2 text-muted-foreground font-semibold whitespace-nowrap">{h}</th>

@@ -9,16 +9,12 @@ import { paddedDomain } from "../../chartUtils";
 
 const fmt = (v: number | null | undefined, d = 2) => v == null ? '—' : v.toFixed(d);
 
-const macroCountries = [
-  { key: 'US', name: 'United States', flag: '🇺🇸', ids: ['uscpi', 'uscorecpi', 'usppi', 'uspmi'] },
-  { key: 'KR', name: 'South Korea', flag: '🇰🇷', ids: ['krcpi'] },
-  { key: 'JP', name: 'Japan', flag: '🇯🇵', ids: ['jpcpi'] },
-  { key: 'EU', name: 'Euro Area', flag: '🇪🇺', ids: ['eucpi'] },
-  { key: 'CN', name: 'China', flag: '🇨🇳', ids: ['cnpmi'] },
-];
-
 function CountryIndicatorSections() {
   const [countryFilter, setCountryFilter] = useState('ALL');
+  const macroCountries = Array.from(new Map((macroVariables as any[]).map(item => [item.country || 'Global', {
+    key: item.country || 'Global', name: item.countryName || item.country || 'Global', flag: item.flag || '🌐',
+    ids: (macroVariables as any[]).filter(candidate => (candidate.country || 'Global') === (item.country || 'Global')).map(candidate => candidate.id),
+  }])).values());
   const activeCountry = macroCountries.find(country => country.key === countryFilter);
   const items = activeCountry ? macroVariables.filter(item => activeCountry.ids.includes(item.id)) : macroVariables;
   return <section className="space-y-3">
@@ -59,9 +55,9 @@ function MacroTable() {
           <span className="px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-600 dark:bg-yellow-950/30 font-medium">● Medium Impact</span>
         </div>
       </div>
-      <div className="overflow-x-auto">
+      <div className="max-h-[443px] overflow-auto">
         <table className="w-full text-xs">
-          <thead className="bg-secondary/50">
+          <thead className="sticky top-0 z-10 bg-secondary">
             <tr>
               {['Country', 'Indicator', 'Actual', 'Forecast', 'Previous', 'Period', 'Result'].map(h => (
                 <th key={h} className="text-left px-3 py-2 text-muted-foreground font-semibold whitespace-nowrap">{h}</th>

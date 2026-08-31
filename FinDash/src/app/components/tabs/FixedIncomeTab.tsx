@@ -104,8 +104,8 @@ function YieldTable({ title, data, country }: { title: string; data: typeof yiel
       <div className="px-3 py-2 bg-secondary border-b border-border">
         <span className="text-xs font-bold text-foreground">{title}</span>
       </div>
-      <table className="w-full text-xs">
-        <thead className="bg-secondary/50">
+      <div className="max-h-[340px] overflow-auto"><table className="w-full text-xs">
+        <thead className="sticky top-0 z-10 bg-secondary">
           <tr>
             {['Tenor', 'Yield(%)', 'Prev(%)', 'Change(bp)'].map(h => (
               <th key={h} className="text-left px-3 py-1.5 text-muted-foreground font-semibold">{h}</th>
@@ -128,7 +128,7 @@ function YieldTable({ title, data, country }: { title: string; data: typeof yiel
             );
           })}
         </tbody>
-      </table>
+      </table></div>
     </div>
   );
 }
@@ -140,8 +140,8 @@ function SwapRateTable() {
         <span className="text-xs font-bold text-foreground">🇰🇷 Korea IRS / CRS Rates</span>
         <span className="ml-2 text-[10px] text-muted-foreground">IRS: Interest Rate Swap · CRS: Cross-Currency Swap</span>
       </div>
-      <table className="w-full text-xs">
-        <thead className="bg-secondary/50">
+      <div className="max-h-[340px] overflow-auto"><table className="w-full text-xs">
+        <thead className="sticky top-0 z-10 bg-secondary">
           <tr>
             {['Tenor', 'IRS(%)', 'IRS Δ(bp)', 'CRS(%)', 'CRS Δ(bp)', 'IRS-CRS Spread(bp)'].map(h => (
               <th key={h} className="text-left px-3 py-1.5 text-muted-foreground font-semibold whitespace-nowrap">{h}</th>
@@ -169,7 +169,7 @@ function SwapRateTable() {
             );
           })}
         </tbody>
-      </table>
+      </table></div>
     </div>
   );
 }
@@ -180,8 +180,8 @@ function MoneyMarketPanel() {
       <div className="px-3 py-2 bg-secondary border-b border-border">
         <span className="text-xs font-bold text-foreground">Short-term Rates · Money Market</span>
       </div>
-      <table className="w-full text-xs">
-        <thead className="bg-secondary/50">
+      <div className="max-h-[340px] overflow-auto"><table className="w-full text-xs">
+        <thead className="sticky top-0 z-10 bg-secondary">
           <tr>
             {['Name', 'Rate(%)', 'Day Change'].map(h => (
               <th key={h} className="text-left px-3 py-1.5 text-muted-foreground font-semibold">{h}</th>
@@ -204,7 +204,7 @@ function MoneyMarketPanel() {
             );
           })}
         </tbody>
-      </table>
+      </table></div>
     </div>
   );
 }

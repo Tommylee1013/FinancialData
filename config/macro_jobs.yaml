@@ -87,7 +87,7 @@ macro_jobs:
   - input_path: "data_lake/macro/USA/Employments.xlsx"
     output_path: "data_warehouse/raw/macro/USA/INJCJC.parquet"
     symbol: "INJCJC"
-    exchange: "DOL"
+    exchange: "BOL"
     country: "United States"
     sheet_name: "INJCJC"
   - input_path: "data_lake/macro/USA/Employments.xlsx"

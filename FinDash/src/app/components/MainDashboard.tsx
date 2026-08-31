@@ -270,7 +270,7 @@ function MarketQuoteBoard({ groups }: { groups: Array<{ label: string; items: ty
     <div className="hidden md:grid grid-cols-[minmax(170px,1.4fr)_115px_105px_105px_105px_105px_105px_minmax(100px,1fr)] px-4 py-2 bg-secondary/70 border-b border-border text-[9px] uppercase tracking-wider text-muted-foreground font-semibold">
       <span>Index</span><span className="text-right">Last</span><span className="text-right">Change</span><span className="text-right">Change %</span><span className="text-right">High</span><span className="text-right">Low</span><span className="text-right">Volume</span><span className="text-right">30D Trend</span>
     </div>
-    {groups.map(group => <React.Fragment key={group.label}>
+    <div className="max-h-[443px] overflow-y-auto">{groups.map(group => <React.Fragment key={group.label}>
       <div className="px-4 py-1.5 bg-secondary/40 border-t first:border-t-0 border-border text-[9px] font-bold tracking-[0.14em] uppercase text-muted-foreground">{group.label}</div>
       {group.items.map(idx => {
         const up = idx.changePct >= 0;
@@ -285,7 +285,7 @@ function MarketQuoteBoard({ groups }: { groups: Array<{ label: string; items: ty
           <span className="hidden md:flex justify-end"><MiniLineChart data={idx.trend.slice(-30)} width={100} height={26} color={up ? '#16A34A' : '#DC2626'} fill={false}/></span>
         </button>;
       })}
-    </React.Fragment>)}
+    </React.Fragment>)}</div>
   </div>;
 }
 

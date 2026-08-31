@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 from datetime import date, datetime, time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -172,6 +173,112 @@ TICKER_SPECS = [
     ("jxy", "YEN INDEX", "market.fx_data", "JXY", "close", "FX"),
     ("exy", "EURO INDEX", "market.fx_data", "EXY", "close", "FX"),
 ]
+
+COUNTRY_CODES = {
+    "United States": ("US", "🇺🇸"), "South Korea": ("KR", "🇰🇷"), "Korea": ("KR", "🇰🇷"),
+    "Japan": ("JP", "🇯🇵"), "China": ("CN", "🇨🇳"), "Hong Kong": ("HK", "🇭🇰"),
+    "Germany": ("DE", "🇩🇪"), "France": ("FR", "🇫🇷"), "United Kingdom": ("GB", "🇬🇧"),
+    "Euro Area": ("EU", "🇪🇺"), "European Union": ("EU", "🇪🇺"), "India": ("IN", "🇮🇳"),
+    "Australia": ("AU", "🇦🇺"), "Canada": ("CA", "🇨🇦"), "Brazil": ("BR", "🇧🇷"),
+}
+
+
+def _slug(value: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", str(value).lower()).strip("-")
+
+
+def _metadata_catalog(con, table: str, asset_classes: list[str]) -> dict[str, dict]:
+    """Return metadata rows that also have an observable series in the requested table."""
+    existing = {row[0].upper(): row[0] for row in con.execute(f"select distinct symbol from {table} where symbol is not null").fetchall()}
+    rows = con.execute("""
+      select symbol, country, name, category, sub_category, unit, frequency, source
+      from metadata.instrument_master
+      where symbol is not null and lower(asset_class) in (select unnest(?))
+      order by id
+    """, [[value.lower() for value in asset_classes]]).fetchall()
+    output = {}
+    for symbol, country, name, category, sub_category, unit, frequency, source in rows:
+        actual_symbol = existing.get(str(symbol).upper())
+        if not actual_symbol or actual_symbol in output:
+            continue
+        code, flag = COUNTRY_CODES.get(country, (str(country or "Global")[:2].upper(), "🌐"))
+        output[actual_symbol] = {
+            "id": _slug(actual_symbol), "symbol": actual_symbol, "name": name or actual_symbol,
+            "country": code, "countryName": country or "Global", "flag": flag,
+            "category": category or asset_classes[0].title(), "subCategory": sub_category or "",
+            "unit": unit or "", "frequency": frequency or "", "source": source or "",
+        }
+    return output
+
+
+def _catalog_values(con, table: str, asset_classes: list[str], periods: int = 120) -> list[dict]:
+    catalog = _metadata_catalog(con, table, asset_classes)
+    values = _values(con, table, {symbol: (meta["id"], meta["name"], meta["category"], meta["unit"]) for symbol, meta in catalog.items()}, periods)
+    for item in values:
+        meta = next(meta for meta in catalog.values() if meta["id"] == item["id"])
+        item.update(meta)
+    return values
+
+
+def _catalog_ohlcv(con, table: str, asset_classes: list[str]) -> list[dict]:
+    catalog = _metadata_catalog(con, table, asset_classes)
+    values = _ohlcv(con, table, {symbol: (meta["id"], meta["name"], meta["country"], meta["flag"]) for symbol, meta in catalog.items()}, 365)
+    for item in values:
+        meta = next(meta for meta in catalog.values() if meta["id"] == item["id"])
+        item.update(meta)
+    return values
+
+
+def _catalog_component_values(con, periods: int = 120) -> list[dict]:
+    catalog = _metadata_catalog(con, "industry.components_data", ["industry"])
+    rows = con.execute("""
+      with ranked as (
+        select symbol, item, base_date, value,
+               row_number() over (partition by symbol, item order by base_date desc, release_date desc, time desc) rn
+        from industry.components_data where symbol in (select unnest(?)) and value is not null
+      ) select symbol, item, base_date, value from ranked where rn <= ? order by symbol, item, base_date
+    """, [list(catalog), periods]).fetchall()
+    grouped = {}
+    for symbol, item, base_date, value in rows:
+        grouped.setdefault((symbol, item or "Value"), []).append((base_date, value))
+    output = []
+    for (symbol, item), series in grouped.items():
+        meta = catalog[symbol]; value = series[-1][1]; prev = series[-2][1] if len(series) > 1 else value
+        output.append({**meta, "id": _slug(f"{symbol}-{item}"),
+                       "name": f'{meta["name"]} · {item}' if str(item).lower() not in str(meta["name"]).lower() else meta["name"],
+                       "component": item, "value": value, "change": value - prev,
+                       "changePct": (value - prev) / prev * 100 if prev else 0,
+                       "high": max(row[1] for row in series), "low": min(row[1] for row in series),
+                       "trend": [{"t": i, "date": row[0], "v": row[1]} for i, row in enumerate(series)],
+                       "asOf": series[-1][0]})
+    return output
+
+
+def _catalog_macro(con) -> list[dict]:
+    catalog = _metadata_catalog(con, "macro.macro_data", ["macro"])
+    rows = con.execute("""
+      with ranked as (
+        select *, row_number() over (partition by symbol order by base_date desc, release_date desc, time desc) rn
+        from macro.macro_data where symbol in (select unnest(?)) and actual is not null
+      ) select symbol, base_date, actual, forecast, previous from ranked where rn <= 120 order by symbol, base_date
+    """, [list(catalog)]).fetchall()
+    grouped = {}
+    for row in rows: grouped.setdefault(row[0], []).append(row[1:])
+    output = []
+    for symbol, meta in catalog.items():
+        series = grouped.get(symbol, [])
+        if not series: continue
+        latest = series[-1]; historical_previous = series[-2][1] if len(series) > 1 else latest[1]
+        previous = latest[3] if latest[3] is not None else historical_previous
+        forecast = latest[2] if latest[2] is not None else previous
+        unit_text = str(meta["unit"]).lower()
+        scale = 100 if any(token in unit_text for token in ("yoy", "mom", "qoq", "rate", "%")) and abs(latest[1]) <= 1 else 1
+        display_unit = "%" if any(token in unit_text for token in ("yoy", "mom", "qoq", "rate", "%")) else meta["unit"]
+        output.append({**meta, "desc": meta["name"], "type": str(meta["category"]).lower(), "unit": display_unit,
+                       "value": latest[1] * scale, "forecast": forecast * scale, "prev": previous * scale,
+                       "period": latest[0].strftime("%b %Y"),
+                       "trend": [{"t": i, "date": row[0], "v": row[1] * scale} for i, row in enumerate(series) if row[1] is not None]})
+    return output
 
 
 def _json_default(value):
@@ -365,21 +472,18 @@ def dashboard_payload() -> dict:
         raise FileNotFoundError(f"DuckDB not found: {DB_PATH}")
     con = duckdb.connect(str(DB_PATH), read_only=True)
     try:
-        industry = _values(con, "industry.index_data", INDUSTRY)
-        for item in industry:
-            meta = next(v for v in INDUSTRY.values() if v[0] == item["id"])
-            item.update(category=meta[2], unit=meta[3])
-        freight = _values(con, "freight.freight_data", FREIGHT, 365)
+        industry = _catalog_values(con, "industry.index_data", ["industry"]) + _catalog_component_values(con)
+        freight = _catalog_values(con, "freight.freight_data", ["freight", "supply chain"])
         for item in freight:
-            meta = next(v for v in FREIGHT.values() if v[0] == item["id"])
-            item.update(fullName=meta[2], desc=meta[3])
+            item.update(fullName=item["name"], desc=item["subCategory"] or item["category"])
         return {"source": str(DB_PATH), "updatedAt": datetime.now().isoformat(timespec="seconds"),
-                "marketIndices": _ohlcv(con, "market.index_data", MARKETS, None),
-                "volatilityIndices": _ohlcv(con, "market.volatility_data", VOLATILITY),
+                "metadataRows": con.execute("select count(*) from metadata.instrument_master").fetchone()[0],
+                "marketIndices": _catalog_ohlcv(con, "market.index_data", ["equity"]),
+                "volatilityIndices": _catalog_ohlcv(con, "market.volatility_data", ["risk"]),
                 "sectorDataByCountry": _sector_data(con), "sentimentData": _sentiment(con),
                 "tickerTape": _ticker_tape(con),
-                "macroVariables": _macro(con),
-                "commodities": _values(con, "industry.index_data", COMMODITIES),
+                "macroVariables": _catalog_macro(con),
+                "commodities": _catalog_values(con, "industry.index_data", ["commodity"]),
                 "freightIndices": freight, "industryData": industry,
                 "yieldCurveUS": _yield_curve(con, US_YIELDS), "yieldCurveKR": _yield_curve(con, KR_YIELDS)}
     finally:

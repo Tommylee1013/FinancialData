@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { MiniLineChart } from "../CandlestickChart";
 import { industryData } from "../../data/mockData";
@@ -119,22 +119,22 @@ function DetailPanel({ item }: { item: typeof industryData[0] }) {
   );
 }
 
-function CategorySummary() {
-  const cats = [...new Set(industryData.map(d => d.category))];
+function CategorySummary({ items }: { items: typeof industryData }) {
+  const cats = [...new Set(items.map(d => d.category))];
   return (
     <div className="bg-card border border-border rounded p-3">
       <div className="text-xs font-bold text-foreground mb-2">Category Overview</div>
       <div className="space-y-2">
         {cats.map(cat => {
-          const items = industryData.filter(d => d.category === cat);
-          const avgPct = items.reduce((s, i) => s + i.changePct, 0) / items.length;
+          const categoryItems = items.filter(d => d.category === cat);
+          const avgPct = categoryItems.reduce((s, i) => s + i.changePct, 0) / categoryItems.length;
           const up = avgPct >= 0;
           const color = categoryColors[cat] ?? '#6B7280';
           return (
             <div key={cat} className="flex items-center gap-2 text-[11px]">
               <div className="w-2 h-2 rounded-sm shrink-0" style={{ background: color }} />
               <span className="flex-1 text-muted-foreground">{cat}</span>
-              <span className="text-muted-foreground">{items.length}</span>
+              <span className="text-muted-foreground">{categoryItems.length}</span>
               <span className={`w-16 text-right font-mono font-semibold ${up ? 'text-up' : 'text-down'}`}>
                 {up ? '+' : ''}{avgPct.toFixed(2)}%
               </span>
@@ -146,62 +146,67 @@ function CategorySummary() {
   );
 }
 
-function IndustryOverview() {
-  const sorted = [...industryData].sort((a, b) => b.changePct - a.changePct);
-  const advancing = industryData.filter(item => item.changePct >= 0).length;
-  const average = industryData.reduce((sum, item) => sum + item.changePct, 0) / industryData.length;
+function IndustryOverview({ items }: { items: typeof industryData }) {
+  const sorted = [...items].sort((a, b) => b.changePct - a.changePct);
+  const advancing = items.filter(item => item.changePct >= 0).length;
+  const average = items.length ? items.reduce((sum, item) => sum + item.changePct, 0) / items.length : 0;
+  if (!items.length) return null;
   return <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
-    {[{ label: 'Breadth', value: `${advancing} / ${industryData.length}`, note: 'Advancing indicators', tone: advancing >= industryData.length / 2 ? 'text-up' : 'text-down' }, { label: 'Average Change', value: `${average >= 0 ? '+' : ''}${fmt(average)}%`, note: 'Across all industries', tone: average >= 0 ? 'text-up' : 'text-down' }, { label: 'Momentum Leader', value: sorted[0].name, note: `+${fmt(sorted[0].changePct)}%`, tone: 'text-up' }, { label: 'Largest Drag', value: sorted.at(-1)!.name, note: `${fmt(sorted.at(-1)!.changePct)}%`, tone: 'text-down' }].map(stat => <div key={stat.label} className="bg-card border border-border rounded p-3"><div className="text-[10px] uppercase tracking-wider text-muted-foreground">{stat.label}</div><div className={`text-sm font-semibold mt-1 truncate ${stat.tone}`}>{stat.value}</div><div className="text-[10px] text-muted-foreground mt-0.5">{stat.note}</div></div>)}
+    {[{ label: 'Breadth', value: `${advancing} / ${items.length}`, note: 'Advancing indicators', tone: advancing >= items.length / 2 ? 'text-up' : 'text-down' }, { label: 'Average Change', value: `${average >= 0 ? '+' : ''}${fmt(average)}%`, note: 'Current filtered universe', tone: average >= 0 ? 'text-up' : 'text-down' }, { label: 'Momentum Leader', value: sorted[0].name, note: `${sorted[0].changePct >= 0 ? '+' : ''}${fmt(sorted[0].changePct)}%`, tone: 'text-up' }, { label: 'Largest Drag', value: sorted.at(-1)!.name, note: `${fmt(sorted.at(-1)!.changePct)}%`, tone: 'text-down' }].map(stat => <div key={stat.label} className="bg-card border border-border rounded p-3"><div className="text-[10px] uppercase tracking-wider text-muted-foreground">{stat.label}</div><div className={`text-sm font-semibold mt-1 truncate ${stat.tone}`}>{stat.value}</div><div className="text-[10px] text-muted-foreground mt-0.5">{stat.note}</div></div>)}
   </div>;
 }
 
-function IndustryHeatmap() {
-  return <div className="bg-card border border-border rounded p-4"><div className="flex justify-between items-end mb-3"><div><h3 className="text-sm font-bold">Industry Momentum Map</h3><p className="text-[10px] text-muted-foreground mt-0.5">Size represents relative move · color represents direction</p></div><span className="text-[10px] text-muted-foreground">DAILY CHANGE</span></div><div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-2">{industryData.map(item => { const intensity = Math.min(0.92, 0.18 + Math.abs(item.changePct) / 4); return <button key={item.id} onClick={() => openDetail('industry', item.id)} className="rounded p-3 text-left min-h-20 transition-transform hover:scale-[1.02]" style={{ background: item.changePct >= 0 ? `rgba(22,163,74,${intensity})` : `rgba(220,38,38,${intensity})`, color: intensity > .5 ? 'white' : 'var(--foreground)' }}><div className="text-[9px] opacity-75 truncate">{item.category}</div><div className="text-xs font-semibold mt-1 line-clamp-2">{item.name}</div><div className="text-sm font-mono font-bold mt-2">{item.changePct >= 0 ? '+' : ''}{fmt(item.changePct)}%</div></button>; })}</div></div>;
+function IndustryHeatmap({ items }: { items: typeof industryData }) {
+  const movers = [...items].sort((a, b) => Math.abs(b.changePct) - Math.abs(a.changePct)).slice(0, 20);
+  return <div className="bg-card border border-border rounded p-4"><div className="flex justify-between items-end mb-3"><div><h3 className="text-sm font-bold">Industry Momentum Map</h3><p className="text-[10px] text-muted-foreground mt-0.5">Top 20 absolute movers in the current filter</p></div><span className="text-[10px] text-muted-foreground">DAILY CHANGE</span></div><div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-2">{movers.map(item => { const intensity = Math.min(0.92, 0.18 + Math.abs(item.changePct) / 4); return <button key={item.id} onClick={() => openDetail('industry', item.id)} className="rounded p-3 text-left min-h-20 transition-transform hover:scale-[1.02]" style={{ background: item.changePct >= 0 ? `rgba(22,163,74,${intensity})` : `rgba(220,38,38,${intensity})`, color: intensity > .5 ? 'white' : 'var(--foreground)' }}><div className="text-[9px] opacity-75 truncate">{item.category}</div><div className="text-xs font-semibold mt-1 line-clamp-2">{item.name}</div><div className="text-sm font-mono font-bold mt-2">{item.changePct >= 0 ? '+' : ''}{fmt(item.changePct)}%</div></button>; })}</div></div>;
 }
 
-const allCategories = ['All', ...new Set(industryData.map(d => d.category))];
-
 export function IndustryTab() {
-  const [filter, setFilter] = useState('All');
+  const [categoryFilter, setCategoryFilter] = useState('All');
+  const [subCategoryFilter, setSubCategoryFilter] = useState('All');
+  const [countryFilter, setCountryFilter] = useState('All');
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(industryData[0]);
 
-  const filtered = industryData.filter(d =>
-    (filter === 'All' || d.category === filter) &&
-    d.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const rows = industryData as Array<(typeof industryData)[0] & { symbol?: string; subCategory?: string; country?: string; countryName?: string; component?: string }>;
+  const categories = useMemo(() => ['All', ...Array.from(new Set(rows.map(item => item.category || 'Other'))).sort()], [rows]);
+  const subCategories = useMemo(() => ['All', ...Array.from(new Set(rows.filter(item => categoryFilter === 'All' || item.category === categoryFilter).map(item => item.subCategory || item.component || 'General'))).sort()], [rows, categoryFilter]);
+  const countries = useMemo(() => ['All', ...Array.from(new Set(rows.map(item => item.countryName || item.country || 'Global'))).sort()], [rows]);
+
+  const filtered = useMemo(() => rows.filter(item => {
+    const release = item.subCategory || item.component || 'General';
+    const query = search.trim().toLowerCase();
+    return (categoryFilter === 'All' || item.category === categoryFilter)
+      && (subCategoryFilter === 'All' || release === subCategoryFilter)
+      && (countryFilter === 'All' || (item.countryName || item.country || 'Global') === countryFilter)
+      && (!query || `${item.name} ${item.symbol || ''} ${item.component || ''}`.toLowerCase().includes(query));
+  }), [rows, categoryFilter, subCategoryFilter, countryFilter, search]);
 
   return (
     <div className="p-4 space-y-4 max-w-screen-2xl mx-auto">
-      <div className="flex items-center gap-2 flex-wrap">
-        <div className="flex items-center bg-card border border-border rounded px-2 gap-1">
-          <Search size={12} className="text-muted-foreground" />
-          <input
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Search indices..."
-            className="text-xs py-1.5 bg-transparent outline-none text-foreground placeholder:text-muted-foreground w-28"
-          />
+      <section className="bg-card border border-border rounded overflow-hidden">
+        <div className="p-4 border-b border-border bg-secondary/40">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div><h2 className="text-sm font-bold">Industry Indicator Library</h2><p className="text-[10px] text-muted-foreground mt-1">Metadata-driven industry releases · {rows.length} live series</p></div>
+            <div className="flex items-center bg-background border border-border rounded px-3 gap-2 min-w-60"><Search size={13} className="text-muted-foreground"/><input value={search} onChange={event => setSearch(event.target.value)} placeholder="Search symbol or indicator…" className="w-full text-xs py-2 bg-transparent outline-none"/></div>
+          </div>
+          <div className="mt-4 space-y-3">
+            <div className="flex items-start gap-3"><span className="w-24 shrink-0 pt-1.5 text-[10px] uppercase tracking-wider text-muted-foreground">Industry</span><div className="flex flex-wrap gap-1.5">{categories.map(category => <button key={category} onClick={() => { setCategoryFilter(category); setSubCategoryFilter('All'); }} className={`px-2.5 py-1 rounded text-[10px] border ${categoryFilter === category ? 'bg-primary border-primary text-white' : 'border-border text-muted-foreground hover:text-foreground'}`}>{category}</button>)}</div></div>
+            <div className="flex items-start gap-3"><span className="w-24 shrink-0 pt-1.5 text-[10px] uppercase tracking-wider text-muted-foreground">Release type</span><div className="flex flex-wrap gap-1.5 max-h-20 overflow-y-auto">{subCategories.map(subCategory => <button key={subCategory} onClick={() => setSubCategoryFilter(subCategory)} className={`px-2.5 py-1 rounded text-[10px] border ${subCategoryFilter === subCategory ? 'bg-accent border-primary text-primary' : 'border-border text-muted-foreground hover:text-foreground'}`}>{subCategory}</button>)}</div></div>
+            <div className="flex items-start gap-3"><span className="w-24 shrink-0 pt-1.5 text-[10px] uppercase tracking-wider text-muted-foreground">Country</span><div className="flex flex-wrap gap-1.5">{countries.map(country => <button key={country} onClick={() => setCountryFilter(country)} className={`px-2.5 py-1 rounded text-[10px] border ${countryFilter === country ? 'bg-accent border-primary text-primary' : 'border-border text-muted-foreground hover:text-foreground'}`}>{country}</button>)}</div></div>
+          </div>
         </div>
-        {allCategories.map(cat => (
-          <button
-            key={cat}
-            onClick={() => setFilter(cat)}
-            className={`text-xs px-3 py-1.5 rounded transition-colors ${filter === cat ? 'bg-primary text-white' : 'bg-card border border-border text-muted-foreground hover:text-foreground'}`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
+        <div className="px-4 py-2 text-[10px] text-muted-foreground flex justify-between"><span>{filtered.length} matching series</span><span>{categoryFilter} / {subCategoryFilter} / {countryFilter}</span></div>
+      </section>
 
-      <IndustryOverview />
+      <IndustryOverview items={filtered as typeof industryData} />
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
         <div className="xl:col-span-2 space-y-3">
           <div className="bg-card border border-border rounded overflow-hidden">
-            <div className="overflow-x-auto">
+            <div className="max-h-[443px] overflow-auto">
               <table className="w-full text-xs">
-                <thead className="bg-secondary">
+                <thead className="sticky top-0 z-10 bg-secondary">
                   <tr>
                     {['Category', 'Index', 'Unit', 'Price', 'Change', 'Change%', 'High', 'Low', 'Trend'].map(h => (
                       <th key={h} className="text-left px-3 py-2 text-muted-foreground font-semibold whitespace-nowrap">{h}</th>
@@ -228,10 +233,10 @@ export function IndustryTab() {
 
         <div className="space-y-3">
           <DetailPanel item={selected} />
-          <CategorySummary />
+          <CategorySummary items={filtered as typeof industryData} />
         </div>
       </div>
-      <IndustryHeatmap />
+      <IndustryHeatmap items={filtered as typeof industryData} />
     </div>
   );
 }
