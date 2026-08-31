@@ -23,6 +23,7 @@ from allocation import AllocationService
 from backtest import WalkForwardBacktester
 
 DB_PATH = Path(os.environ.get("FINDASH_DB_PATH", ROOT.parent / "database" / "alternative_data.duckdb"))
+COMMODITY_PARQUET = PROJECT_ROOT / "data_warehouse" / "raw" / "commodity" / "index" / "commodity_index.parquet"
 HOST = os.environ.get("FINDASH_API_HOST", "127.0.0.1")
 PORT = int(os.environ.get("FINDASH_API_PORT", "8787"))
 AGENT = AgentService(finance_db=DB_PATH)
@@ -234,22 +235,31 @@ def _catalog_component_values(con, periods: int = 120) -> list[dict]:
     rows = con.execute("""
       with ranked as (
         select symbol, item, base_date, value,
-               row_number() over (partition by symbol, item order by base_date desc, release_date desc, time desc) rn
+               dense_rank() over (partition by symbol order by base_date desc) rn
         from industry.components_data where symbol in (select unnest(?)) and value is not null
       ) select symbol, item, base_date, value from ranked where rn <= ? order by symbol, item, base_date
     """, [list(catalog), periods]).fetchall()
     grouped = {}
     for symbol, item, base_date, value in rows:
-        grouped.setdefault((symbol, item or "Value"), []).append((base_date, value))
+        grouped.setdefault(symbol, {}).setdefault(base_date, {})[str(item or "value").lower()] = value
     output = []
-    for (symbol, item), series in grouped.items():
+    def representative(values):
+        for key in ("average", "value", "close", "open"):
+            if values.get(key) is not None: return values[key]
+        if values.get("high") is not None and values.get("low") is not None: return (values["high"] + values["low"]) / 2
+        return next(iter(values.values()), None)
+    for symbol, by_date in grouped.items():
+        series = [(base_date, representative(values), values) for base_date, values in sorted(by_date.items())]
+        series = [row for row in series if row[1] is not None]
+        if not series: continue
         meta = catalog[symbol]; value = series[-1][1]; prev = series[-2][1] if len(series) > 1 else value
-        output.append({**meta, "id": _slug(f"{symbol}-{item}"),
-                       "name": f'{meta["name"]} · {item}' if str(item).lower() not in str(meta["name"]).lower() else meta["name"],
-                       "component": item, "value": value, "change": value - prev,
+        latest_fields = series[-1][2]
+        output.append({**meta, "value": value, "change": value - prev,
                        "changePct": (value - prev) / prev * 100 if prev else 0,
-                       "high": max(row[1] for row in series), "low": min(row[1] for row in series),
-                       "trend": [{"t": i, "date": row[0], "v": row[1]} for i, row in enumerate(series)],
+                       "high": latest_fields.get("high", value), "low": latest_fields.get("low", value),
+                       "trend": [{"t": i, "date": row[0], "v": row[1],
+                                  "high": row[2].get("high"), "low": row[2].get("low"), "average": row[2].get("average")}
+                                 for i, row in enumerate(series)],
                        "asOf": series[-1][0]})
     return output
 
@@ -474,6 +484,8 @@ def dashboard_payload() -> dict:
     try:
         industry = _catalog_values(con, "industry.index_data", ["industry"]) + _catalog_component_values(con)
         freight = _catalog_values(con, "freight.freight_data", ["freight", "supply chain"])
+        has_commodity_table = con.execute("select count(*) from information_schema.tables where table_schema='market' and table_name='commodity_data'").fetchone()[0]
+        commodity_source = "market.commodity_data" if has_commodity_table else f"read_parquet('{str(COMMODITY_PARQUET).replace(chr(39), chr(39) * 2)}')"
         for item in freight:
             item.update(fullName=item["name"], desc=item["subCategory"] or item["category"])
         return {"source": str(DB_PATH), "updatedAt": datetime.now().isoformat(timespec="seconds"),
@@ -483,7 +495,7 @@ def dashboard_payload() -> dict:
                 "sectorDataByCountry": _sector_data(con), "sentimentData": _sentiment(con),
                 "tickerTape": _ticker_tape(con),
                 "macroVariables": _catalog_macro(con),
-                "commodities": _catalog_values(con, "industry.index_data", ["commodity"]),
+                "commodities": _catalog_ohlcv(con, commodity_source, ["commodity"]),
                 "freightIndices": freight, "industryData": industry,
                 "yieldCurveUS": _yield_curve(con, US_YIELDS), "yieldCurveKR": _yield_curve(con, KR_YIELDS)}
     finally:
