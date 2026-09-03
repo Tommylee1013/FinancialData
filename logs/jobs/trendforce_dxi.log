@@ -142,3 +142,9 @@
 2026-08-30 11:45:53 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI data_lake job started | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/industry/TrendForce/Index.xlsx | sheet=DXI
 2026-08-30 11:45:53 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI Excel sheet loaded | rows=4419 | columns=6
 2026-08-30 11:45:53 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI Parquet saved | output_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_warehouse/raw/industry/index/dxi.parquet | rows=4419
+2026-09-02 03:09:12 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI data_lake job started | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/industry/TrendForce/Index.xlsx | sheet=DXI
+2026-09-02 03:09:13 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI Excel sheet loaded | rows=4419 | columns=6
+2026-09-02 03:09:13 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI Parquet saved | output_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_warehouse/raw/industry/index/dxi.parquet | rows=4419
+2026-09-04 02:51:24 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI data_lake job started | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/industry/TrendForce/Index.xlsx | sheet=DXI
+2026-09-04 02:51:24 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI Excel sheet loaded | rows=4436 | columns=6
+2026-09-04 02:51:24 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI Parquet saved | output_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_warehouse/raw/industry/index/dxi.parquet | rows=4434

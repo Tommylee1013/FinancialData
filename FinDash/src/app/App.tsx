@@ -9,6 +9,8 @@ import { CommoditiesTab } from "./components/tabs/CommoditiesTab";
 import { IndustryTab } from "./components/tabs/IndustryTab";
 import { AssetAllocationTab } from "./components/tabs/AssetAllocationTab";
 import { AIResearchTab } from "./components/tabs/AIResearchTab";
+import { FedWatchTab } from "./components/tabs/FedWatchTab";
+import { ForeignExchangeTab } from "./components/tabs/ForeignExchangeTab";
 import { dashboardConnection, tickerTape } from "./data/mockData";
 import { DetailPage } from "./components/DetailPage";
 import { readDetailRoute } from "./detailNavigation";
@@ -16,7 +18,9 @@ import { readDetailRoute } from "./detailNavigation";
 const TAB_LABELS: Record<Tab, string> = {
   home:               'Overview — Global Market Summary',
   market:             'Market — Indices · Sectors · Sentiment',
+  'foreign-exchange': 'Foreign Exchange — Global Currencies · FX Indices',
   'fixed-income':     'Fixed Income — Yield Curves · Swaps',
+  fedwatch:           'FedWatch — FOMC Decision Probabilities',
   'supply-chain':     'Supply Chain — Freight Indices · Ports',
   macro:              'Macro Economics — Economic Indicators',
   commodities:        'Commodities — Raw Materials & Goods',
@@ -115,7 +119,9 @@ export default function App() {
         {detail ? <DetailPage kind={detail.kind} id={detail.id} onBack={() => { history.back(); }} onAskAI={(context) => { localStorage.setItem('findash-ai-context', JSON.stringify(context)); window.location.hash = ''; setActiveTab('ai-research'); }} /> : <>
         {activeTab === 'home' && <MainDashboard setActiveTab={changeTab} />}
         {activeTab === 'market' && <MarketTab />}
+        {activeTab === 'foreign-exchange' && <ForeignExchangeTab />}
         {activeTab === 'fixed-income' && <FixedIncomeTab />}
+        {activeTab === 'fedwatch' && <FedWatchTab />}
         {activeTab === 'supply-chain' && <SupplyChainTab />}
         {activeTab === 'macro' && <MacroEconomicsTab />}
         {activeTab === 'commodities' && <CommoditiesTab />}

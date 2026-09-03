@@ -1,6 +1,6 @@
-import { Sun, Moon, BarChart2, Activity, Globe, TrendingUp, Package, Factory, PieChart, Bot } from "lucide-react";
+import { Sun, Moon, BarChart2, Activity, Globe, TrendingUp, Package, Factory, PieChart, Bot, Landmark, CircleDollarSign } from "lucide-react";
 
-type Tab = 'home' | 'market' | 'fixed-income' | 'supply-chain' | 'macro' | 'commodities' | 'industry' | 'asset-allocation' | 'ai-research';
+type Tab = 'home' | 'market' | 'foreign-exchange' | 'fixed-income' | 'fedwatch' | 'supply-chain' | 'macro' | 'commodities' | 'industry' | 'asset-allocation' | 'ai-research';
 
 interface NavBarProps {
   activeTab: Tab;
@@ -12,7 +12,9 @@ interface NavBarProps {
 const navItems: { id: Tab; label: string; icon: React.ReactNode }[] = [
   { id: 'home',             label: 'Overview',      icon: <BarChart2 size={13} /> },
   { id: 'market',           label: 'Market',         icon: <Activity  size={13} /> },
+  { id: 'foreign-exchange', label: 'FX',             icon: <CircleDollarSign size={13} /> },
   { id: 'fixed-income',     label: 'Fixed Income',   icon: <TrendingUp size={13} /> },
+  { id: 'fedwatch',         label: 'FedWatch',        icon: <Landmark size={13} /> },
   { id: 'supply-chain',     label: 'Supply Chain',   icon: <Globe     size={13} /> },
   { id: 'macro',            label: 'Macro',          icon: <BarChart2 size={13} /> },
   { id: 'commodities',      label: 'Commodities',    icon: <Package   size={13} /> },

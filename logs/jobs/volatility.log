@@ -162,3 +162,13 @@
 2026-08-30 11:44:53 | INFO | src.jobs_api.risk.get_volatility_index | TradingView request prepared | tickers=24
 2026-08-30 11:45:52 | INFO | src.jobs_api.risk.get_volatility_index | TradingView data_lake collected | rows=9380 | columns=115
 2026-08-30 11:45:52 | INFO | src.jobs_api.risk.get_volatility_index | Volatility Parquet saved | output_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_warehouse/raw/risk/volatility.parquet | rows=98449
+2026-09-02 03:08:21 | INFO | src.jobs_api.risk.get_volatility_index | Volatility data_lake job started | metadata_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/metadata.xlsx
+2026-09-02 03:08:21 | INFO | src.jobs_api.risk.get_volatility_index | Volatility metadata loaded | symbols=24 | excluded_countries=['Europe', 'Japan']
+2026-09-02 03:08:21 | INFO | src.jobs_api.risk.get_volatility_index | TradingView request prepared | tickers=24
+2026-09-02 03:09:11 | INFO | src.jobs_api.risk.get_volatility_index | TradingView data_lake collected | rows=9382 | columns=115
+2026-09-02 03:09:12 | INFO | src.jobs_api.risk.get_volatility_index | Volatility Parquet saved | output_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_warehouse/raw/risk/volatility.parquet | rows=98492
+2026-09-04 02:50:32 | INFO | src.jobs_api.risk.get_volatility_index | Volatility data_lake job started | metadata_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/metadata.xlsx
+2026-09-04 02:50:32 | INFO | src.jobs_api.risk.get_volatility_index | Volatility metadata loaded | symbols=24 | excluded_countries=['Europe', 'Japan']
+2026-09-04 02:50:32 | INFO | src.jobs_api.risk.get_volatility_index | TradingView request prepared | tickers=24
+2026-09-04 02:51:23 | INFO | src.jobs_api.risk.get_volatility_index | TradingView data_lake collected | rows=9384 | columns=115
+2026-09-04 02:51:23 | INFO | src.jobs_api.risk.get_volatility_index | Volatility Parquet saved | output_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_warehouse/raw/risk/volatility.parquet | rows=98538

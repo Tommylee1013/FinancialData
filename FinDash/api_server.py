@@ -10,7 +10,7 @@ import sys
 from datetime import date, datetime, time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
 import duckdb
 
@@ -212,7 +212,7 @@ def _metadata_catalog(con, table: str, asset_classes: list[str]) -> dict[str, di
     return output
 
 
-def _catalog_values(con, table: str, asset_classes: list[str], periods: int = 120) -> list[dict]:
+def _catalog_values(con, table: str, asset_classes: list[str], periods: int | None = None) -> list[dict]:
     catalog = _metadata_catalog(con, table, asset_classes)
     values = _values(con, table, {symbol: (meta["id"], meta["name"], meta["category"], meta["unit"]) for symbol, meta in catalog.items()}, periods)
     for item in values:
@@ -223,22 +223,23 @@ def _catalog_values(con, table: str, asset_classes: list[str], periods: int = 12
 
 def _catalog_ohlcv(con, table: str, asset_classes: list[str]) -> list[dict]:
     catalog = _metadata_catalog(con, table, asset_classes)
-    values = _ohlcv(con, table, {symbol: (meta["id"], meta["name"], meta["country"], meta["flag"]) for symbol, meta in catalog.items()}, 365)
+    values = _ohlcv(con, table, {symbol: (meta["id"], meta["name"], meta["country"], meta["flag"]) for symbol, meta in catalog.items()}, None)
     for item in values:
         meta = next(meta for meta in catalog.values() if meta["id"] == item["id"])
         item.update(meta)
     return values
 
 
-def _catalog_component_values(con, periods: int = 120) -> list[dict]:
+def _catalog_component_values(con, periods: int | None = None) -> list[dict]:
     catalog = _metadata_catalog(con, "industry.components_data", ["industry"])
     rows = con.execute("""
       with ranked as (
         select symbol, item, base_date, value,
                dense_rank() over (partition by symbol order by base_date desc) rn
         from industry.components_data where symbol in (select unnest(?)) and value is not null
-      ) select symbol, item, base_date, value from ranked where rn <= ? order by symbol, item, base_date
-    """, [list(catalog), periods]).fetchall()
+      ) select symbol, item, base_date, value from ranked
+        where (? is null or rn <= ?) order by symbol, item, base_date
+    """, [list(catalog), periods, periods]).fetchall()
     grouped = {}
     for symbol, item, base_date, value in rows:
         grouped.setdefault(symbol, {}).setdefault(base_date, {})[str(item or "value").lower()] = value
@@ -270,7 +271,7 @@ def _catalog_macro(con) -> list[dict]:
       with ranked as (
         select *, row_number() over (partition by symbol order by base_date desc, release_date desc, time desc) rn
         from macro.macro_data where symbol in (select unnest(?)) and actual is not null
-      ) select symbol, base_date, actual, forecast, previous from ranked where rn <= 120 order by symbol, base_date
+      ) select symbol, base_date, actual, forecast, previous from ranked order by symbol, base_date
     """, [list(catalog)]).fetchall()
     grouped = {}
     for row in rows: grouped.setdefault(row[0], []).append(row[1:])
@@ -297,7 +298,7 @@ def _json_default(value):
     raise TypeError(type(value).__name__)
 
 
-def _ohlcv(con, table: str, mapping: dict, periods: int | None = 365) -> list[dict]:
+def _ohlcv(con, table: str, mapping: dict, periods: int | None = None) -> list[dict]:
     symbols = list(mapping)
     rows = con.execute(f"""
         with ranked as (
@@ -322,7 +323,7 @@ def _ohlcv(con, table: str, mapping: dict, periods: int | None = 365) -> list[di
                 "high": latest[2] if latest[2] is not None else value,
                 "low": latest[3] if latest[3] is not None else value,
                 "volume": f"{latest[5]:,.0f}" if latest[5] is not None else "—",
-                "trend": [{"t": i, "date": row[0], "v": row[4]} for i, row in enumerate(series[-365:]) if row[4] is not None],
+                "trend": [{"t": i, "date": row[0], "v": row[4]} for i, row in enumerate(series) if row[4] is not None],
                 "ohlc": [{"time": row[0], "open": row[1], "high": row[2], "low": row[3], "close": row[4]}
                          for row in series if all(value is not None for value in row[1:5])],
                 "asOf": latest[0]}
@@ -335,13 +336,14 @@ def _ohlcv(con, table: str, mapping: dict, periods: int | None = 365) -> list[di
     return result
 
 
-def _values(con, table: str, mapping: dict, periods: int = 365) -> list[dict]:
+def _values(con, table: str, mapping: dict, periods: int | None = None) -> list[dict]:
     rows = con.execute(f"""
         with ranked as (
           select *, row_number() over (partition by symbol order by base_date desc, release_date desc, time desc) rn
           from {table} where symbol in (select unnest(?)) and value is not null
-        ) select symbol, base_date, value from ranked where rn <= ? order by symbol, base_date
-    """, [list(mapping), periods]).fetchall()
+        ) select symbol, base_date, value from ranked
+          where (? is null or rn <= ?) order by symbol, base_date
+    """, [list(mapping), periods, periods]).fetchall()
     grouped = {}
     for symbol, base_date, value in rows:
         grouped.setdefault(symbol, []).append((base_date, value))
@@ -368,7 +370,7 @@ def _macro(con) -> list[dict]:
       with ranked as (
         select *, row_number() over (partition by symbol order by base_date desc, release_date desc, time desc) rn
         from macro.macro_data where symbol in (select unnest(?)) and actual is not null
-      ) select symbol, base_date, actual, forecast, previous from ranked where rn <= 120 order by symbol, base_date
+      ) select symbol, base_date, actual, forecast, previous from ranked order by symbol, base_date
     """, [list(MACRO)]).fetchall()
     grouped = {}
     for row in rows:
@@ -395,7 +397,7 @@ def _yield_curve(con, mapping) -> list[dict]:
       with ranked as (
        select symbol, base_date, value, row_number() over(partition by symbol order by base_date desc, release_date desc, time desc) rn
        from fixed_income.fixed_income_data where symbol in (select unnest(?)) and value is not null
-      ) select symbol, base_date, value, rn from ranked where rn <= 365 order by symbol, base_date
+      ) select symbol, base_date, value, rn from ranked order by symbol, base_date
     """, [[x[0] for x in mapping]]).fetchall()
     values = {}
     trends = {}
@@ -411,7 +413,7 @@ def _sector_data(con) -> dict[str, list[dict]]:
     for country, mapping in SECTORS.items():
         raw_mapping = {symbol: (f"sector-{country.lower()}-{symbol.lower()}", name, category, "Index")
                        for symbol, (name, category) in mapping.items()}
-        rows = _ohlcv(con, "market.index_data", raw_mapping, 365)
+        rows = _ohlcv(con, "market.index_data", raw_mapping, None)
         for row in rows:
             row.update(country=country, symbol=next((s for s, meta in raw_mapping.items() if meta[0] == row["id"]), ""))
         output[country] = rows
@@ -425,7 +427,7 @@ def _sentiment(con) -> dict:
         select symbol, base_date, value,
                row_number() over(partition by symbol order by base_date desc, release_date desc, time desc) rn
         from behavior.behavior_data where symbol in (select unnest(?)) and value is not null
-      ) select symbol, base_date, value, rn from ranked where rn <= 365
+      ) select symbol, base_date, value, rn from ranked
     """, [symbols]).fetchall()
     values = {}
     for symbol, base_date, value, rank in rows:
@@ -502,6 +504,61 @@ def dashboard_payload() -> dict:
         con.close()
 
 
+def fx_payload() -> dict:
+    con = duckdb.connect(str(DB_PATH), read_only=True)
+    try:
+        return {"items": _catalog_ohlcv(con, "market.fx_data", ["foreign exchange"]),
+                "updatedAt": datetime.now().isoformat(timespec="seconds")}
+    finally:
+        con.close()
+
+
+def fedwatch_payload(meeting: str | None = None) -> dict:
+    con = duckdb.connect(str(DB_PATH), read_only=True)
+    try:
+        exists = con.execute("select count(*) from information_schema.tables where table_schema='fed_policy' and table_name='meeting_probabilities'").fetchone()[0]
+        if not exists:
+            return {"meetings": [], "selectedMeeting": None, "scenarios": [], "series": [], "futures": []}
+        meeting_rows = con.execute("""
+          with latest as (
+            select meeting_date, max(base_date) base_date from fed_policy.meeting_probabilities group by meeting_date
+          )
+          select p.meeting_date, p.base_date, p.contract_symbol, p.scenario_bp, p.probability,
+                 p.implied_rate, p.effective_rate
+          from fed_policy.meeting_probabilities p join latest l using(meeting_date, base_date)
+          order by p.meeting_date desc, p.scenario_bp
+        """).fetchall()
+        grouped = {}
+        for meeting_date, base_date, contract, scenario, probability, implied, effective in meeting_rows:
+            item = grouped.setdefault(meeting_date, {"meetingDate": meeting_date, "asOf": base_date, "contract": contract,
+                                                     "impliedRate": implied, "effectiveRate": effective, "scenarios": []})
+            item["scenarios"].append({"scenarioBp": scenario, "probability": probability})
+        meetings = list(grouped.values())
+        selected = next((key for key in grouped if str(key) == str(meeting)), None) if meeting else (meetings[0]["meetingDate"] if meetings else None)
+        if selected is None and meetings: selected = meetings[0]["meetingDate"]
+        if selected is None: return {"meetings": [], "selectedMeeting": None, "scenarios": [], "series": [], "futures": []}
+        scenario_rows = con.execute("""
+          select base_date, scenario_bp, probability, futures_price, implied_rate, effective_rate, contract_symbol
+          from fed_policy.meeting_probabilities where meeting_date=? order by base_date, scenario_bp
+        """, [selected]).fetchall()
+        by_date = {}
+        contract = None
+        for base_date, scenario, probability, price, implied, effective, contract_symbol_value in scenario_rows:
+            contract = contract_symbol_value
+            row = by_date.setdefault(base_date, {"date": base_date, "futuresPrice": price, "impliedRate": implied, "effectiveRate": effective})
+            row[f"p{scenario}"] = probability * 100
+        futures_rows = con.execute("""
+          select base_date, open, high, low, close from fed_policy.fed_funds_futures
+          where symbol=? and base_date <= ? order by base_date
+        """, [contract, selected]).fetchall() if contract else []
+        return {"meetings": meetings, "selectedMeeting": grouped[selected],
+                "scenarios": grouped[selected]["scenarios"], "series": list(by_date.values()),
+                "futures": [{"date": row[0], "time": row[0], "open": row[1], "high": row[2], "low": row[3], "close": row[4]} for row in futures_rows],
+                "updatedAt": datetime.now().isoformat(timespec="seconds")}
+    finally:
+        con.close()
+
+
 class Handler(BaseHTTPRequestHandler):
     def _send(self, status: int, payload: dict):
         body = json.dumps(payload, default=_json_default, ensure_ascii=False).encode()
@@ -513,12 +570,18 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_GET(self):
-        path = urlparse(self.path).path
+        parsed = urlparse(self.path)
+        path = parsed.path
+        query = parse_qs(parsed.query)
         try:
             if path == "/api/health":
                 self._send(200, {"ok": DB_PATH.is_file(), "database": str(DB_PATH)})
             elif path == "/api/dashboard":
                 self._send(200, dashboard_payload())
+            elif path == "/api/fx":
+                self._send(200, fx_payload())
+            elif path == "/api/fedwatch":
+                self._send(200, fedwatch_payload((query.get("meeting") or [None])[0]))
             elif path == "/api/agent/status":
                 self._send(200, AGENT.status())
             elif path == "/api/agent/conversations":
