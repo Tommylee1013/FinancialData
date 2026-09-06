@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Area, AreaChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Activity, CalendarDays, Database, Gauge, RefreshCw } from "lucide-react";
-import { TradingViewChart } from "../TradingViewChart";
+import { TimeSeriesChart } from "../TimeSeriesChart";
 import { paddedDomain } from "../../chartUtils";
 
 type Scenario = { scenarioBp: number; probability: number };
@@ -67,7 +67,7 @@ export function FedWatchTab() {
         <div className="bg-card border border-border rounded p-4"><div className="mb-3"><h3 className="text-sm font-bold">Probability History</h3><p className="text-[10px] text-muted-foreground mt-1">Complete probability history · {data.series.length.toLocaleString()} observations</p></div><ResponsiveContainer width="100%" height={300}><AreaChart data={data.series}><CartesianGrid strokeDasharray="3 3" stroke="var(--border)"/><XAxis dataKey="date" minTickGap={35} tick={{fontSize:9,fill:'var(--muted-foreground)'}}/><YAxis domain={[0,100]} tickFormatter={v=>`${v}%`} tick={{fontSize:9,fill:'var(--muted-foreground)'}}/><Tooltip contentStyle={{background:'var(--card)',border:'1px solid var(--border)',fontSize:10}}/><Legend wrapperStyle={{fontSize:10}}/>{data.scenarios.map((scenario,index)=><Area key={scenario.scenarioBp} type="monotone" stackId="prob" dataKey={`p${scenario.scenarioBp}`} name={scenarioLabel(scenario.scenarioBp)} stroke={colors[index%colors.length]} fill={colors[index%colors.length]} fillOpacity={0.7}/>)}</AreaChart></ResponsiveContainer></div>
         <div className="bg-card border border-border rounded p-4"><div className="mb-3"><h3 className="text-sm font-bold">Implied Rate vs EFFR</h3><p className="text-[10px] text-muted-foreground mt-1">Futures-implied monthly average against the effective policy rate</p></div><ResponsiveContainer width="100%" height={300}><LineChart data={data.series}><CartesianGrid strokeDasharray="3 3" stroke="var(--border)"/><XAxis dataKey="date" minTickGap={35} tick={{fontSize:9,fill:'var(--muted-foreground)'}}/><YAxis domain={rateDomain} tickFormatter={v=>`${Number(v).toFixed(2)}%`} tick={{fontSize:9,fill:'var(--muted-foreground)'}}/><Tooltip contentStyle={{background:'var(--card)',border:'1px solid var(--border)',fontSize:10}}/><Legend wrapperStyle={{fontSize:10}}/><Line type="monotone" dataKey="impliedRate" name="Implied Rate" stroke="var(--primary)" strokeWidth={2} dot={false}/><Line type="stepAfter" dataKey="effectiveRate" name="EFFR" stroke="var(--foreground)" strokeWidth={1.5} dot={false}/></LineChart></ResponsiveContainer></div>
       </div>
-      <div className="bg-card border border-border rounded p-4"><div className="flex items-center gap-2 mb-3"><Activity size={14} className="text-primary"/><div><h3 className="text-sm font-bold">{data.selectedMeeting?.contract} Futures</h3><p className="text-[10px] text-muted-foreground">Daily OHLC · Scroll to zoom</p></div></div><TradingViewChart data={data.futures} height={420} initialMonths={6}/></div>
+      <div className="bg-card border border-border rounded p-4"><div className="flex items-center gap-2 mb-3"><Activity size={14} className="text-primary"/><div><h3 className="text-sm font-bold">{data.selectedMeeting?.contract} Futures</h3><p className="text-[10px] text-muted-foreground">Full OHLC history · Scroll to zoom</p></div></div><TimeSeriesChart data={data.futures} height={420} initialMode="candle" initialMonths={6}/></div>
     </>}
   </div>;
 }

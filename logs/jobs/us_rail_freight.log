@@ -175,3 +175,6 @@
 2026-09-04 02:51:30 | INFO | src.jobs_xlsx.freight.get_rail_traffic_index | US rail freight data_lake job started | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/freight/US Rail Traffic.xlsx
 2026-09-04 02:51:30 | INFO | src.jobs_xlsx.freight.get_rail_traffic_index | Excel file loaded | rows=908 | columns=5
 2026-09-04 02:51:30 | INFO | src.jobs_xlsx.freight.get_rail_traffic_index | US rail traffic Parquet saved | output_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_warehouse/raw/freight/us_rail_traffic.parquet | rows=908
+2026-09-07 02:42:10 | INFO | src.jobs_xlsx.freight.get_rail_traffic_index | US rail freight data_lake job started | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/freight/US Rail Traffic.xlsx
+2026-09-07 02:42:10 | INFO | src.jobs_xlsx.freight.get_rail_traffic_index | Excel file loaded | rows=908 | columns=5
+2026-09-07 02:42:10 | INFO | src.jobs_xlsx.freight.get_rail_traffic_index | US rail traffic Parquet saved | output_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_warehouse/raw/freight/us_rail_traffic.parquet | rows=908

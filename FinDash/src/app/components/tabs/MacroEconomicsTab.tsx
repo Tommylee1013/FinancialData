@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { MacroWorldMap } from "../WorldMap";
 import { MiniLineChart } from "../CandlestickChart";
+import { TimeSeriesChart } from "../TimeSeriesChart";
 import { macroCalendar, macroVariables, countryMacroData, countryMarkers } from "../../data/mockData";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import { openDetail } from "../../detailNavigation";
-import { paddedDomain } from "../../chartUtils";
 
 const fmt = (v: number | null | undefined, d = 2) => v == null ? '—' : v.toFixed(d);
 
@@ -26,7 +25,7 @@ function CountryIndicatorSections() {
         <div><h2 className="text-sm font-bold">Macro Indicator Board</h2><p className="text-[10px] text-muted-foreground mt-0.5">{activeCountry ? `${activeCountry.flag} ${activeCountry.name}` : 'Global coverage'} · Click an indicator for full research view</p></div>
         <span className="text-[10px] font-mono text-muted-foreground">{items.length} SERIES</span>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-px bg-border">
+      <div className={`grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-px bg-border ${countryFilter === 'ALL' ? 'max-h-[620px] overflow-y-auto' : ''}`}>
         {items.map(item => {
           const country = macroCountries.find(entry => entry.ids.includes(item.id));
           const beat = item.value >= item.forecast;
@@ -147,7 +146,6 @@ function MacroTrendCharts() {
   const [selected, setSelected] = useState(macroVariables[0].id);
   const mv = macroVariables.find(m => m.id === selected) ?? macroVariables[0];
   const data = mv.trend.map((d) => ({ period: d.date, value: parseFloat(d.v.toFixed(2)) }));
-  const domain = paddedDomain(data.map(point => point.value), 0.05);
 
   return (
     <div className="bg-card border border-border rounded p-4">
@@ -176,24 +174,7 @@ function MacroTrendCharts() {
         </div>
       </div>
       <div className="flex justify-end mb-2"><button onClick={() => openDetail('macro', mv.id)} className="text-[10px] font-semibold text-primary hover:underline">Research details →</button></div>
-      <ResponsiveContainer width="100%" height={180}>
-        <AreaChart data={data}>
-          <defs>
-            <linearGradient id="macroGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.25} />
-              <stop offset="95%" stopColor="var(--primary)" stopOpacity={0.02} />
-            </linearGradient>
-          </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-          <XAxis dataKey="period" tick={{ fontSize: 9, fill: 'var(--muted-foreground)' }} minTickGap={28} tickFormatter={v => String(v).slice(2, 10)} />
-          <YAxis domain={domain} tick={{ fontSize: 10, fill: 'var(--muted-foreground)' }} width={55} tickFormatter={v => `${Number(v).toFixed(2)}%`} />
-          <Tooltip
-            contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', fontSize: 11 }}
-            formatter={(v: any) => [`${Number(v).toFixed(2)}%`, mv.name]}
-          />
-          <Area key={`macro-area-${selected}`} type="monotone" dataKey="value" name={mv.name} stroke="var(--primary)" fill="url(#macroGrad)" strokeWidth={2} dot={false} />
-        </AreaChart>
-      </ResponsiveContainer>
+      <TimeSeriesChart key={selected} data={data} height={220} digits={2}/>
     </div>
   );
 }

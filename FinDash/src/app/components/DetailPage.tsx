@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft, ArrowUpRight, ArrowDownRight, Bot, CalendarDays, Database, Gauge, Layers3 } from 'lucide-react';
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import type { DetailKind } from '../detailNavigation';
-import { paddedDomain } from '../chartUtils';
+import { TimeSeriesChart } from './TimeSeriesChart';
 import {
   commodities, dashboardConnection, freightIndices, globalBenchmarks,
   industryData, macroVariables, marketIndices, volatilityIndices,
@@ -70,12 +69,13 @@ export function DetailPage({ kind, id, onBack, onAskAI }: { kind: DetailKind; id
   const change = item.change ?? (item.value != null && item.prev != null ? item.value - item.prev : 0);
   const changePct = item.changePct ?? (item.prev ? change / item.prev * 100 : 0);
   const up = change >= 0;
-  const rawTrend = item.trend?.length ? item.trend : Array.from({ length: 24 }, (_, i) => ({ t: i, v: item.value ?? 0 }));
+  const rawTrend = item.ohlc?.length ? item.ohlc : item.trend?.length ? item.trend : Array.from({ length: 24 }, (_, i) => ({ t: i, v: item.value ?? 0 }));
   const fullSeries = rawTrend.map((point: any, index: number) => {
     const fallback = new Date();
     fallback.setDate(fallback.getDate() - (rawTrend.length - 1 - index));
     const date = point.date ?? fallback.toISOString().slice(0, 10);
-    return { period: date, date, value: point.v ?? point.value ?? point.close };
+    return { period: date, date, value: point.v ?? point.value ?? point.close,
+      open: point.open, high: point.high, low: point.low, close: point.close };
   });
   const series = (() => {
     if (range === 'MAX') return fullSeries;
@@ -97,7 +97,6 @@ export function DetailPage({ kind, id, onBack, onAskAI }: { kind: DetailKind; id
   })();
   const visibleSeries = series.length ? series : fullSeries;
   const values = visibleSeries.map((p: any) => p.value).filter((v: any) => typeof v === 'number');
-  const chartDomain = paddedDomain(values);
   const high = item.high ?? item.high52w ?? (values.length ? Math.max(...values) : item.value);
   const low = item.low ?? item.low52w ?? (values.length ? Math.min(...values) : item.value);
   const previous = item.prev ?? (series.length > 1 ? series[series.length - 2].value : item.value);
@@ -145,16 +144,7 @@ export function DetailPage({ kind, id, onBack, onAskAI }: { kind: DetailKind; id
           </div>
         </div>
         {range === 'CUSTOM' && <div className="flex flex-wrap items-center gap-2 mb-4 p-2.5 bg-secondary/50 border border-border rounded text-[10px]"><span className="font-semibold text-muted-foreground">Date range</span><input aria-label="Start date" type="date" value={customStart} onChange={e => setCustomStart(e.target.value)} className="bg-card border border-border rounded px-2 py-1 text-foreground"/><span className="text-muted-foreground">to</span><input aria-label="End date" type="date" value={customEnd} onChange={e => setCustomEnd(e.target.value)} className="bg-card border border-border rounded px-2 py-1 text-foreground"/></div>}
-        <ResponsiveContainer width="100%" height={330}>
-          <AreaChart data={visibleSeries} margin={{ top: 10, right: 10, left: 5, bottom: 0 }}>
-            <defs><linearGradient id="detailFill" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor={up ? '#16A34A' : '#DC2626'} stopOpacity={0.24}/><stop offset="95%" stopColor={up ? '#16A34A' : '#DC2626'} stopOpacity={0.01}/></linearGradient></defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false}/>
-            <XAxis dataKey="period" tick={{ fontSize: 9, fill: 'var(--muted-foreground)' }} minTickGap={34} tickFormatter={value => String(value).slice(2, 10)} tickLine={false} axisLine={false}/>
-            <YAxis domain={chartDomain} tick={{ fontSize: 9, fill: 'var(--muted-foreground)' }} tickFormatter={v => fmt(v, kind === 'macro' ? 2 : 2)} width={68} tickLine={false} axisLine={false}/>
-            <Tooltip formatter={(value: number) => [fmt(value), item.name]} contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 6, fontSize: 11 }}/>
-            <Area type="monotone" dataKey="value" stroke={up ? '#16A34A' : '#DC2626'} fill="url(#detailFill)" strokeWidth={2} dot={false}/>
-          </AreaChart>
-        </ResponsiveContainer>
+        <TimeSeriesChart data={visibleSeries} height={330} color={up ? '#16A34A' : '#DC2626'} digits={kind === 'fixed-income' ? 3 : 2}/>
       </section>
 
       <aside className="space-y-4">

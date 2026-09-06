@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { MiniLineChart } from "../CandlestickChart";
+import { TimeSeriesChart } from "../TimeSeriesChart";
 import { commodities } from "../../data/mockData";
 import { TrendingUp, TrendingDown, Search } from "lucide-react";
 import { openDetail } from "../../detailNavigation";
-import { paddedDomain } from "../../chartUtils";
 
 const fmt = (v: number, d = 2) => v.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
 
@@ -44,7 +43,6 @@ function BoardRow({ c, isSelected, onClick }: { c: typeof commodities[0]; isSele
 function DetailPanel({ c }: { c: typeof commodities[0] }) {
   const up = c.changePct >= 0;
   const chartData = c.trend.map((d) => ({ t: d.date, v: parseFloat(d.v.toFixed(2)) }));
-  const domain = paddedDomain(chartData.map(point => point.v));
 
   return (
     <div className="bg-card border border-border rounded p-4 space-y-4">
@@ -75,30 +73,10 @@ function DetailPanel({ c }: { c: typeof commodities[0] }) {
       </div>
 
       <div>
-        <div className="text-xs font-semibold text-muted-foreground mb-1.5">30-Day Price History</div>
-        <ResponsiveContainer width="100%" height={160}>
-          <AreaChart data={chartData}>
-            <defs>
-              <linearGradient id="commGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={up ? '#16A34A' : '#DC2626'} stopOpacity={0.25} />
-                <stop offset="95%" stopColor={up ? '#16A34A' : '#DC2626'} stopOpacity={0.02} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-            <XAxis dataKey="t" tick={{ fontSize: 9, fill: 'var(--muted-foreground)' }} minTickGap={28} tickFormatter={v => String(v).slice(2, 10)} />
-            <YAxis domain={domain} tick={{ fontSize: 10, fill: 'var(--muted-foreground)' }} width={62} tickFormatter={v => Number(v).toLocaleString(undefined, { maximumFractionDigits: 2 })} />
-            <Tooltip
-              contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', fontSize: 11 }}
-              formatter={(v: any) => [v.toLocaleString(), c.name]}
-            />
-            <Area key={`comm-area-${c.id}`} type="monotone" dataKey="v" name={c.name} stroke={up ? '#16A34A' : '#DC2626'} fill="url(#commGrad)" strokeWidth={2} dot={false} />
-          </AreaChart>
-        </ResponsiveContainer>
+        <div className="text-xs font-semibold text-muted-foreground mb-1.5">Complete Price History</div>
+        <TimeSeriesChart key={c.id} data={(c as any).ohlc?.length ? (c as any).ohlc : chartData} height={210} color={up ? '#16A34A' : '#DC2626'} digits={2}/>
       </div>
 
-      <div className="text-[10px] text-muted-foreground bg-secondary rounded p-2">
-        ※ Will be replaced with live TradingView candlestick chart upon integration
-      </div>
       <button onClick={() => openDetail('commodity', c.id)} className="w-full rounded bg-primary text-primary-foreground py-2 text-xs font-semibold hover:opacity-90">
         Open professional research view →
       </button>

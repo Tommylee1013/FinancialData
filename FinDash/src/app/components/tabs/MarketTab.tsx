@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ChevronRight, Newspaper } from "lucide-react";
 import { MiniLineChart } from "../CandlestickChart";
-import { TradingViewChart } from "../TradingViewChart";
+import { TimeSeriesChart } from "../TimeSeriesChart";
 import {
   marketIndices, volatilityIndices, sectorDataByCountry,
   newsFeed, sentimentData, generateOHLC
@@ -132,7 +132,7 @@ export function MarketTab() {
                 TradingView Lightweight Charts · Scroll to zoom
               </div>
             </div>
-            <TradingViewChart data={ohlcData} height={480} initialMonths={3} />
+            <TimeSeriesChart key={selectedIndex.id} data={ohlcData} height={480} initialMode="candle" initialMonths={3}/>
           </div>
 
           {/* Country sector board */}

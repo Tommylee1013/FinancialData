@@ -1,10 +1,9 @@
 import React, { useMemo, useState } from "react";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { MiniLineChart } from "../CandlestickChart";
+import { TimeSeriesChart } from "../TimeSeriesChart";
 import { industryData } from "../../data/mockData";
 import { TrendingUp, TrendingDown, Search } from "lucide-react";
 import { openDetail } from "../../detailNavigation";
-import { paddedDomain } from "../../chartUtils";
 
 const fmt = (v: number, d = 2) => v.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
 
@@ -60,7 +59,6 @@ function IndustryBoardRow({ item, isSelected, onClick }: { item: typeof industry
 function DetailPanel({ item }: { item: typeof industryData[0] }) {
   const up = item.changePct >= 0;
   const chartData = item.trend.map((d) => ({ t: d.date, v: parseFloat(d.v.toFixed(2)) }));
-  const domain = paddedDomain(chartData.map(point => point.v));
   const catColor = categoryColors[item.category] ?? '#6B7280';
 
   return (
@@ -92,25 +90,8 @@ function DetailPanel({ item }: { item: typeof industryData[0] }) {
       </div>
 
       <div>
-        <div className="text-xs font-semibold text-muted-foreground mb-1.5">30-Day Price History</div>
-        <ResponsiveContainer width="100%" height={160}>
-          <AreaChart data={chartData}>
-            <defs>
-              <linearGradient id="indGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={up ? '#16A34A' : '#DC2626'} stopOpacity={0.25} />
-                <stop offset="95%" stopColor={up ? '#16A34A' : '#DC2626'} stopOpacity={0.02} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-            <XAxis dataKey="t" tick={{ fontSize: 9, fill: 'var(--muted-foreground)' }} minTickGap={28} tickFormatter={v => String(v).slice(2, 10)} />
-            <YAxis domain={domain} tick={{ fontSize: 10, fill: 'var(--muted-foreground)' }} width={62} tickFormatter={v => Number(v).toLocaleString(undefined, { maximumFractionDigits: 2 })} />
-            <Tooltip
-              contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', fontSize: 11 }}
-              formatter={(v: any) => [v.toLocaleString(), item.name]}
-            />
-            <Area key={`ind-area-${item.id}`} type="monotone" dataKey="v" name={item.name} stroke={up ? '#16A34A' : '#DC2626'} fill="url(#indGrad)" strokeWidth={2} dot={false} />
-          </AreaChart>
-        </ResponsiveContainer>
+        <div className="text-xs font-semibold text-muted-foreground mb-1.5">Complete Price / Value History</div>
+        <TimeSeriesChart key={item.id} data={(item as any).ohlc?.length ? (item as any).ohlc : chartData} height={210} color={up ? '#16A34A' : '#DC2626'} digits={2}/>
       </div>
       <button onClick={() => openDetail('industry', item.id)} className="w-full rounded bg-primary text-primary-foreground py-2 text-xs font-semibold hover:opacity-90">
         Open professional research view →

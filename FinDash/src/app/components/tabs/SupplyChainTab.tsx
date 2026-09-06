@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
-import { AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import { TimeSeriesChart } from "../TimeSeriesChart";
 import { FreightWorldMap } from "../WorldMap";
 import { freightIndices, portMarkers } from "../../data/mockData";
 import { TrendingUp, TrendingDown, Search, MapPin } from "lucide-react";
@@ -47,11 +48,7 @@ function FreightIndexCard({ fi }: { fi: typeof freightIndices[0] }) {
 
 function FreightLineChart({ selected }: { selected: string }) {
   const idx = freightIndices.find(f => f.id === selected) ?? freightIndices[0];
-  const data = idx.trend.map((d) => ({
-    period: d.date,
-    [idx.name]: Math.round(d.v),
-  }));
-  const domain = paddedDomain(data.map(point => point[idx.name]));
+  const data = idx.trend.map((d) => ({ period: d.date, value: d.v }));
 
   return (
     <div className="bg-card border border-border rounded p-4">
@@ -67,21 +64,7 @@ function FreightLineChart({ selected }: { selected: string }) {
           </div>
         </div>
       </div>
-      <ResponsiveContainer width="100%" height={300}>
-        <AreaChart data={data}>
-          <defs>
-            <linearGradient id="freightGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.3} />
-              <stop offset="95%" stopColor="var(--primary)" stopOpacity={0.02} />
-            </linearGradient>
-          </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-          <XAxis dataKey="period" tick={{ fontSize: 9, fill: 'var(--muted-foreground)' }} minTickGap={28} tickFormatter={v => String(v).slice(2, 10)} />
-          <YAxis domain={domain} tick={{ fontSize: 10, fill: 'var(--muted-foreground)' }} tickFormatter={fmt} width={55} />
-          <Tooltip content={<CustomTooltip />} />
-          <Area key={`freight-area-${idx.id}`} type="monotone" dataKey={idx.name} name={idx.name} stroke="var(--primary)" fill="url(#freightGrad)" strokeWidth={2} dot={false} />
-        </AreaChart>
-      </ResponsiveContainer>
+      <TimeSeriesChart key={idx.id} data={data} height={300} digits={2}/>
     </div>
   );
 }
