@@ -3,12 +3,13 @@ import { ArrowLeft, ArrowUpRight, ArrowDownRight, Bot, CalendarDays, Database, G
 import type { DetailKind } from '../detailNavigation';
 import { TimeSeriesChart } from './TimeSeriesChart';
 import {
-  commodities, dashboardConnection, freightIndices, globalBenchmarks,
+  bondIndices, commodities, dashboardConnection, freightIndices, globalBenchmarks,
   industryData, macroVariables, marketIndices, volatilityIndices,
-  yieldCurveUS, yieldCurveKR, krSwapRates, moneyMarket, sectorDataByCountry, sentimentData,
+  yieldCurveUS, yieldCurveKR, krSwapRates, moneyMarket, moneyMarketKR, sectorDataByCountry, sentimentData,
 } from '../data/mockData';
 
 const fixedIncomeItems = [
+  ...bondIndices,
   ...yieldCurveUS.map(item => ({ ...item, id: `us-${item.tenor.toLowerCase()}`, name: `US Treasury ${item.tenor}`, value: item.yield, country: 'United States', flag: '🇺🇸', unit: '%', category: 'Government Bond' })),
   ...yieldCurveKR.map(item => ({ ...item, id: `kr-${item.tenor.toLowerCase()}`, name: `Korea Treasury ${item.tenor}`, value: item.yield, country: 'South Korea', flag: '🇰🇷', unit: '%', category: 'Government Bond' })),
   ...krSwapRates.flatMap(item => [
@@ -16,6 +17,7 @@ const fixedIncomeItems = [
     { id: `kr-crs-${item.tenor.toLowerCase()}`, name: `Korea CRS ${item.tenor}`, value: item.crs, prev: item.crs - item.crsChange, change: item.crsChange, country: 'South Korea', flag: '🇰🇷', unit: '%', category: 'Cross-Currency Swap' },
   ]),
   ...moneyMarket.map((item, index) => ({ ...item, id: `money-${index}`, name: item.name, prev: item.value - item.change, country: item.flag, unit: '%', category: 'Money Market' })),
+  ...moneyMarketKR.map(item => ({ ...item, prev: item.value - item.change, country: 'South Korea', unit: '%', category: 'Money Market' })),
 ];
 
 const collections: Record<DetailKind, any[]> = {

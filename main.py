@@ -31,6 +31,8 @@ from src.jobs_xlsx.cfm.get_cfm_comp_index import collect_cfm_industry_data
 from src.jobs_xlsx.cfm.get_cfm_price_index import collect_cfm_price_index_data
 from src.jobs_api.commodity.get_commodity_index import collect_commodity_index_data
 from src.jobs_xlsx.industry.get_industry_data import collect_industry_data
+from src.jobs_xlsx.market.get_market_index_data import collect_market_index_data
+from src.jobs_xlsx.fixed_income.get_fixed_income_index_data import collect_fixed_income_index_data
 
 # Project root 지정
 PROJECT_ROOT = Path.cwd()
@@ -116,12 +118,18 @@ def market_main() -> None :
     collect_japan_index_data()
     collect_china_index_data()
     collect_nasdaq_index_data()
+    collect_market_index_data('config/market_index_jobs.yaml')
     return None
+
+def market_excel_main() -> None:
+    """Load config-defined Excel market indices without running API jobs."""
+    collect_market_index_data('config/market_index_jobs.yaml')
 
 def fixed_income_main() -> None :
     fixed_income_yaml_path = 'config/fixed_income_jobs.yaml'
 
     collect_fixed_income_data(fixed_income_yaml_path)
+    collect_fixed_income_index_data('config/fixed_income_index_jobs.yaml')
 
 def behavior_main() -> None :
     behavior_yaml_path = 'config/behavior_jobs.yaml'

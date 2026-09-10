@@ -304,7 +304,7 @@ export function MainDashboard({ setActiveTab }: { setActiveTab: (tab: Tab) => vo
 
       {/* ── MSCI & Global Benchmarks 2×2 ── */}
       <section>
-        <SectionHeader title="Global Benchmarks" subtitle="MSCI · DJ Commodity" />
+        <SectionHeader title="Global Benchmarks" subtitle="Equity · Fixed Income · Commodities" />
         <BenchmarkBoard />
       </section>
 

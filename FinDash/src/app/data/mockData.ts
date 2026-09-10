@@ -43,6 +43,8 @@ export const marketIndices = [
   { id: 'csi300', name: 'CSI 300', country: 'CN', flag: '🇨🇳', value: 3412.78, change: -23.12, changePct: -0.67, prev: 3435.90, high: 3451.23, low: 3401.45, volume: '432B', trend: generateTrend(3500, 30, 40, -0.08) },
 ];
 
+export const bondIndices: any[] = [];
+
 export const volatilityIndices = [
   { id: 'vix', name: 'VIX', desc: 'S&P 500 Volatility', value: 13.42, change: -0.87, changePct: -6.09, high: 14.56, low: 13.21, trend: generateTrend(16, 30, 1.2, -0.05) },
   { id: 'vkospi', name: 'VKOSPI', desc: 'KOSPI Volatility', value: 14.82, change: 0.23, changePct: 1.58, high: 15.43, low: 14.61, trend: generateTrend(15, 30, 0.8, 0.01) },
@@ -118,6 +120,8 @@ export const moneyMarket = [
   { name: 'CD 91-Day', value: 3.65, change: 0.00, period: '7/17/2026', flag: '🇰🇷' },
   { name: 'BOK Rate', value: 3.25, change: 0.00, period: 'Current', flag: '🇰🇷' },
 ];
+
+export const moneyMarketKR: any[] = [];
 
 export const freightIndices = [
   { id: 'bdi', name: 'BDI', fullName: 'Baltic Dry Index', value: 1842, change: 23, changePct: 1.27, desc: 'Dry Bulk Freight', trend: generateTrend(1600, 90, 60, 0.03) },
@@ -347,11 +351,15 @@ export async function loadDashboardData(): Promise<DashboardConnection> {
     if (!response.ok) throw new Error(`API ${response.status}`);
     const data = await response.json();
     replaceArray(marketIndices, data.marketIndices);
+    replaceArray(bondIndices, data.bondIndices);
+    replaceArray(globalBenchmarks, data.globalBenchmarks);
     replaceArray(volatilityIndices, data.volatilityIndices);
     replaceArray(macroVariables, data.macroVariables);
     replaceArray(commodities, data.commodities);
-    mergeArray(yieldCurveUS, data.yieldCurveUS);
-    mergeArray(yieldCurveKR, data.yieldCurveKR);
+    replaceArray(yieldCurveUS, data.yieldCurveUS);
+    replaceArray(yieldCurveKR, data.yieldCurveKR);
+    replaceArray(krSwapRates, data.krSwapRates);
+    replaceArray(moneyMarketKR, data.moneyMarketKR);
     replaceArray(freightIndices, data.freightIndices);
     replaceArray(industryData, data.industryData);
     mergeArray(tickerTape, data.tickerTape);

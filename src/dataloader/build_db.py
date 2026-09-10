@@ -82,6 +82,8 @@ FIXED_INCOME_DATA_PATH = (
     /'fixed_income'
 )
 
+FIXED_INCOME_INDEX_DATA_PATH = FIXED_INCOME_DATA_PATH / "index"
+
 BEHAVIOR_DATA_PATH = (PROJECT_ROOT
     / "data_warehouse"
     / 'raw'
@@ -107,6 +109,7 @@ INDUSTRY_TABLE = 'industry.components_data'
 INDUSTRY_INDEX_TABLE = 'industry.index_data'
 FX_TABLE = 'market.fx_data'
 FIXED_INCOME_TABLE = 'fixed_income.fixed_income_data'
+FIXED_INCOME_INDEX_TABLE = 'fixed_income.index_data'
 BEHAVIOR_TABLE = 'behavior.behavior_data'
 
 # ============================================================
@@ -216,6 +219,8 @@ FIXED_INCOME_COLUMNS = [
     "country",
     'value'
 ]
+
+FIXED_INCOME_INDEX_COLUMNS = INDEX_COLUMNS
 
 BEHAVIOR_COLUMNS = [
     "base_date",
@@ -898,6 +903,35 @@ def create_fixed_income_table(
 
     return row_count
 
+
+def create_fixed_income_index_table(
+    connection: duckdb.DuckDBPyConnection,
+    parquet_files: list[Path],
+) -> int:
+    """Combine bond-index OHLCV parquet files into fixed_income.index_data."""
+    parquet_paths = build_parquet_path_list(parquet_files)
+    connection.execute(f"""
+        CREATE OR REPLACE TABLE {FIXED_INCOME_INDEX_TABLE} AS
+        SELECT
+            CAST(base_date AS DATE) AS base_date,
+            CAST(release_date AS DATE) AS release_date,
+            CAST(time AS TIME) AS time,
+            CAST(time_zone AS VARCHAR) AS time_zone,
+            CAST(symbol AS VARCHAR) AS symbol,
+            CAST(exchange AS VARCHAR) AS exchange,
+            CAST(country AS VARCHAR) AS country,
+            CAST(open AS DOUBLE) AS open,
+            CAST(high AS DOUBLE) AS high,
+            CAST(low AS DOUBLE) AS low,
+            CAST(close AS DOUBLE) AS close,
+            CAST(volume AS DOUBLE) AS volume
+        FROM read_parquet({parquet_paths}, union_by_name = TRUE)
+    """)
+    row_count = connection.execute(f"SELECT COUNT(*) FROM {FIXED_INCOME_INDEX_TABLE}").fetchone()[0]
+    LOGGER.info("Fixed-income index table created | table=%s | files=%d | rows=%d",
+                FIXED_INCOME_INDEX_TABLE, len(parquet_files), row_count)
+    return row_count
+
 def create_behavior_table(
     connection: duckdb.DuckDBPyConnection,
     parquet_files: list[Path],
@@ -1440,8 +1474,13 @@ def build_duckdb() -> None:
             FX_INDEX_DATA_PATH
         )
 
-        fixed_income_files = get_parquet_files(
-            FIXED_INCOME_DATA_PATH
+        fixed_income_files = [
+            path for path in get_parquet_files(FIXED_INCOME_DATA_PATH)
+            if FIXED_INCOME_INDEX_DATA_PATH not in path.parents
+        ]
+
+        fixed_income_index_files = get_parquet_files(
+            FIXED_INCOME_INDEX_DATA_PATH
         )
 
         behavior_files = get_parquet_files(
@@ -1450,10 +1489,11 @@ def build_duckdb() -> None:
 
         LOGGER.info(
             "Parquet file discovery completed | "
-            "index_files=%d | macro_files=%d | freight_files=%d",
+            "index_files=%d | macro_files=%d | freight_files=%d | fixed_income_index_files=%d",
             len(index_files),
             len(macro_files),
             len(freight_files),
+            len(fixed_income_index_files),
         )
 
         validate_parquet_columns(
@@ -1504,6 +1544,12 @@ def build_duckdb() -> None:
             parquet_files=fixed_income_files,
             required_columns=FIXED_INCOME_COLUMNS,
             data_type_name="fixed_income"
+        )
+
+        validate_parquet_columns(
+            parquet_files=fixed_income_index_files,
+            required_columns=FIXED_INCOME_INDEX_COLUMNS,
+            data_type_name="fixed_income_index",
         )
 
         validate_parquet_columns(
@@ -1572,6 +1618,11 @@ def build_duckdb() -> None:
         fixed_income_rows = create_fixed_income_table(
             connection,
             parquet_files=fixed_income_files,
+        )
+
+        fixed_income_index_rows = create_fixed_income_index_table(
+            connection,
+            parquet_files=fixed_income_index_files,
         )
 
         behavior_rows = create_behavior_table(

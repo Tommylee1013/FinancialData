@@ -1,0 +1,30 @@
+job:
+  name: market_index_excel_loader
+  output_path: data_warehouse/raw/index/msci_index.parquet
+  duplicate_strategy: error
+  log_path: logs/jobs/market_index_excel_loader.log
+
+sources:
+  - file_name: data_lake/Index/MSCIACWI.xlsx
+    sheet_name: MSCIACWI
+    symbol: ACWI
+    exchange: MSCI
+    country: Global
+
+  - file_name: data_lake/Index/MSCIACWI.xlsx
+    sheet_name: MSACWIXUSA
+    symbol: MSACWIXUSA
+    exchange: MSCI
+    country: Global
+
+  - file_name: data_lake/Index/MSCIACWI.xlsx
+    sheet_name: MSACWIXUSANet
+    symbol: MSACWIXUSANET
+    exchange: MSCI
+    country: Global
+
+  - file_name: data_lake/Index/MSCIACWI.xlsx
+    sheet_name: MSCIEM
+    symbol: MXEF
+    exchange: MSCI
+    country: Global

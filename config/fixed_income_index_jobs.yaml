@@ -1,0 +1,20 @@
+job:
+  name: fixed_income_index_excel_loader
+  output_path: data_warehouse/raw/fixed_income/index/bloomberg_global_aggregate.parquet
+  duplicate_strategy: error
+  log_path: logs/jobs/fixed_income_index_excel_loader.log
+
+sources:
+  - file_name: data_lake/Index/Bond Index.xlsx
+    sheet_name: Index
+    value_column: LEGATRUU
+    symbol: LEGATRUU
+    exchange: BLOOMBERG
+    country: Global
+
+  - file_name: data_lake/Index/Bond Index.xlsx
+    sheet_name: Index
+    value_column: LEGATRUH
+    symbol: LEGATRUH
+    exchange: BLOOMBERG
+    country: Global

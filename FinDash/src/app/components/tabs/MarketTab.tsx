@@ -132,7 +132,7 @@ export function MarketTab() {
                 TradingView Lightweight Charts · Scroll to zoom
               </div>
             </div>
-            <TimeSeriesChart key={selectedIndex.id} data={ohlcData} height={480} initialMode="candle" initialMonths={3}/>
+            <TimeSeriesChart key={selectedIdx.id} data={ohlcData} height={480} initialMode="candle" initialMonths={3}/>
           </div>
 
           {/* Country sector board */}

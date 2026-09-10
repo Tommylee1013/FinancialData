@@ -3,8 +3,10 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
   AreaChart, Area, BarChart, Bar
 } from "recharts";
-import { yieldCurveUS, yieldCurveKR, krSwapRates, moneyMarket, generateTrend } from "../../data/mockData";
+import { bondIndices, yieldCurveUS, yieldCurveKR, krSwapRates, moneyMarket, moneyMarketKR, generateTrend } from "../../data/mockData";
 import { openDetail } from "../../detailNavigation";
+import { MiniLineChart } from "../CandlestickChart";
+import { TimeSeriesChart } from "../TimeSeriesChart";
 
 const fmt = (v: number, d = 3) => v.toFixed(d);
 const paddedDomain = (values: number[]) => {
@@ -28,7 +30,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 function YieldCurveChart({ country }: { country: 'US' | 'KR' }) {
-  const tenorOrder = ['1M','3M','6M','1Y','2Y','3Y','5Y','7Y','10Y','20Y','30Y'];
+  const tenorOrder = ['1M','3M','6M','1Y','2Y','3Y','5Y','7Y','10Y','20Y','30Y','50Y'];
   const combinedData = tenorOrder.map(tenor => {
     const us = yieldCurveUS.find(d => d.tenor === tenor);
     const kr = yieldCurveKR.find(d => d.tenor === tenor);
@@ -174,7 +176,8 @@ function SwapRateTable() {
   );
 }
 
-function MoneyMarketPanel() {
+function MoneyMarketPanel({ country }: { country: 'US' | 'KR' }) {
+  const rows = country === 'KR' ? moneyMarketKR : moneyMarket;
   return (
     <div className="bg-card border border-border rounded overflow-hidden">
       <div className="px-3 py-2 bg-secondary border-b border-border">
@@ -189,10 +192,10 @@ function MoneyMarketPanel() {
           </tr>
         </thead>
         <tbody>
-          {moneyMarket.map(row => {
+          {rows.map(row => {
             const up = row.change >= 0;
             return (
-              <tr key={row.name} onClick={() => openDetail('fixed-income', `money-${moneyMarket.indexOf(row)}`)} className="border-t border-border hover:bg-accent cursor-pointer">
+              <tr key={row.id ?? row.name} onClick={() => openDetail('fixed-income', row.id ?? `money-${rows.indexOf(row)}`)} className="border-t border-border hover:bg-accent cursor-pointer">
                 <td className="px-3 py-1.5 text-foreground whitespace-nowrap">
                   <span className="mr-1.5">{row.flag}</span>{row.name}
                 </td>
@@ -209,12 +212,41 @@ function MoneyMarketPanel() {
   );
 }
 
+function GlobalBondIndices() {
+  const [selectedId, setSelectedId] = useState(bondIndices[0]?.id ?? 'legatruu');
+  const selected = bondIndices.find(item => item.id === selectedId) ?? bondIndices[0];
+  if (!selected) return <div className="bg-card border border-border rounded p-8 text-center text-xs text-muted-foreground">No global bond indices are available in the database.</div>;
+  const history = selected.ohlc?.length ? selected.ohlc : selected.trend;
+  return <div className="space-y-3">
+    <section className="bg-card border border-border rounded overflow-hidden">
+      <div className="max-h-[443px] overflow-auto"><table className="w-full text-xs">
+        <thead className="sticky top-0 z-10 bg-secondary"><tr>{['Bond Index', 'Level', 'Change', 'Change %', 'Day High', 'Day Low', 'Source', 'Chart'].map(label => <th key={label} className="text-left px-3 py-2 text-muted-foreground font-semibold whitespace-nowrap">{label}</th>)}</tr></thead>
+        <tbody>{bondIndices.map(item => {
+        const up = item.changePct >= 0;
+        return <tr key={item.id} onClick={() => setSelectedId(item.id)} className={`border-t border-border cursor-pointer transition-colors ${item.id === selected.id ? 'bg-accent' : 'hover:bg-secondary'}`}>
+          <td className="px-3 py-2"><div className="font-semibold text-foreground">{item.name}</div><div className="text-[9px] font-mono text-muted-foreground">{item.symbol}</div></td>
+          <td className="px-3 py-2 font-mono font-semibold">{item.value.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+          <td className={`px-3 py-2 font-mono ${up ? 'text-up' : 'text-down'}`}>{up ? '+' : ''}{item.change.toFixed(2)}</td>
+          <td className={`px-3 py-2 font-mono font-semibold ${up ? 'text-up' : 'text-down'}`}>{up ? '+' : ''}{item.changePct.toFixed(2)}%</td>
+          <td className="px-3 py-2 font-mono text-muted-foreground">{item.high?.toFixed(2) ?? '—'}</td><td className="px-3 py-2 font-mono text-muted-foreground">{item.low?.toFixed(2) ?? '—'}</td>
+          <td className="px-3 py-2 text-muted-foreground">{item.exchange ?? 'Bloomberg'}</td><td className="px-3 py-2"><MiniLineChart data={item.trend.slice(-30)} width={70} height={24} color={up ? '#16A34A' : '#DC2626'} fill={false}/></td>
+        </tr>;
+      })}</tbody></table></div>
+    </section>
+    <section className="bg-card border border-border rounded p-4">
+      <div className="mb-3 flex items-start justify-between gap-3"><div><h3 className="text-sm font-bold">{selected.name}</h3><p className="text-[10px] text-muted-foreground mt-0.5">{selected.symbol} · Fixed Income Index · Complete available history</p></div><button onClick={() => openDetail('fixed-income', selected.id)} className="text-[10px] font-semibold text-primary hover:underline">Research details →</button></div>
+      <TimeSeriesChart key={selected.id} data={history} height={480} initialMode="candle" initialMonths={3} digits={2}/>
+    </section>
+  </div>;
+}
+
 export function FixedIncomeTab() {
-  const [country, setCountry] = useState<'US' | 'KR'>('US');
-  const countries = [{ id: 'US' as const, flag: '🇺🇸', name: 'United States' }, { id: 'KR' as const, flag: '🇰🇷', name: 'South Korea' }];
+  const [country, setCountry] = useState<'GLOBAL' | 'US' | 'KR'>('GLOBAL');
+  const countries = [{ id: 'GLOBAL' as const, flag: '🌐', name: 'Global Indices' }, { id: 'US' as const, flag: '🇺🇸', name: 'United States' }, { id: 'KR' as const, flag: '🇰🇷', name: 'South Korea' }];
   return (
     <div className="p-4 space-y-4 max-w-screen-2xl mx-auto">
       <div className="flex items-center gap-2 flex-wrap">{countries.map(item => <button key={item.id} onClick={() => setCountry(item.id)} className={`text-xs px-3 py-1.5 rounded transition-colors ${country === item.id ? 'bg-primary text-white' : 'bg-card border border-border text-muted-foreground hover:text-foreground'}`}>{item.flag} {item.name}</button>)}</div>
+      {country === 'GLOBAL' ? <GlobalBondIndices /> :
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
         <div className="xl:col-span-2 space-y-4">
           <YieldCurveChart country={country} />
@@ -223,9 +255,10 @@ export function FixedIncomeTab() {
         </div>
         <div className="space-y-4">
           <Spread10Y2Y />
-          <MoneyMarketPanel />
+          <MoneyMarketPanel country={country} />
         </div>
       </div>
+      }
     </div>
   );
 }

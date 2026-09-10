@@ -98,7 +98,13 @@ US_YIELDS = [("USGG1M", "1M"), ("USGG3M", "3M"), ("USGG6M", "6M"), ("USGG12M", "
              ("USGG2YR", "2Y"), ("USGG3YR", "3Y"), ("USGG5YR", "5Y"), ("USGG7YR", "7Y"),
              ("USGG10YR", "10Y"), ("USGG20YR", "20Y"), ("USGG30YR", "30Y")]
 KR_YIELDS = [("KTB01", "1Y"), ("KTB02", "2Y"), ("KTB03", "3Y"), ("KTB05", "5Y"),
-             ("KTB07", "7Y"), ("KTB10", "10Y"), ("KTB20", "20Y"), ("KTB30", "30Y")]
+             ("KTB10", "10Y"), ("KTB20", "20Y"), ("KTB30", "30Y"), ("KTB50", "50Y")]
+
+KR_SWAP_TENORS = ["01Y", "02Y", "03Y", "04Y", "05Y", "07Y", "10Y"]
+KR_MONEY_MARKET = {
+    "CD91": "CD 91D", "CP91": "CP 91D", "KOFR": "KOFR",
+    "KDB01": "KDB Bond 1Y", "MSB91": "MSB 91D", "MSB01": "MSB 1Y", "MSB02": "MSB 2Y",
+}
 
 SECTORS = {
     "US": {
@@ -408,6 +414,81 @@ def _yield_curve(con, mapping) -> list[dict]:
             for symbol, tenor in mapping if symbol in values and 1 in values[symbol]]
 
 
+def _fixed_income_snapshots(con, symbols: list[str]) -> dict[str, dict]:
+    rows = con.execute("""
+      with ranked as (
+        select symbol, base_date, value,
+               row_number() over(partition by symbol order by base_date desc, release_date desc, time desc) rn
+        from fixed_income.fixed_income_data
+        where symbol in (select unnest(?)) and value is not null
+      )
+      select symbol, base_date, value, rn from ranked order by symbol, base_date
+    """, [symbols]).fetchall()
+    output = {}
+    for symbol, base_date, value, rank in rows:
+        item = output.setdefault(symbol, {"trend": [], "ranked": {}})
+        item["trend"].append({"date": base_date, "v": value})
+        item["ranked"][rank] = value
+    return output
+
+
+def _kr_swap_rates(con) -> list[dict]:
+    symbols = [f"KR{kind}{tenor}" for tenor in KR_SWAP_TENORS for kind in ("IRS", "CRS")]
+    values = _fixed_income_snapshots(con, symbols)
+    result = []
+    for tenor in KR_SWAP_TENORS:
+        irs = values.get(f"KRIRS{tenor}"); crs = values.get(f"KRCRS{tenor}")
+        if not irs or not crs: continue
+        ir, cr = irs["ranked"], crs["ranked"]
+        result.append({"tenor": tenor.lstrip("0"), "irs": ir[1], "crs": cr[1],
+                       "irsChange": ir[1] - ir.get(2, ir[1]), "crsChange": cr[1] - cr.get(2, cr[1]),
+                       "irsTrend": irs["trend"], "crsTrend": crs["trend"]})
+    return result
+
+
+def _kr_money_market(con) -> list[dict]:
+    values = _fixed_income_snapshots(con, list(KR_MONEY_MARKET))
+    result = []
+    for symbol, name in KR_MONEY_MARKET.items():
+        item = values.get(symbol)
+        if not item: continue
+        ranked = item["ranked"]; value = ranked[1]
+        result.append({"id": f"kr-money-{symbol.lower()}", "symbol": symbol, "name": name,
+                       "value": value, "change": value - ranked.get(2, value), "flag": "🇰🇷",
+                       "period": "Latest", "trend": item["trend"], "connected": True})
+    return result
+
+
+def _benchmark_items(con, commodity_source: str) -> list[dict]:
+    sources = [
+        (_catalog_ohlcv(con, "market.index_data", ["equity"]), {"ACWI", "MSACWIXUSA", "MXEF"}),
+        (_catalog_ohlcv(con, "fixed_income.index_data", ["fixed income", "bond"]), {"LEGATRUU", "LEGATRUH"}),
+        (_catalog_ohlcv(con, commodity_source, ["commodity"]), {"CRB", "GSCI"}),
+    ]
+    result = []
+    descriptions = {
+        "ACWI": "Global developed and emerging equities", "MSACWIXUSA": "Global equities excluding the United States",
+        "MXEF": "Emerging-market equities", "LEGATRUU": "Global aggregate bonds · unhedged USD",
+        "LEGATRUH": "Global aggregate bonds · hedged USD", "CRB": "Global commodity basket",
+        "GSCI": "Production-weighted commodity index",
+    }
+    flags = {"ACWI": "🌍", "MSACWIXUSA": "🌐", "MXEF": "🌏", "LEGATRUU": "📊", "LEGATRUH": "🛡️", "CRB": "🧱", "GSCI": "⚡"}
+    for items, selected in sources:
+        for item in items:
+            if item["symbol"] not in selected: continue
+            candles = item.get("ohlc", [])
+            closes = [(str(row["time"]), row["close"]) for row in candles if row.get("close") is not None]
+            latest_year = closes[-1][0][:4] if closes else ""
+            year_values = [value for day, value in closes if day[:4] == latest_year]
+            base = year_values[0] if year_values else item["value"]
+            trailing = [value for _, value in closes[-252:]] or [item["value"]]
+            item.update(id=f"benchmark-{item['symbol'].lower()}", desc=descriptions[item["symbol"]],
+                        flag=flags[item["symbol"]], ytd=(item["value"] / base - 1) * 100 if base else 0,
+                        high52w=max(trailing), low52w=min(trailing))
+            result.append(item)
+    return result
+
+
 def _sector_data(con) -> dict[str, list[dict]]:
     output = {}
     for country, mapping in SECTORS.items():
@@ -493,13 +574,16 @@ def dashboard_payload() -> dict:
         return {"source": str(DB_PATH), "updatedAt": datetime.now().isoformat(timespec="seconds"),
                 "metadataRows": con.execute("select count(*) from metadata.instrument_master").fetchone()[0],
                 "marketIndices": _catalog_ohlcv(con, "market.index_data", ["equity"]),
+                "bondIndices": _catalog_ohlcv(con, "fixed_income.index_data", ["fixed income", "bond"]),
+                "globalBenchmarks": _benchmark_items(con, commodity_source),
                 "volatilityIndices": _catalog_ohlcv(con, "market.volatility_data", ["risk"]),
                 "sectorDataByCountry": _sector_data(con), "sentimentData": _sentiment(con),
                 "tickerTape": _ticker_tape(con),
                 "macroVariables": _catalog_macro(con),
                 "commodities": _catalog_ohlcv(con, commodity_source, ["commodity"]),
                 "freightIndices": freight, "industryData": industry,
-                "yieldCurveUS": _yield_curve(con, US_YIELDS), "yieldCurveKR": _yield_curve(con, KR_YIELDS)}
+                "yieldCurveUS": _yield_curve(con, US_YIELDS), "yieldCurveKR": _yield_curve(con, KR_YIELDS),
+                "krSwapRates": _kr_swap_rates(con), "moneyMarketKR": _kr_money_market(con)}
     finally:
         con.close()
 
