@@ -181,3 +181,9 @@
 2026-09-07 02:42:09 | INFO | src.jobs_xlsx.freight.get_baltic_freight_index | Baltic freight data_lake job started | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/freight/baltic dry index.xlsx
 2026-09-07 02:42:10 | INFO | src.jobs_xlsx.freight.get_baltic_freight_index | Excel file loaded | rows=9557 | columns=14
 2026-09-07 02:42:10 | INFO | src.jobs_xlsx.freight.get_baltic_freight_index | Baltic freight Parquet saved | output_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_warehouse/raw/freight/baltic_index.parquet | rows=49317
+2026-09-08 01:42:15 | INFO | src.jobs_xlsx.freight.get_baltic_freight_index | Baltic freight data_lake job started | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/freight/baltic dry index.xlsx
+2026-09-08 01:42:15 | INFO | src.jobs_xlsx.freight.get_baltic_freight_index | Excel file loaded | rows=9558 | columns=14
+2026-09-08 01:42:16 | INFO | src.jobs_xlsx.freight.get_baltic_freight_index | Baltic freight Parquet saved | output_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_warehouse/raw/freight/baltic_index.parquet | rows=49327
+2026-09-11 01:07:49 | INFO | src.jobs_xlsx.freight.get_baltic_freight_index | Baltic freight data_lake job started | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/freight/baltic dry index.xlsx
+2026-09-11 01:07:50 | INFO | src.jobs_xlsx.freight.get_baltic_freight_index | Excel file loaded | rows=9561 | columns=14
+2026-09-11 01:07:50 | INFO | src.jobs_xlsx.freight.get_baltic_freight_index | Baltic freight Parquet saved | output_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_warehouse/raw/freight/baltic_index.parquet | rows=49354
