@@ -164,3 +164,27 @@
 2026-09-24 16:55:56 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loading | symbol=AXVI | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/volatility/VOL.xlsx
 2026-09-24 16:55:56 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loaded | symbol=AXVI | rows=4820 | columns=8
 2026-09-24 16:55:56 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | volatility Parquet saved | output_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_warehouse/raw/risk/volatility_excel.parquet | rows=16373
+2026-09-27 11:37:35 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | volatility data_lake job started | input_dir=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/volatility
+2026-09-27 11:37:35 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loading | symbol=NKVI | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/volatility/NKVI.xlsx
+2026-09-27 11:37:35 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loaded | symbol=NKVI | rows=6343 | columns=8
+2026-09-27 11:37:35 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loading | symbol=VSTOXX | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/volatility/VSTOXX.xlsx
+2026-09-27 11:37:36 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loaded | symbol=VSTOXX | rows=5210 | columns=8
+2026-09-27 11:37:36 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loading | symbol=AXVI | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/volatility/VOL.xlsx
+2026-09-27 11:37:36 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loaded | symbol=AXVI | rows=4820 | columns=8
+2026-09-27 11:37:36 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | volatility Parquet saved | output_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_warehouse/raw/risk/volatility_excel.parquet | rows=16373
+2026-10-05 01:48:39 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | volatility data_lake job started | input_dir=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/volatility
+2026-10-05 01:48:39 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loading | symbol=NKVI | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/volatility/NKVI.xlsx
+2026-10-05 01:48:39 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loaded | symbol=NKVI | rows=6347 | columns=8
+2026-10-05 01:48:39 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loading | symbol=VSTOXX | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/volatility/VSTOXX.xlsx
+2026-10-05 01:48:40 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loaded | symbol=VSTOXX | rows=5215 | columns=8
+2026-10-05 01:48:40 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loading | symbol=AXVI | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/volatility/VOL.xlsx
+2026-10-05 01:48:40 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loaded | symbol=AXVI | rows=4826 | columns=8
+2026-10-05 01:48:40 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | volatility Parquet saved | output_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_warehouse/raw/risk/volatility_excel.parquet | rows=16387
+2026-10-08 02:45:03 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | volatility data_lake job started | input_dir=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/volatility
+2026-10-08 02:45:03 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loading | symbol=NKVI | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/volatility/NKVI.xlsx
+2026-10-08 02:45:04 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loaded | symbol=NKVI | rows=6347 | columns=8
+2026-10-08 02:45:04 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loading | symbol=VSTOXX | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/volatility/VSTOXX.xlsx
+2026-10-08 02:45:04 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loaded | symbol=VSTOXX | rows=5215 | columns=8
+2026-10-08 02:45:04 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loading | symbol=AXVI | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/volatility/VOL.xlsx
+2026-10-08 02:45:04 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | Volatility Excel loaded | symbol=AXVI | rows=4826 | columns=8
+2026-10-08 02:45:04 | INFO | src.jobs_xlsx.risk.get_volatility_index_from_xlsx | volatility Parquet saved | output_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_warehouse/raw/risk/volatility_excel.parquet | rows=16387

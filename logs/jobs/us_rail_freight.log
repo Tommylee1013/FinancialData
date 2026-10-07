@@ -196,3 +196,12 @@
 2026-09-24 16:56:02 | INFO | src.jobs_xlsx.freight.get_rail_traffic_index | US rail freight data_lake job started | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/freight/US Rail Traffic.xlsx
 2026-09-24 16:56:02 | INFO | src.jobs_xlsx.freight.get_rail_traffic_index | Excel file loaded | rows=911 | columns=5
 2026-09-24 16:56:02 | INFO | src.jobs_xlsx.freight.get_rail_traffic_index | US rail traffic Parquet saved | output_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_warehouse/raw/freight/us_rail_traffic.parquet | rows=910
+2026-09-27 11:37:42 | INFO | src.jobs_xlsx.freight.get_rail_traffic_index | US rail freight data_lake job started | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/freight/US Rail Traffic.xlsx
+2026-09-27 11:37:42 | INFO | src.jobs_xlsx.freight.get_rail_traffic_index | Excel file loaded | rows=911 | columns=5
+2026-09-27 11:37:42 | INFO | src.jobs_xlsx.freight.get_rail_traffic_index | US rail traffic Parquet saved | output_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_warehouse/raw/freight/us_rail_traffic.parquet | rows=910
+2026-10-05 01:48:47 | INFO | src.jobs_xlsx.freight.get_rail_traffic_index | US rail freight data_lake job started | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/freight/US Rail Traffic.xlsx
+2026-10-05 01:48:47 | INFO | src.jobs_xlsx.freight.get_rail_traffic_index | Excel file loaded | rows=913 | columns=5
+2026-10-05 01:48:47 | INFO | src.jobs_xlsx.freight.get_rail_traffic_index | US rail traffic Parquet saved | output_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_warehouse/raw/freight/us_rail_traffic.parquet | rows=912
+2026-10-08 02:45:11 | INFO | src.jobs_xlsx.freight.get_rail_traffic_index | US rail freight data_lake job started | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/freight/US Rail Traffic.xlsx
+2026-10-08 02:45:11 | INFO | src.jobs_xlsx.freight.get_rail_traffic_index | Excel file loaded | rows=913 | columns=5
+2026-10-08 02:45:11 | INFO | src.jobs_xlsx.freight.get_rail_traffic_index | US rail traffic Parquet saved | output_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_warehouse/raw/freight/us_rail_traffic.parquet | rows=912

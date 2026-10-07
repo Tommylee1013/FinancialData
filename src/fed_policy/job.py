@@ -37,7 +37,11 @@ def run(database: Path, start: str, n_bars: int, extra_meetings: list[str]) -> d
         effr_rows = repository.replace_prices(write_connection, "effective_fed_funds_rate", effr)
         futures_rows = repository.replace_prices(write_connection, "fed_funds_futures", futures)
         probabilities = []
-        effr_series = effr.set_index(pd.to_datetime(effr["base_date"]))["close"] * (100 if effr["close"].abs().median() < 1 else 1)
+        # FRED:EFFR is already quoted in percentage points (for example 3.88
+        # means 3.88%).  A long history contains extended near-zero-rate
+        # periods, so median-based unit inference can incorrectly multiply
+        # current observations by 100.
+        effr_series = effr.set_index(pd.to_datetime(effr["base_date"]))["close"]
         for meeting in meetings:
             symbol = contract_symbol(meeting)
             contract = futures[futures["symbol"] == symbol] if not futures.empty else pd.DataFrame()

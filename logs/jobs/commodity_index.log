@@ -168,3 +168,18 @@
 2026-09-24 16:53:41 | INFO | commodity_index_job | Commodity index metadata loaded | symbols=12 | excluded_symbols=['DJCI']
 2026-09-24 16:53:41 | INFO | commodity_index_job | Commodity index download target prepared | tickers=12 | exchanges=['DJCFD', 'SPCFD', 'TVC']
 2026-09-24 16:54:22 | INFO | commodity_index_job | All commodity index data_lake has been downloaded | output_path=data_warehouse/raw/commodity/index/commodity_index.parquet | rows=53932 | symbols=12
+2026-09-27 11:36:06 | INFO | commodity_index_job | Starting download commodity index data_lake.
+2026-09-27 11:36:06 | INFO | commodity_index_job | Commodity index metadata loaded | symbols=12 | excluded_symbols=['DJCI']
+2026-09-27 11:36:06 | INFO | commodity_index_job | Commodity index download target prepared | tickers=12 | exchanges=['DJCFD', 'SPCFD', 'TVC']
+2026-09-27 11:36:44 | INFO | commodity_index_job | All commodity index data_lake has been downloaded | output_path=data_warehouse/raw/commodity/index/commodity_index.parquet | rows=53946 | symbols=12
+2026-10-05 01:46:40 | INFO | commodity_index_job | Starting download commodity index data_lake.
+2026-10-05 01:46:40 | INFO | commodity_index_job | Commodity index metadata loaded | symbols=12 | excluded_symbols=['DJCI']
+2026-10-05 01:46:40 | INFO | commodity_index_job | Commodity index download target prepared | tickers=12 | exchanges=['DJCFD', 'SPCFD', 'TVC']
+2026-10-05 01:47:19 | INFO | commodity_index_job | All commodity index data_lake has been downloaded | output_path=data_warehouse/raw/commodity/index/commodity_index.parquet | rows=54001 | symbols=12
+2026-10-08 02:38:27 | INFO | commodity_index_job | Starting download commodity index data_lake.
+2026-10-08 02:38:27 | INFO | commodity_index_job | Commodity index metadata loaded | symbols=12 | excluded_symbols=['DJCI']
+2026-10-08 02:38:27 | INFO | commodity_index_job | Commodity index download target prepared | tickers=12 | exchanges=['DJCFD', 'SPCFD', 'TVC']
+2026-10-08 02:44:16 | INFO | commodity_index_job | All commodity index data_lake has been downloaded | output_path=data_warehouse/raw/commodity/index/commodity_index.parquet | rows=11860 | symbols=1
+2026-10-08 02:47:36 | INFO | commodity_index_job | Starting download commodity index data_lake.
+2026-10-08 02:47:36 | INFO | commodity_index_job | Commodity index metadata loaded | symbols=12 | excluded_symbols=['DJCI']
+2026-10-08 02:47:36 | INFO | commodity_index_job | Commodity index download target prepared | tickers=12 | exchanges=['DJCFD', 'SPCFD', 'TVC']

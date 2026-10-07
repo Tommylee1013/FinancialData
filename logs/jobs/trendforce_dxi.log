@@ -169,3 +169,12 @@
 2026-09-24 16:55:56 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI data_lake job started | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/industry/TrendForce/Index.xlsx | sheet=DXI
 2026-09-24 16:55:56 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI Excel sheet loaded | rows=4436 | columns=6
 2026-09-24 16:55:56 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI Parquet saved | output_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_warehouse/raw/industry/index/dxi.parquet | rows=4434
+2026-09-27 11:37:36 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI data_lake job started | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/industry/TrendForce/Index.xlsx | sheet=DXI
+2026-09-27 11:37:36 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI Excel sheet loaded | rows=4451 | columns=6
+2026-09-27 11:37:36 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI Parquet saved | output_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_warehouse/raw/industry/index/dxi.parquet | rows=4451
+2026-10-05 01:48:40 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI data_lake job started | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/industry/TrendForce/Index.xlsx | sheet=DXI
+2026-10-05 01:48:40 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI Excel sheet loaded | rows=4451 | columns=6
+2026-10-05 01:48:40 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI Parquet saved | output_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_warehouse/raw/industry/index/dxi.parquet | rows=4451
+2026-10-08 02:45:04 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI data_lake job started | input_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_lake/industry/TrendForce/Index.xlsx | sheet=DXI
+2026-10-08 02:45:04 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI Excel sheet loaded | rows=4451 | columns=6
+2026-10-08 02:45:04 | INFO | src.jobs_xlsx.trendforce.get_dx_dram_index | DXI Parquet saved | output_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_warehouse/raw/industry/index/dxi.parquet | rows=4451

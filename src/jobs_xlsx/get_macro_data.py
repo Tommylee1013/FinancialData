@@ -123,11 +123,16 @@ def transform_macro_data(
 
     data = data[output_columns]
 
-    # 값이 모두 비어 있는 행 제거
-    data = data.dropna(
-        how="all",
-        subset=value_columns,
-    )
+    # 일반 매크로 지표는 관측값이 전부 비어 있으면 제거한다.
+    # FDTR은 예외다. 값이 아직 발표되지 않은 미래 FOMC 일정도
+    # FedWatch 계약 선택에 필요하므로 날짜가 유효한 행을 유지한다.
+    if str(symbol).strip().upper() == "FDTR":
+        data = data.dropna(subset=["base_date", "release_date"])
+    else:
+        data = data.dropna(
+            how="all",
+            subset=value_columns,
+        )
 
     # 중복 검증
     duplicated_rows = data[
