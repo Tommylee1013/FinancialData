@@ -256,3 +256,39 @@
 2026-10-08 02:37:56 | INFO | yfinance_index_job | yfinance download started | tickers=16
 2026-10-08 02:37:58 | INFO | yfinance_index_job | yfinance download completed | rows=20953 | columns=80
 2026-10-08 02:37:59 | INFO | yfinance_index_job | All yfinance index data_lake has been downloaded | output_path=data_warehouse/raw/index/yfinance_index.parquet | rows=69867 | symbols=13
+2026-10-12 23:53:58 | INFO | yfinance_index_job | Starting download yfinance index data_lake.
+2026-10-12 23:53:58 | INFO | yfinance_index_job | yfinance index metadata loaded | symbols=16
+2026-10-12 23:53:58 | INFO | yfinance_index_job | yfinance index download target prepared | tickers=16
+2026-10-12 23:53:58 | INFO | yfinance_index_job | yfinance download started | tickers=16
+2026-10-12 23:54:00 | INFO | yfinance_index_job | yfinance download completed | rows=20956 | columns=80
+2026-10-12 23:54:01 | INFO | yfinance_index_job | All yfinance index data_lake has been downloaded | output_path=data_warehouse/raw/index/yfinance_index.parquet | rows=69882 | symbols=11
+2026-10-16 02:49:32 | INFO | yfinance_index_job | Starting download yfinance index data_lake.
+2026-10-16 02:49:32 | INFO | yfinance_index_job | yfinance index metadata loaded | symbols=16
+2026-10-16 02:49:32 | INFO | yfinance_index_job | yfinance index download target prepared | tickers=16
+2026-10-16 02:49:32 | INFO | yfinance_index_job | yfinance download started | tickers=16
+2026-10-16 02:49:35 | INFO | yfinance_index_job | yfinance download completed | rows=20959 | columns=80
+2026-10-16 02:49:35 | INFO | yfinance_index_job | All yfinance index data_lake has been downloaded | output_path=data_warehouse/raw/index/yfinance_index.parquet | rows=69900 | symbols=11
+2026-10-16 03:21:19 | INFO | yfinance_index_job | Starting download yfinance index data_lake.
+2026-10-16 03:21:19 | INFO | yfinance_index_job | yfinance index metadata loaded | symbols=16
+2026-10-16 03:21:19 | INFO | yfinance_index_job | yfinance index download target prepared | tickers=16
+2026-10-16 03:21:19 | INFO | yfinance_index_job | yfinance download started | tickers=16
+2026-10-16 03:21:21 | INFO | yfinance_index_job | yfinance download completed | rows=20959 | columns=80
+2026-10-16 03:21:22 | INFO | yfinance_index_job | All yfinance index data_lake has been downloaded | output_path=data_warehouse/raw/index/yfinance_index.parquet | rows=69903 | symbols=14
+2026-10-16 03:42:24 | INFO | yfinance_index_job | Starting download yfinance index data_lake.
+2026-10-16 03:42:24 | INFO | yfinance_index_job | yfinance index metadata loaded | symbols=16
+2026-10-16 03:42:24 | INFO | yfinance_index_job | yfinance index download target prepared | tickers=16
+2026-10-16 03:42:24 | INFO | yfinance_index_job | yfinance download started | tickers=16
+2026-10-16 03:42:27 | INFO | yfinance_index_job | yfinance download completed | rows=20959 | columns=80
+2026-10-16 03:42:28 | INFO | yfinance_index_job | All yfinance index data_lake has been downloaded | output_path=data_warehouse/raw/index/yfinance_index.parquet | rows=69901 | symbols=12
+2026-10-20 01:20:57 | INFO | yfinance_index_job | Starting download yfinance index data_lake.
+2026-10-20 01:20:57 | INFO | yfinance_index_job | yfinance index metadata loaded | symbols=16
+2026-10-20 01:20:57 | INFO | yfinance_index_job | yfinance index download target prepared | tickers=16
+2026-10-20 01:20:57 | INFO | yfinance_index_job | yfinance download started | tickers=16
+2026-10-20 01:20:59 | INFO | yfinance_index_job | yfinance download completed | rows=20961 | columns=80
+2026-10-20 01:20:59 | INFO | yfinance_index_job | All yfinance index data_lake has been downloaded | output_path=data_warehouse/raw/index/yfinance_index.parquet | rows=69916 | symbols=15
+2026-10-21 21:16:55 | INFO | yfinance_index_job | Starting download yfinance index data_lake.
+2026-10-21 21:16:55 | INFO | yfinance_index_job | yfinance index metadata loaded | symbols=16
+2026-10-21 21:16:55 | INFO | yfinance_index_job | yfinance index download target prepared | tickers=16
+2026-10-21 21:16:55 | INFO | yfinance_index_job | yfinance download started | tickers=16
+2026-10-21 21:16:57 | INFO | yfinance_index_job | yfinance download completed | rows=25324 | columns=80
+2026-10-21 21:16:57 | INFO | yfinance_index_job | All yfinance index data_lake has been downloaded | output_path=data_warehouse/raw/index/yfinance_index.parquet | rows=74513 | symbols=16
