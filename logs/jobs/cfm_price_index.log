@@ -234,3 +234,11 @@
 2026-10-21 21:23:55 | INFO | src.jobs_xlsx.cfm.get_cfm_price_index | CFM index metadata loaded | symbols=2
 2026-10-21 21:23:55 | INFO | src.jobs_xlsx.cfm.get_cfm_price_index | CFM price index Excel sheet loaded | rows=300 | columns=6
 2026-10-21 21:23:55 | INFO | src.jobs_xlsx.cfm.get_cfm_price_index | CFM price index Parquet saved | output_path=/Users/junghunlee/Desktop/Pycharm/FinancialData/data_warehouse/raw/industry/index/cfm_price_index.parquet | rows=600
+2026-11-01 10:00:24 | INFO | src.jobs_xlsx.cfm.get_cfm_price_index | CFM price index data_lake job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/industry/cfm/Index.xlsx | metadata_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/metadata.xlsx
+2026-11-01 10:00:24 | INFO | src.jobs_xlsx.cfm.get_cfm_price_index | CFM index metadata loaded | symbols=2
+2026-11-01 10:00:24 | INFO | src.jobs_xlsx.cfm.get_cfm_price_index | CFM price index Excel sheet loaded | rows=300 | columns=6
+2026-11-01 10:00:25 | INFO | src.jobs_xlsx.cfm.get_cfm_price_index | CFM price index Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_warehouse/raw/industry/index/cfm_price_index.parquet | rows=600
+2026-11-01 11:26:00 | INFO | src.jobs_xlsx.cfm.get_cfm_price_index | CFM price index data_lake job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/industry/cfm/Index.xlsx | metadata_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/metadata.xlsx
+2026-11-01 11:26:00 | INFO | src.jobs_xlsx.cfm.get_cfm_price_index | CFM index metadata loaded | symbols=2
+2026-11-01 11:26:00 | INFO | src.jobs_xlsx.cfm.get_cfm_price_index | CFM price index Excel sheet loaded | rows=300 | columns=6
+2026-11-01 11:26:00 | INFO | src.jobs_xlsx.cfm.get_cfm_price_index | CFM price index Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_warehouse/raw/industry/index/cfm_price_index.parquet | rows=600

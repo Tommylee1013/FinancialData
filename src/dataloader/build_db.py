@@ -233,6 +233,22 @@ BEHAVIOR_COLUMNS = [
     'value'
 ]
 
+# A release can have multiple observations for the same base date. Keep the
+# release timestamp in those keys; industry components also need their item.
+TABLE_KEYS = {
+    METADATA_TABLE: ("id",),
+    INDEX_TABLE: ("base_date", "symbol", "exchange"),
+    MACRO_TABLE: ("base_date", "release_date", "time", "symbol", "exchange"),
+    FREIGHT_TABLE: ("base_date", "release_date", "time", "symbol", "exchange"),
+    VOLATILITY_TABLE: ("base_date", "symbol", "exchange"),
+    INDUSTRY_TABLE: ("base_date", "release_date", "time", "symbol", "exchange", "item"),
+    INDUSTRY_INDEX_TABLE: ("base_date", "symbol", "exchange"),
+    FX_TABLE: ("base_date", "symbol", "exchange"),
+    FIXED_INCOME_TABLE: ("base_date", "symbol", "exchange"),
+    FIXED_INCOME_INDEX_TABLE: ("base_date", "symbol", "exchange"),
+    BEHAVIOR_TABLE: ("base_date", "release_date", "time", "symbol", "exchange"),
+}
+
 # ============================================================
 # Utility functions
 # ============================================================
@@ -367,6 +383,92 @@ def build_parquet_path_list(
     ) + "]"
 
 
+def upsert_table(
+    connection: duckdb.DuckDBPyConnection,
+    table: str,
+    source_query: str,
+) -> int:
+    """Merge a validated batch without removing rows absent from the source."""
+
+    stage = "_incoming_build_batch"
+    keys = TABLE_KEYS[table]
+
+    def quote(name: str) -> str:
+        return '"' + name.replace('"', '""') + '"'
+
+    connection.execute(f"CREATE TEMP TABLE {stage} AS {source_query}")
+    try:
+        source_columns = [row[:2] for row in connection.execute(f"DESCRIBE {stage}").fetchall()]
+        names = [name for name, _ in source_columns]
+        if not set(keys).issubset(names):
+            raise ValueError(f"{table}: source is missing key columns {set(keys) - set(names)}")
+
+        null_check = " OR ".join(f"{quote(key)} IS NULL" for key in keys)
+        if connection.execute(f"SELECT 1 FROM {stage} WHERE {null_check} LIMIT 1").fetchone():
+            raise ValueError(f"{table}: incoming data has a null key; existing data was not changed")
+
+        key_columns = ", ".join(quote(key) for key in keys)
+        if connection.execute(
+            f"SELECT 1 FROM {stage} GROUP BY {key_columns} HAVING COUNT(*) > 1 LIMIT 1"
+        ).fetchone():
+            raise ValueError(f"{table}: incoming data has duplicate keys; existing data was not changed")
+
+        schema, name = table.split(".", 1)
+        exists = connection.execute(
+            "SELECT 1 FROM information_schema.tables WHERE table_schema = ? AND table_name = ?",
+            [schema, name],
+        ).fetchone()
+
+        if not exists:
+            connection.execute(f"CREATE TABLE {table} AS SELECT * FROM {stage}")
+            inserted = connection.execute(f"SELECT COUNT(*) FROM {stage}").fetchone()[0]
+            LOGGER.info("Table initialized | table=%s | inserted=%d", table, inserted)
+        else:
+            target_columns = [row[:2] for row in connection.execute(f"DESCRIBE {table}").fetchall()]
+            if source_columns != target_columns:
+                raise ValueError(
+                    f"{table}: source/target schemas differ; refusing to replace the table. "
+                    f"source={source_columns}, target={target_columns}"
+                )
+            if connection.execute(
+                f"SELECT 1 FROM {table} GROUP BY {key_columns} HAVING COUNT(*) > 1 LIMIT 1"
+            ).fetchone():
+                raise ValueError(f"{table}: existing data has duplicate keys; merge is unsafe")
+
+            join = " AND ".join(
+                f"target.{quote(key)} = source.{quote(key)}" for key in keys
+            )
+            nonkeys = [column for column in names if column not in keys]
+            changed = " OR ".join(
+                f"target.{quote(column)} IS DISTINCT FROM source.{quote(column)}"
+                for column in nonkeys
+            )
+            assignments = ", ".join(
+                f"{quote(column)} = source.{quote(column)}" for column in nonkeys
+            )
+            inserted, updated = connection.execute(f"""
+                SELECT
+                    COUNT(*) FILTER (WHERE target.{quote(keys[0])} IS NULL),
+                    COUNT(*) FILTER (WHERE target.{quote(keys[0])} IS NOT NULL AND ({changed}))
+                FROM {stage} AS source
+                LEFT JOIN {table} AS target ON {join}
+            """).fetchone()
+            connection.execute(f"""
+                MERGE INTO {table} AS target USING {stage} AS source ON {join}
+                WHEN MATCHED AND ({changed}) THEN UPDATE SET {assignments}
+                WHEN NOT MATCHED THEN INSERT BY NAME
+            """)
+            LOGGER.info(
+                "Table merged | table=%s | inserted=%d | updated=%d | unchanged=%d",
+                table, inserted, updated,
+                connection.execute(f"SELECT COUNT(*) FROM {stage}").fetchone()[0] - inserted - updated,
+            )
+
+        return connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
+    finally:
+        connection.execute(f"DROP TABLE {stage}")
+
+
 # ============================================================
 # Schema creation
 # ============================================================
@@ -469,12 +571,8 @@ def create_metadata_table(
     )
 
     try:
-        connection.execute(
-            f"""
-            CREATE OR REPLACE TABLE {METADATA_TABLE} AS
-            SELECT *
-            FROM metadata_dataframe
-            """
+        row_count = upsert_table(
+            connection, METADATA_TABLE, "SELECT * FROM metadata_dataframe"
         )
 
     finally:
@@ -482,15 +580,8 @@ def create_metadata_table(
             "metadata_dataframe"
         )
 
-    row_count = connection.execute(
-        f"""
-        SELECT COUNT(*)
-        FROM {METADATA_TABLE}
-        """
-    ).fetchone()[0]
-
     LOGGER.info(
-        "Metadata table created | "
+        "Metadata table synchronized | "
         "table=%s | rows=%d",
         METADATA_TABLE,
         row_count,
@@ -512,7 +603,6 @@ def create_index_table(
     )
 
     query = f"""
-        CREATE OR REPLACE TABLE {INDEX_TABLE} AS
         SELECT
             CAST(base_date AS DATE) AS base_date,
             CAST(release_date AS DATE) AS release_date,
@@ -532,17 +622,10 @@ def create_index_table(
         )
     """
 
-    connection.execute(query)
-
-    row_count = connection.execute(
-        f"""
-        SELECT COUNT(*)
-        FROM {INDEX_TABLE}
-        """
-    ).fetchone()[0]
+    row_count = upsert_table(connection, INDEX_TABLE, query)
 
     LOGGER.info(
-        "Index table created | "
+        "Index table synchronized | "
         "table=%s | files=%d | rows=%d",
         INDEX_TABLE,
         len(parquet_files),
@@ -565,7 +648,6 @@ def create_macro_table(
     )
 
     query = f"""
-        CREATE OR REPLACE TABLE {MACRO_TABLE} AS
         SELECT
             CAST(base_date AS DATE) AS base_date,
             CAST(release_date AS DATE) AS release_date,
@@ -584,17 +666,10 @@ def create_macro_table(
         )
     """
 
-    connection.execute(query)
-
-    row_count = connection.execute(
-        f"""
-        SELECT COUNT(*)
-        FROM {MACRO_TABLE}
-        """
-    ).fetchone()[0]
+    row_count = upsert_table(connection, MACRO_TABLE, query)
 
     LOGGER.info(
-        "Macro table created | "
+        "Macro table synchronized | "
         "table=%s | files=%d | rows=%d",
         MACRO_TABLE,
         len(parquet_files),
@@ -617,7 +692,6 @@ def create_freight_table(
     )
 
     query = f"""
-        CREATE OR REPLACE TABLE {FREIGHT_TABLE} AS
         SELECT
             CAST(base_date AS DATE) AS base_date,
             CAST(release_date AS DATE) AS release_date,
@@ -633,17 +707,10 @@ def create_freight_table(
         )
     """
 
-    connection.execute(query)
-
-    row_count = connection.execute(
-        f"""
-        SELECT COUNT(*)
-        FROM {FREIGHT_TABLE}
-        """
-    ).fetchone()[0]
+    row_count = upsert_table(connection, FREIGHT_TABLE, query)
 
     LOGGER.info(
-        "Freight table created | "
+        "Freight table synchronized | "
         "table=%s | files=%d | rows=%d",
         FREIGHT_TABLE,
         len(parquet_files),
@@ -665,7 +732,6 @@ def create_volatility_table(
     )
 
     query = f"""
-        CREATE OR REPLACE TABLE {VOLATILITY_TABLE} AS
         SELECT
             CAST(base_date AS DATE) AS base_date,
             CAST(release_date AS DATE) AS release_date,
@@ -685,17 +751,10 @@ def create_volatility_table(
         )
     """
 
-    connection.execute(query)
-
-    row_count = connection.execute(
-        f"""
-        SELECT COUNT(*)
-        FROM {VOLATILITY_TABLE}
-        """
-    ).fetchone()[0]
+    row_count = upsert_table(connection, VOLATILITY_TABLE, query)
 
     LOGGER.info(
-        "Volatility Index table created | "
+        "Volatility Index table synchronized | "
         "table=%s | files=%d | rows=%d",
         VOLATILITY_TABLE,
         len(parquet_files),
@@ -719,7 +778,6 @@ def create_industry_table(
     )
 
     query = f"""
-        CREATE OR REPLACE TABLE {INDUSTRY_TABLE} AS
         SELECT
             CAST(base_date AS DATE) AS base_date,
             CAST(release_date AS DATE) AS release_date,
@@ -736,17 +794,10 @@ def create_industry_table(
         )
     """
 
-    connection.execute(query)
-
-    row_count = connection.execute(
-        f"""
-        SELECT COUNT(*)
-        FROM {INDUSTRY_TABLE}
-        """
-    ).fetchone()[0]
+    row_count = upsert_table(connection, INDUSTRY_TABLE, query)
 
     LOGGER.info(
-        "Industry Components table created | "
+        "Industry Components table synchronized | "
         "table=%s | files=%d | rows=%d",
         INDUSTRY_TABLE,
         len(parquet_files),
@@ -768,7 +819,6 @@ def create_industry_index_table(
     )
 
     query = f"""
-        CREATE OR REPLACE TABLE {INDUSTRY_INDEX_TABLE} AS
         SELECT
             CAST(base_date AS DATE) AS base_date,
             CAST(release_date AS DATE) AS release_date,
@@ -784,17 +834,10 @@ def create_industry_index_table(
         )
     """
 
-    connection.execute(query)
-
-    row_count = connection.execute(
-        f"""
-        SELECT COUNT(*)
-        FROM {INDUSTRY_INDEX_TABLE}
-        """
-    ).fetchone()[0]
+    row_count = upsert_table(connection, INDUSTRY_INDEX_TABLE, query)
 
     LOGGER.info(
-        "Industry Index table created | "
+        "Industry Index table synchronized | "
         "table=%s | files=%d | rows=%d",
         INDUSTRY_INDEX_TABLE,
         len(parquet_files),
@@ -816,7 +859,6 @@ def create_fx_table(
     )
 
     query = f"""
-        CREATE OR REPLACE TABLE {FX_TABLE} AS
         SELECT
             CAST(base_date AS DATE) AS base_date,
             CAST(release_date AS DATE) AS release_date,
@@ -836,17 +878,10 @@ def create_fx_table(
         )
     """
 
-    connection.execute(query)
-
-    row_count = connection.execute(
-        f"""
-        SELECT COUNT(*)
-        FROM {FX_TABLE}
-        """
-    ).fetchone()[0]
+    row_count = upsert_table(connection, FX_TABLE, query)
 
     LOGGER.info(
-        "FX table created | "
+        "FX table synchronized | "
         "table=%s | files=%d | rows=%d",
         FX_TABLE,
         len(parquet_files),
@@ -868,7 +903,6 @@ def create_fixed_income_table(
     )
 
     query = f"""
-        CREATE OR REPLACE TABLE {FIXED_INCOME_TABLE} AS
         SELECT
             CAST(base_date AS DATE) AS base_date,
             CAST(release_date AS DATE) AS release_date,
@@ -884,17 +918,10 @@ def create_fixed_income_table(
         )
     """
 
-    connection.execute(query)
-
-    row_count = connection.execute(
-        f"""
-        SELECT COUNT(*)
-        FROM {FIXED_INCOME_TABLE}
-        """
-    ).fetchone()[0]
+    row_count = upsert_table(connection, FIXED_INCOME_TABLE, query)
 
     LOGGER.info(
-        "Fixed Income table created | "
+        "Fixed Income table synchronized | "
         "table=%s | files=%d | rows=%d",
         FIXED_INCOME_TABLE,
         len(parquet_files),
@@ -910,8 +937,7 @@ def create_fixed_income_index_table(
 ) -> int:
     """Combine bond-index OHLCV parquet files into fixed_income.index_data."""
     parquet_paths = build_parquet_path_list(parquet_files)
-    connection.execute(f"""
-        CREATE OR REPLACE TABLE {FIXED_INCOME_INDEX_TABLE} AS
+    query = f"""
         SELECT
             CAST(base_date AS DATE) AS base_date,
             CAST(release_date AS DATE) AS release_date,
@@ -926,9 +952,9 @@ def create_fixed_income_index_table(
             CAST(close AS DOUBLE) AS close,
             CAST(volume AS DOUBLE) AS volume
         FROM read_parquet({parquet_paths}, union_by_name = TRUE)
-    """)
-    row_count = connection.execute(f"SELECT COUNT(*) FROM {FIXED_INCOME_INDEX_TABLE}").fetchone()[0]
-    LOGGER.info("Fixed-income index table created | table=%s | files=%d | rows=%d",
+    """
+    row_count = upsert_table(connection, FIXED_INCOME_INDEX_TABLE, query)
+    LOGGER.info("Fixed-income index table synchronized | table=%s | files=%d | rows=%d",
                 FIXED_INCOME_INDEX_TABLE, len(parquet_files), row_count)
     return row_count
 
@@ -945,7 +971,6 @@ def create_behavior_table(
     )
 
     query = f"""
-        CREATE OR REPLACE TABLE {BEHAVIOR_TABLE} AS
         SELECT
             CAST(base_date AS DATE) AS base_date,
             CAST(release_date AS DATE) AS release_date,
@@ -961,17 +986,10 @@ def create_behavior_table(
         )
     """
 
-    connection.execute(query)
-
-    row_count = connection.execute(
-        f"""
-        SELECT COUNT(*)
-        FROM {BEHAVIOR_TABLE}
-        """
-    ).fetchone()[0]
+    row_count = upsert_table(connection, BEHAVIOR_TABLE, query)
 
     LOGGER.info(
-        "Behavior table created | "
+        "Behavior table synchronized | "
         "table=%s | files=%d | rows=%d",
         BEHAVIOR_TABLE,
         len(parquet_files),
@@ -1102,6 +1120,7 @@ def validate_database(
             SELECT
                 base_date,
                 release_date,
+                time,
                 symbol,
                 exchange,
                 COUNT(*) AS row_count
@@ -1109,6 +1128,7 @@ def validate_database(
             GROUP BY
                 base_date,
                 release_date,
+                time,
                 symbol,
                 exchange
             HAVING COUNT(*) > 1
@@ -1123,6 +1143,7 @@ def validate_database(
             SELECT
                 base_date,
                 release_date,
+                time,
                 symbol,
                 exchange,
                 COUNT(*) AS row_count
@@ -1130,6 +1151,7 @@ def validate_database(
             GROUP BY
                 base_date,
                 release_date,
+                time,
                 symbol,
                 exchange
             HAVING COUNT(*) > 1
@@ -1164,14 +1186,20 @@ def validate_database(
                 FROM (
                     SELECT
                         base_date,
+                        release_date,
+                        time,
                         symbol,
                         exchange,
+                        item,
                         COUNT(*) AS row_count
                     FROM {INDUSTRY_TABLE}
                     GROUP BY
                         base_date,
+                        release_date,
+                        time,
                         symbol,
-                        exchange
+                        exchange,
+                        item
                     HAVING COUNT(*) > 1
                 )
                 """
@@ -1226,10 +1254,10 @@ def validate_database(
         f"""
                     select count(*)
                     from (
-                        select base_date, symbol, exchange,
+                    select base_date, release_date, time, symbol, exchange,
                         count(*) as row_count
                         from {BEHAVIOR_TABLE}
-                        group by base_date, symbol, exchange
+                    group by base_date, release_date, time, symbol, exchange
                         having count(*) > 1
                     )
                 """
@@ -1346,7 +1374,7 @@ def validate_database(
 
     if industry_duplicates > 0:
         LOGGER.warning(
-            "Duplicate industry index keys detected | "
+            "Duplicate industry component keys detected | "
             "duplicate_groups=%d",
             industry_duplicates,
         )

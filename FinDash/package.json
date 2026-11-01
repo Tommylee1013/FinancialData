@@ -6,7 +6,7 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite",
-    "api": "/Users/junghunlee/anaconda3/envs/MLfinance/bin/python api_server.py"
+    "api": "python api_server.py"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",

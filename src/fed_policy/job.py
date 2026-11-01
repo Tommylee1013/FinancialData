@@ -34,8 +34,8 @@ def run(database: Path, start: str, n_bars: int, extra_meetings: list[str]) -> d
     write_connection = repository.connect()
     try:
         write_connection.execute("begin transaction"); repository.initialize(write_connection)
-        effr_rows = repository.replace_prices(write_connection, "effective_fed_funds_rate", effr)
-        futures_rows = repository.replace_prices(write_connection, "fed_funds_futures", futures)
+        effr_rows = repository.upsert_prices(write_connection, "effective_fed_funds_rate", effr)
+        futures_rows = repository.upsert_prices(write_connection, "fed_funds_futures", futures)
         probabilities = []
         # FRED:EFFR is already quoted in percentage points (for example 3.88
         # means 3.88%).  A long history contains extended near-zero-rate
@@ -53,7 +53,7 @@ def run(database: Path, start: str, n_bars: int, extra_meetings: list[str]) -> d
             result.insert(3, "time_zone", "UTC"); result.insert(5, "contract_symbol", symbol)
             probabilities.append(result)
         probability_frame = pd.concat(probabilities, ignore_index=True) if probabilities else pd.DataFrame()
-        probability_rows = repository.replace_probabilities(write_connection, probability_frame)
+        probability_rows = repository.upsert_probabilities(write_connection, probability_frame)
         write_connection.execute("commit")
     except Exception:
         write_connection.execute("rollback"); raise

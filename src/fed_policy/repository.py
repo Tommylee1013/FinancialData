@@ -39,24 +39,72 @@ class FedPolicyRepository:
         dates.extend(pd.Timestamp(value) for value in (extra_dates or []))
         return sorted(set(dates))
 
-    def replace_prices(self, connection, table: str, frame: pd.DataFrame) -> int:
-        if frame.empty: return 0
-        missing = set(PRICE_COLUMNS) - set(frame.columns)
-        if missing: raise ValueError(f"Missing price columns: {sorted(missing)}")
-        connection.register("fed_price_frame", frame[PRICE_COLUMNS])
+    def _merge_frame(self, connection, table: str, frame: pd.DataFrame, keys: tuple[str, ...]) -> int:
+        if frame.empty:
+            return 0
+
+        columns = [(row[0], row[1]) for row in connection.execute(f"DESCRIBE {SCHEMA}.{table}").fetchall()]
+        expected = {name for name, _ in columns}
+        missing = expected - set(frame.columns)
+        if missing:
+            raise ValueError(f"{table}: missing columns: {sorted(missing)}")
+
+        def quote(name: str) -> str:
+            return '"' + name.replace('"', '""') + '"'
+
+        source_name = "_fed_incoming_frame"
+        stage = "_fed_incoming_batch"
+        connection.register(source_name, frame)
         try:
-            connection.execute(f"delete from {SCHEMA}.{table} where symbol in (select distinct symbol from fed_price_frame)")
-            connection.execute(f"insert into {SCHEMA}.{table} select * from fed_price_frame")
+            projection = ", ".join(
+                f"CAST({quote(name)} AS {dtype}) AS {quote(name)}" for name, dtype in columns
+            )
+            connection.execute(f"CREATE TEMP TABLE {stage} AS SELECT {projection} FROM {source_name}")
+            try:
+                key_columns = ", ".join(quote(key) for key in keys)
+                null_check = " OR ".join(f"{quote(key)} IS NULL" for key in keys)
+                if connection.execute(f"SELECT 1 FROM {stage} WHERE {null_check} LIMIT 1").fetchone():
+                    raise ValueError(f"{table}: incoming data has a null key")
+                if connection.execute(
+                    f"SELECT 1 FROM {stage} GROUP BY {key_columns} HAVING COUNT(*) > 1 LIMIT 1"
+                ).fetchone():
+                    raise ValueError(f"{table}: incoming data has duplicate keys")
+                if connection.execute(
+                    f"SELECT 1 FROM {SCHEMA}.{table} GROUP BY {key_columns} HAVING COUNT(*) > 1 LIMIT 1"
+                ).fetchone():
+                    raise ValueError(f"{table}: existing data has duplicate keys; merge is unsafe")
+
+                join = " AND ".join(f"target.{quote(key)} = source.{quote(key)}" for key in keys)
+                nonkeys = [name for name, _ in columns if name not in keys]
+                changed = " OR ".join(
+                    f"target.{quote(name)} IS DISTINCT FROM source.{quote(name)}" for name in nonkeys
+                )
+                assignments = ", ".join(
+                    f"{quote(name)} = source.{quote(name)}" for name in nonkeys
+                )
+                connection.execute(f"""
+                    MERGE INTO {SCHEMA}.{table} AS target USING {stage} AS source ON {join}
+                    WHEN MATCHED AND ({changed}) THEN UPDATE SET {assignments}
+                    WHEN NOT MATCHED THEN INSERT BY NAME
+                """)
+            finally:
+                connection.execute(f"DROP TABLE {stage}")
         finally:
-            connection.unregister("fed_price_frame")
+            connection.unregister(source_name)
         return len(frame)
 
-    def replace_probabilities(self, connection, frame: pd.DataFrame) -> int:
-        if frame.empty: return 0
-        connection.register("fed_probability_frame", frame)
-        try:
-            connection.execute(f"delete from {SCHEMA}.meeting_probabilities where meeting_date in (select distinct meeting_date from fed_probability_frame)")
-            connection.execute(f"insert into {SCHEMA}.meeting_probabilities select * from fed_probability_frame")
-        finally:
-            connection.unregister("fed_probability_frame")
-        return len(frame)
+    def upsert_prices(self, connection, table: str, frame: pd.DataFrame) -> int:
+        if table not in ("effective_fed_funds_rate", "fed_funds_futures"):
+            raise ValueError(f"Unknown Fed policy price table: {table}")
+        if frame.empty:
+            return 0
+        missing = set(PRICE_COLUMNS) - set(frame.columns)
+        if missing:
+            raise ValueError(f"Missing price columns: {sorted(missing)}")
+        return self._merge_frame(connection, table, frame, ("base_date", "symbol", "exchange"))
+
+    def upsert_probabilities(self, connection, frame: pd.DataFrame) -> int:
+        return self._merge_frame(
+            connection, "meeting_probabilities", frame,
+            ("base_date", "meeting_date", "contract_symbol", "scenario_bp"),
+        )
