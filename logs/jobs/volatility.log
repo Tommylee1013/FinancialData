@@ -257,3 +257,13 @@
 2026-11-01 11:25:07 | INFO | src.jobs_api.risk.get_volatility_index | TradingView request prepared | tickers=24
 2026-11-01 11:25:58 | INFO | src.jobs_api.risk.get_volatility_index | TradingView data_lake collected | rows=9425 | columns=115
 2026-11-01 11:25:58 | INFO | src.jobs_api.risk.get_volatility_index | Volatility Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_warehouse/raw/risk/volatility.parquet | rows=99456
+2026-11-11 00:46:06 | INFO | src.jobs_api.risk.get_volatility_index | Volatility data_lake job started | metadata_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/metadata.xlsx
+2026-11-11 00:46:06 | INFO | src.jobs_api.risk.get_volatility_index | Volatility metadata loaded | symbols=24 | excluded_countries=['Europe', 'Japan']
+2026-11-11 00:46:06 | INFO | src.jobs_api.risk.get_volatility_index | TradingView request prepared | tickers=24
+2026-11-11 00:47:01 | INFO | src.jobs_api.risk.get_volatility_index | TradingView data_lake collected | rows=9433 | columns=115
+2026-11-11 00:47:02 | INFO | src.jobs_api.risk.get_volatility_index | Volatility Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_warehouse/raw/risk/volatility.parquet | rows=99615
+2026-11-12 01:50:14 | INFO | src.jobs_api.risk.get_volatility_index | Volatility data_lake job started | metadata_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/metadata.xlsx
+2026-11-12 01:50:14 | INFO | src.jobs_api.risk.get_volatility_index | Volatility metadata loaded | symbols=24 | excluded_countries=['Europe', 'Japan']
+2026-11-12 01:50:14 | INFO | src.jobs_api.risk.get_volatility_index | TradingView request prepared | tickers=24
+2026-11-12 01:51:11 | INFO | src.jobs_api.risk.get_volatility_index | TradingView data_lake collected | rows=9434 | columns=115
+2026-11-12 01:51:12 | INFO | src.jobs_api.risk.get_volatility_index | Volatility Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_warehouse/raw/risk/volatility.parquet | rows=99637

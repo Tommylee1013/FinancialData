@@ -2304,3 +2304,43 @@ ValueError: The macro table contains 1 rows with a null base_date, release_date,
 2026-11-01 10:04:05 | INFO | src.dataloader.build_db | Database validation completed | index_null_keys=0 | macro_null_keys=0 | freight_null_keys=0 | volatility_null_keys=0 | industry_null_keys=0 | industry_index_null_keys=0 | fx_null_keys=0 | fixed_income_null_key=0 | behavior_null_keys=0 | index_duplicate_groups=0 | macro_duplicate_groups=0 | freight_duplicate_groups=0volatility_duplicate_groups=0 | industury_duplicate_groups=0 | industry_index_duplicates_groups=0 | fx_duplicates_groups=0 | fixed_income_duplicates_groups=0 | behavior_duplicates_groups=0 | 
 2026-11-01 10:04:05 | INFO | src.dataloader.build_db | DuckDB build job completed successfully | metadata_rows=961 | index_rows=502865 | macro_rows=25912 | freight_rows=186178 | volatility_rows=115843 | industry_rows=44908 | industry_index_rows=238936 | fx_index_rows=216962 | fixed_income_rows=122961 | behavior_rows=22772 | behavior_rows=22772 | 
 2026-11-01 10:04:05 | INFO | src.dataloader.build_db | DuckDB connection closed.
+2026-11-12 02:13:53 | INFO | src.dataloader.build_db | DuckDB build job started | database=/Users/tommy/Desktop/Pycharm/FinancialData/database/alternative_data.duckdb
+2026-11-12 02:13:53 | INFO | src.dataloader.build_db | Parquet file discovery completed | index_files=6 | macro_files=55 | freight_files=6 | fixed_income_index_files=1
+2026-11-12 02:13:53 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=index | files=6
+2026-11-12 02:13:53 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=macro | files=55
+2026-11-12 02:13:53 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=freight | files=6
+2026-11-12 02:13:53 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=risk | files=2
+2026-11-12 02:13:53 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=industry | files=2
+2026-11-12 02:13:53 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=industry | files=3
+2026-11-12 02:13:53 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=fx | files=1
+2026-11-12 02:13:53 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=fixed_income | files=1
+2026-11-12 02:13:53 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=fixed_income_index | files=1
+2026-11-12 02:13:53 | INFO | src.dataloader.build_db | Parquet schema validation completed | data_type=behavior | files=1
+2026-11-12 02:13:53 | INFO | src.dataloader.build_db | DuckDB connection opened | database=/Users/tommy/Desktop/Pycharm/FinancialData/database/alternative_data.duckdb
+2026-11-12 02:13:53 | INFO | src.dataloader.build_db | DuckDB schemas created or verified | schemas=metadata,market,macro,freight,industry,fixed_income,behavior
+2026-11-12 02:13:53 | INFO | src.dataloader.build_db | Loading metadata Excel file | path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/metadata.xlsx
+2026-11-12 02:13:53 | INFO | src.dataloader.build_db | Table merged | table=metadata.instrument_master | inserted=0 | updated=0 | unchanged=961
+2026-11-12 02:13:53 | INFO | src.dataloader.build_db | Metadata table synchronized | table=metadata.instrument_master | rows=961
+2026-11-12 02:13:54 | INFO | src.dataloader.build_db | Table merged | table=market.index_data | inserted=794 | updated=21 | unchanged=502808
+2026-11-12 02:13:54 | INFO | src.dataloader.build_db | Index table synchronized | table=market.index_data | files=6 | rows=503659
+2026-11-12 02:13:54 | INFO | src.dataloader.build_db | Table merged | table=macro.macro_data | inserted=96 | updated=27 | unchanged=25885
+2026-11-12 02:13:54 | INFO | src.dataloader.build_db | Macro table synchronized | table=macro.macro_data | files=55 | rows=26008
+2026-11-12 02:13:54 | INFO | src.dataloader.build_db | Table merged | table=freight.freight_data | inserted=1225 | updated=1 | unchanged=186177
+2026-11-12 02:13:54 | INFO | src.dataloader.build_db | Freight table synchronized | table=freight.freight_data | files=6 | rows=187403
+2026-11-12 02:13:54 | INFO | src.dataloader.build_db | Table merged | table=market.volatility_data | inserted=265 | updated=1 | unchanged=115842
+2026-11-12 02:13:54 | INFO | src.dataloader.build_db | Volatility Index table synchronized | table=market.volatility_data | files=2 | rows=116108
+2026-11-12 02:13:54 | INFO | src.dataloader.build_db | Table merged | table=industry.components_data | inserted=894 | updated=0 | unchanged=44908
+2026-11-12 02:13:54 | INFO | src.dataloader.build_db | Industry Components table synchronized | table=industry.components_data | files=2 | rows=45802
+2026-11-12 02:13:54 | INFO | src.dataloader.build_db | Table merged | table=industry.index_data | inserted=151 | updated=39 | unchanged=238897
+2026-11-12 02:13:54 | INFO | src.dataloader.build_db | Industry Index table synchronized | table=industry.index_data | files=3 | rows=239087
+2026-11-12 02:13:54 | INFO | src.dataloader.build_db | Table merged | table=market.fx_data | inserted=216 | updated=0 | unchanged=203895
+2026-11-12 02:13:54 | INFO | src.dataloader.build_db | FX table synchronized | table=market.fx_data | files=1 | rows=217178
+2026-11-12 02:13:54 | INFO | src.dataloader.build_db | Table merged | table=fixed_income.fixed_income_data | inserted=700 | updated=0 | unchanged=122961
+2026-11-12 02:13:54 | INFO | src.dataloader.build_db | Fixed Income table synchronized | table=fixed_income.fixed_income_data | files=1 | rows=123661
+2026-11-12 02:13:54 | INFO | src.dataloader.build_db | Table merged | table=fixed_income.index_data | inserted=16 | updated=0 | unchanged=7582
+2026-11-12 02:13:54 | INFO | src.dataloader.build_db | Fixed-income index table synchronized | table=fixed_income.index_data | files=1 | rows=7598
+2026-11-12 02:13:54 | INFO | src.dataloader.build_db | Table merged | table=behavior.behavior_data | inserted=26 | updated=0 | unchanged=22772
+2026-11-12 02:13:54 | INFO | src.dataloader.build_db | Behavior table synchronized | table=behavior.behavior_data | files=1 | rows=22798
+2026-11-12 02:13:54 | INFO | src.dataloader.build_db | Database validation completed | index_null_keys=0 | macro_null_keys=0 | freight_null_keys=0 | volatility_null_keys=0 | industry_null_keys=0 | industry_index_null_keys=0 | fx_null_keys=0 | fixed_income_null_key=0 | behavior_null_keys=0 | index_duplicate_groups=0 | macro_duplicate_groups=0 | freight_duplicate_groups=0volatility_duplicate_groups=0 | industury_duplicate_groups=0 | industry_index_duplicates_groups=0 | fx_duplicates_groups=0 | fixed_income_duplicates_groups=0 | behavior_duplicates_groups=0 | 
+2026-11-12 02:13:54 | INFO | src.dataloader.build_db | DuckDB build job completed successfully | metadata_rows=961 | index_rows=503659 | macro_rows=26008 | freight_rows=187403 | volatility_rows=116108 | industry_rows=45802 | industry_index_rows=239087 | fx_index_rows=217178 | fixed_income_rows=123661 | behavior_rows=22798 | behavior_rows=22798 | 
+2026-11-12 02:13:54 | INFO | src.dataloader.build_db | DuckDB connection closed.

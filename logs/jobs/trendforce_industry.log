@@ -4112,3 +4112,123 @@
 2026-11-01 11:25:59 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=Li-Ion Battery.xlsx | sheet=Other | category=Battery | sub_category=Other | rows=20
 2026-11-01 11:25:59 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce workbook transformed | file=Li-Ion Battery.xlsx | rows=440
 2026-11-01 11:25:59 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce industry Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_warehouse/raw/industry/components/dx_components.parquet | rows=27280
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce industry data_lake job started | input_dir=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/industry/TrendForce | metadata_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/metadata.xlsx
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce metadata loaded | symbols=123
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=DRAM.xlsx | sheet=DRAM | mode=multi_field | rows=2521 | columns=28
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=DRAM.xlsx | sheet=DRAM | category=DRAM | sub_category=DDR | rows=22227
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=DRAM.xlsx | sheet=DRAM Contract | mode=multi_field | rows=11 | columns=25
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=DRAM.xlsx | sheet=DRAM Contract | category=DRAM | sub_category=DDR | rows=216
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=DRAM.xlsx | sheet=Module | mode=multi_field | rows=52 | columns=22
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=DRAM.xlsx | sheet=Module | category=DRAM | sub_category=Module | rows=468
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=DRAM.xlsx | sheet=GDDR | mode=multi_field | rows=52 | columns=10
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=DRAM.xlsx | sheet=GDDR | category=DRAM | sub_category=GDDR | rows=312
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce workbook transformed | file=DRAM.xlsx | rows=23223
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=NAND Flash.xlsx | sheet=Flash | mode=multi_field | rows=52 | columns=16
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=NAND Flash.xlsx | sheet=Flash | category=Flash Memory | sub_category=NAND | rows=624
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=NAND Flash.xlsx | sheet=Flash Contract | mode=multi_field | rows=10 | columns=13
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=NAND Flash.xlsx | sheet=Flash Contract | category=Flash Memory | sub_category=NAND | rows=87
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=NAND Flash.xlsx | sheet=Wafer | mode=multi_field | rows=52 | columns=13
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=NAND Flash.xlsx | sheet=Wafer | category=Flash Memory | sub_category=Wafer | rows=468
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=NAND Flash.xlsx | sheet=Memory Card | mode=multi_field | rows=52 | columns=16
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=NAND Flash.xlsx | sheet=Memory Card | category=Flash Memory | sub_category=Micro SD | rows=624
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=NAND Flash.xlsx | sheet=PC-Client OEM SSD | mode=multi_field | rows=4 | columns=13
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=NAND Flash.xlsx | sheet=PC-Client OEM SSD | category=Flash Memory | sub_category=SSD | rows=36
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=NAND Flash.xlsx | sheet=SSD Street | mode=multi_field | rows=25 | columns=28
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=NAND Flash.xlsx | sheet=SSD Street | category=Flash Memory | sub_category=SSD | rows=372
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce workbook transformed | file=NAND Flash.xlsx | rows=2211
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=PV.xlsx | sheet=Polysilicon | mode=multi_field | rows=38 | columns=16
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=PV.xlsx | sheet=Polysilicon | category=PV | sub_category=Polysilicon | rows=456
+2026-11-11 00:47:02 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=PV.xlsx | sheet=Wafer | mode=multi_field | rows=38 | columns=13
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=PV.xlsx | sheet=Wafer | category=PV | sub_category=Wafer | rows=342
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=PV.xlsx | sheet=Cell | mode=multi_field | rows=38 | columns=13
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=PV.xlsx | sheet=Cell | category=PV | sub_category=Cell | rows=342
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=PV.xlsx | sheet=Module | mode=multi_field | rows=38 | columns=10
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=PV.xlsx | sheet=Module | category=PV | sub_category=Module | rows=228
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=PV.xlsx | sheet=PV Glass | mode=multi_field | rows=38 | columns=13
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=PV.xlsx | sheet=PV Glass | category=PV | sub_category=PV Glass | rows=342
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce workbook transformed | file=PV.xlsx | rows=1710
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=TFT LCD.xlsx | sheet=Large Size Panel | mode=multi_field | rows=10 | columns=16
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=TFT LCD.xlsx | sheet=Large Size Panel | category=TFTLCD | sub_category=Large Panel | rows=90
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=TFT LCD.xlsx | sheet=LCD Smartphone Panel | mode=multi_field | rows=11 | columns=12
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=TFT LCD.xlsx | sheet=LCD Smartphone Panel | category=TFTLCD | sub_category=Smartphone Panel | rows=66
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=TFT LCD.xlsx | sheet=Street | mode=multi_field | rows=12 | columns=24
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=TFT LCD.xlsx | sheet=Street | category=TFTLCD | sub_category=LCD | rows=172
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=TFT LCD.xlsx | sheet=Large Size Panel Shipment | mode=multi_field | rows=11 | columns=14
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=TFT LCD.xlsx | sheet=Large Size Panel Shipment | category=TFTLCD | sub_category=Shipment | rows=110
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce workbook transformed | file=TFT LCD.xlsx | rows=438
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=Li-Ion Battery.xlsx | sheet=Battery Cell & Pack | mode=single_value | rows=10 | columns=11
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=Li-Ion Battery.xlsx | sheet=Battery Cell & Pack | category=Battery | sub_category=None | rows=70
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=Li-Ion Battery.xlsx | sheet=Precursor and Cathode Material | mode=single_value | rows=10 | columns=14
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=Li-Ion Battery.xlsx | sheet=Precursor and Cathode Material | category=Battery | sub_category=None | rows=100
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=Li-Ion Battery.xlsx | sheet=Anode Material | mode=single_value | rows=10 | columns=12
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=Li-Ion Battery.xlsx | sheet=Anode Material | category=Battery | sub_category=Anode Material | rows=80
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=Li-Ion Battery.xlsx | sheet=Separator | mode=single_value | rows=10 | columns=9
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=Li-Ion Battery.xlsx | sheet=Separator | category=Battery | sub_category=Separator | rows=50
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=Li-Ion Battery.xlsx | sheet=Electrolyte | mode=single_value | rows=10 | columns=8
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=Li-Ion Battery.xlsx | sheet=Electrolyte | category=Battery | sub_category=Electrolyte | rows=40
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=Li-Ion Battery.xlsx | sheet=Li & Co & Ni | mode=single_value | rows=10 | columns=12
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=Li-Ion Battery.xlsx | sheet=Li & Co & Ni | category=Battery | sub_category=LiCoNi | rows=80
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=Li-Ion Battery.xlsx | sheet=Other | mode=single_value | rows=10 | columns=6
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=Li-Ion Battery.xlsx | sheet=Other | category=Battery | sub_category=Other | rows=20
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce workbook transformed | file=Li-Ion Battery.xlsx | rows=440
+2026-11-11 00:47:03 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce industry Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_warehouse/raw/industry/components/dx_components.parquet | rows=28022
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce industry data_lake job started | input_dir=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/industry/TrendForce | metadata_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/metadata.xlsx
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce metadata loaded | symbols=123
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=DRAM.xlsx | sheet=DRAM | mode=multi_field | rows=2524 | columns=28
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=DRAM.xlsx | sheet=DRAM | category=DRAM | sub_category=DDR | rows=22290
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=DRAM.xlsx | sheet=DRAM Contract | mode=multi_field | rows=11 | columns=25
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=DRAM.xlsx | sheet=DRAM Contract | category=DRAM | sub_category=DDR | rows=216
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=DRAM.xlsx | sheet=Module | mode=multi_field | rows=52 | columns=22
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=DRAM.xlsx | sheet=Module | category=DRAM | sub_category=Module | rows=468
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=DRAM.xlsx | sheet=GDDR | mode=multi_field | rows=52 | columns=10
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=DRAM.xlsx | sheet=GDDR | category=DRAM | sub_category=GDDR | rows=312
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce workbook transformed | file=DRAM.xlsx | rows=23286
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=NAND Flash.xlsx | sheet=Flash | mode=multi_field | rows=52 | columns=16
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=NAND Flash.xlsx | sheet=Flash | category=Flash Memory | sub_category=NAND | rows=624
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=NAND Flash.xlsx | sheet=Flash Contract | mode=multi_field | rows=10 | columns=13
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=NAND Flash.xlsx | sheet=Flash Contract | category=Flash Memory | sub_category=NAND | rows=87
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=NAND Flash.xlsx | sheet=Wafer | mode=multi_field | rows=52 | columns=13
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=NAND Flash.xlsx | sheet=Wafer | category=Flash Memory | sub_category=Wafer | rows=468
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=NAND Flash.xlsx | sheet=Memory Card | mode=multi_field | rows=52 | columns=16
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=NAND Flash.xlsx | sheet=Memory Card | category=Flash Memory | sub_category=Micro SD | rows=624
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=NAND Flash.xlsx | sheet=PC-Client OEM SSD | mode=multi_field | rows=4 | columns=13
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=NAND Flash.xlsx | sheet=PC-Client OEM SSD | category=Flash Memory | sub_category=SSD | rows=36
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=NAND Flash.xlsx | sheet=SSD Street | mode=multi_field | rows=25 | columns=28
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=NAND Flash.xlsx | sheet=SSD Street | category=Flash Memory | sub_category=SSD | rows=372
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce workbook transformed | file=NAND Flash.xlsx | rows=2211
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=PV.xlsx | sheet=Polysilicon | mode=multi_field | rows=39 | columns=16
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=PV.xlsx | sheet=Polysilicon | category=PV | sub_category=Polysilicon | rows=468
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=PV.xlsx | sheet=Wafer | mode=multi_field | rows=39 | columns=13
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=PV.xlsx | sheet=Wafer | category=PV | sub_category=Wafer | rows=351
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=PV.xlsx | sheet=Cell | mode=multi_field | rows=39 | columns=13
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=PV.xlsx | sheet=Cell | category=PV | sub_category=Cell | rows=351
+2026-11-12 01:51:12 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=PV.xlsx | sheet=Module | mode=multi_field | rows=39 | columns=10
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=PV.xlsx | sheet=Module | category=PV | sub_category=Module | rows=234
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=PV.xlsx | sheet=PV Glass | mode=multi_field | rows=39 | columns=13
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=PV.xlsx | sheet=PV Glass | category=PV | sub_category=PV Glass | rows=351
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce workbook transformed | file=PV.xlsx | rows=1755
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=TFT LCD.xlsx | sheet=Large Size Panel | mode=multi_field | rows=10 | columns=16
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=TFT LCD.xlsx | sheet=Large Size Panel | category=TFTLCD | sub_category=Large Panel | rows=90
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=TFT LCD.xlsx | sheet=LCD Smartphone Panel | mode=multi_field | rows=11 | columns=12
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=TFT LCD.xlsx | sheet=LCD Smartphone Panel | category=TFTLCD | sub_category=Smartphone Panel | rows=66
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=TFT LCD.xlsx | sheet=Street | mode=multi_field | rows=12 | columns=24
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=TFT LCD.xlsx | sheet=Street | category=TFTLCD | sub_category=LCD | rows=172
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=TFT LCD.xlsx | sheet=Large Size Panel Shipment | mode=multi_field | rows=11 | columns=14
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=TFT LCD.xlsx | sheet=Large Size Panel Shipment | category=TFTLCD | sub_category=Shipment | rows=110
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce workbook transformed | file=TFT LCD.xlsx | rows=438
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=Li-Ion Battery.xlsx | sheet=Battery Cell & Pack | mode=single_value | rows=11 | columns=11
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=Li-Ion Battery.xlsx | sheet=Battery Cell & Pack | category=Battery | sub_category=None | rows=77
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=Li-Ion Battery.xlsx | sheet=Precursor and Cathode Material | mode=single_value | rows=11 | columns=14
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=Li-Ion Battery.xlsx | sheet=Precursor and Cathode Material | category=Battery | sub_category=None | rows=110
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=Li-Ion Battery.xlsx | sheet=Anode Material | mode=single_value | rows=11 | columns=12
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=Li-Ion Battery.xlsx | sheet=Anode Material | category=Battery | sub_category=Anode Material | rows=88
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=Li-Ion Battery.xlsx | sheet=Separator | mode=single_value | rows=11 | columns=9
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=Li-Ion Battery.xlsx | sheet=Separator | category=Battery | sub_category=Separator | rows=55
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=Li-Ion Battery.xlsx | sheet=Electrolyte | mode=single_value | rows=11 | columns=8
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=Li-Ion Battery.xlsx | sheet=Electrolyte | category=Battery | sub_category=Electrolyte | rows=44
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=Li-Ion Battery.xlsx | sheet=Li & Co & Ni | mode=single_value | rows=11 | columns=12
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=Li-Ion Battery.xlsx | sheet=Li & Co & Ni | category=Battery | sub_category=LiCoNi | rows=88
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet loaded | file=Li-Ion Battery.xlsx | sheet=Other | mode=single_value | rows=11 | columns=6
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce sheet transformed | file=Li-Ion Battery.xlsx | sheet=Other | category=Battery | sub_category=Other | rows=22
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce workbook transformed | file=Li-Ion Battery.xlsx | rows=484
+2026-11-12 01:51:13 | INFO | src.jobs_xlsx.trendforce.get_dx_comp_index | TrendForce industry Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_warehouse/raw/industry/components/dx_components.parquet | rows=28174
