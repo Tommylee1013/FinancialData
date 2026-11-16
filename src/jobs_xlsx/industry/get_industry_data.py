@@ -297,7 +297,7 @@ def transform_wide_value_sheet(
     long_df["release_date"] = pd.to_datetime(
         long_df["release_date"],
         errors="raise",
-    ).dt.normalize()
+    ).dt.normalize().fillna(long_df["base_date"])
 
     long_df["time"] = coerce_time_series(
         long_df["time"]

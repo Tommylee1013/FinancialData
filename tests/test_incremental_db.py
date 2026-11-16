@@ -4,7 +4,7 @@ from datetime import date, time
 import duckdb
 import pandas as pd
 
-from src.dataloader.build_db import upsert_table
+from src.dataloader.build_db import INDEX_TABLE, upsert_table
 from src.fed_policy.repository import FedPolicyRepository
 
 
@@ -37,6 +37,17 @@ class IncrementalBuildTests(unittest.TestCase):
             3,
         )
 
+        constraint = self.connection.execute(
+            """
+            SELECT constraint_column_names
+            FROM duckdb_constraints()
+            WHERE schema_name = 'metadata'
+              AND table_name = 'instrument_master'
+              AND constraint_type = 'PRIMARY KEY'
+            """
+        ).fetchone()
+        self.assertEqual(constraint[0], ["id"])
+
     def test_reject_duplicate_null_key_and_schema_change(self):
         table = "metadata.instrument_master"
         upsert_table(self.connection, table, "SELECT 1::BIGINT AS id, 'keep'::VARCHAR AS name")
@@ -49,6 +60,34 @@ class IncrementalBuildTests(unittest.TestCase):
             with self.subTest(source=source), self.assertRaises(ValueError):
                 upsert_table(self.connection, table, source)
         self.assertEqual(self.connection.execute(f"SELECT * FROM {table}").fetchall(), [(1, "keep")])
+
+    def test_release_identity_preserves_distinct_observations(self):
+        self.connection.execute("CREATE SCHEMA market")
+        first = """
+            SELECT DATE '2024-01-01' AS base_date,
+                   DATE '2024-01-02' AS release_date,
+                   TIME '09:00:00' AS time,
+                   'UTC+9'::VARCHAR AS time_zone,
+                   'ABC'::VARCHAR AS symbol,
+                   10.0::DOUBLE AS value
+        """
+        second = """
+            SELECT DATE '2024-01-01' AS base_date,
+                   DATE '2024-01-02' AS release_date,
+                   TIME '10:00:00' AS time,
+                   'UTC+9'::VARCHAR AS time_zone,
+                   'ABC'::VARCHAR AS symbol,
+                   11.0::DOUBLE AS value
+        """
+        upsert_table(self.connection, INDEX_TABLE, first)
+        upsert_table(self.connection, INDEX_TABLE, second)
+
+        self.assertEqual(
+            self.connection.execute(
+                f"SELECT time, value FROM {INDEX_TABLE} ORDER BY time"
+            ).fetchall(),
+            [(time(9, 0), 10.0), (time(10, 0), 11.0)],
+        )
 
     def test_failed_batch_rolls_back_prior_table_changes(self):
         table = "metadata.instrument_master"

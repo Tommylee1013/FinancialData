@@ -31,6 +31,14 @@ INDEX_DATA_PATH = (
     / "index"
 )
 
+COMMODITY_DATA_PATH = (
+    PROJECT_ROOT
+    / "data_warehouse"
+    / "raw"
+    / "commodity"
+    / "index"
+)
+
 MACRO_DATA_PATH = (
     PROJECT_ROOT
     / "data_warehouse"
@@ -102,6 +110,7 @@ LOGGER = setup_logger(
 
 METADATA_TABLE = "metadata.instrument_master"
 INDEX_TABLE = "market.index_data"
+COMMODITY_TABLE = "market.commodity_data"
 MACRO_TABLE = "macro.macro_data"
 FREIGHT_TABLE = "freight.freight_data"
 VOLATILITY_TABLE = "market.volatility_data"
@@ -130,6 +139,8 @@ INDEX_COLUMNS = [
     "close",
     "volume",
 ]
+
+COMMODITY_COLUMNS = INDEX_COLUMNS
 
 MACRO_COLUMNS = [
     "base_date",
@@ -233,20 +244,22 @@ BEHAVIOR_COLUMNS = [
     'value'
 ]
 
-# A release can have multiple observations for the same base date. Keep the
-# release timestamp in those keys; industry components also need their item.
+# Time-series observations are versioned by their full observation/release
+# identity. ``symbol`` is the instrument code used by all loaders; the
+# industry-components table additionally needs its component ``item``.
 TABLE_KEYS = {
     METADATA_TABLE: ("id",),
-    INDEX_TABLE: ("base_date", "symbol", "exchange"),
-    MACRO_TABLE: ("base_date", "release_date", "time", "symbol", "exchange"),
-    FREIGHT_TABLE: ("base_date", "release_date", "time", "symbol", "exchange"),
-    VOLATILITY_TABLE: ("base_date", "symbol", "exchange"),
-    INDUSTRY_TABLE: ("base_date", "release_date", "time", "symbol", "exchange", "item"),
-    INDUSTRY_INDEX_TABLE: ("base_date", "symbol", "exchange"),
-    FX_TABLE: ("base_date", "symbol", "exchange"),
-    FIXED_INCOME_TABLE: ("base_date", "symbol", "exchange"),
-    FIXED_INCOME_INDEX_TABLE: ("base_date", "symbol", "exchange"),
-    BEHAVIOR_TABLE: ("base_date", "release_date", "time", "symbol", "exchange"),
+    INDEX_TABLE: ("base_date", "release_date", "time", "time_zone", "symbol"),
+    COMMODITY_TABLE: ("base_date", "release_date", "time", "time_zone", "symbol"),
+    MACRO_TABLE: ("base_date", "release_date", "time", "time_zone", "symbol"),
+    FREIGHT_TABLE: ("base_date", "release_date", "time", "time_zone", "symbol"),
+    VOLATILITY_TABLE: ("base_date", "release_date", "time", "time_zone", "symbol"),
+    INDUSTRY_TABLE: ("base_date", "release_date", "time", "time_zone", "symbol", "item"),
+    INDUSTRY_INDEX_TABLE: ("base_date", "release_date", "time", "time_zone", "symbol"),
+    FX_TABLE: ("base_date", "release_date", "time", "time_zone", "symbol"),
+    FIXED_INCOME_TABLE: ("base_date", "release_date", "time", "time_zone", "symbol"),
+    FIXED_INCOME_INDEX_TABLE: ("base_date", "release_date", "time", "time_zone", "symbol"),
+    BEHAVIOR_TABLE: ("base_date", "release_date", "time", "time_zone", "symbol"),
 }
 
 # ============================================================
@@ -383,6 +396,84 @@ def build_parquet_path_list(
     ) + "]"
 
 
+def quote_identifier(name: str) -> str:
+    return '"' + name.replace('"', '""') + '"'
+
+
+def ensure_table_primary_key(
+    connection: duckdb.DuckDBPyConnection,
+    table: str,
+) -> None:
+    """Create the configured physical primary key or verify it already exists."""
+
+    keys = TABLE_KEYS[table]
+    schema, name = table.split(".", 1)
+    row = connection.execute(
+        """
+        SELECT constraint_column_names
+        FROM duckdb_constraints()
+        WHERE schema_name = ?
+          AND table_name = ?
+          AND constraint_type = 'PRIMARY KEY'
+        """,
+        [schema, name],
+    ).fetchone()
+
+    if row:
+        actual_keys = tuple(row[0])
+        if actual_keys != tuple(keys):
+            raise ValueError(
+                f"{table}: primary key differs from configured key; "
+                f"actual={actual_keys}, configured={keys}"
+            )
+        return
+
+    key_columns = ", ".join(quote_identifier(key) for key in keys)
+    connection.execute(
+        f"ALTER TABLE {table} ADD PRIMARY KEY ({key_columns})"
+    )
+    LOGGER.info(
+        "Primary key created | table=%s | keys=%s",
+        table,
+        ",".join(keys),
+    )
+
+
+def ensure_existing_primary_keys(
+    connection: duckdb.DuckDBPyConnection,
+) -> None:
+    """Install primary keys on existing tables after validating legacy rows."""
+
+    for table, keys in TABLE_KEYS.items():
+        schema, name = table.split(".", 1)
+        exists = connection.execute(
+            """
+            SELECT 1
+            FROM information_schema.tables
+            WHERE table_schema = ? AND table_name = ?
+            """,
+            [schema, name],
+        ).fetchone()
+        if not exists:
+            continue
+
+        key_columns = ", ".join(quote_identifier(key) for key in keys)
+        null_check = " OR ".join(
+            f"{quote_identifier(key)} IS NULL" for key in keys
+        )
+        if connection.execute(
+            f"SELECT 1 FROM {table} WHERE {null_check} LIMIT 1"
+        ).fetchone():
+            raise ValueError(f"{table}: existing data has a null primary-key value")
+        if connection.execute(
+            f"SELECT 1 FROM {table} GROUP BY {key_columns} "
+            "HAVING COUNT(*) > 1 LIMIT 1"
+        ).fetchone():
+            raise ValueError(f"{table}: existing data has duplicate primary keys")
+
+        ensure_table_primary_key(connection, table)
+
+
 def upsert_table(
     connection: duckdb.DuckDBPyConnection,
     table: str,
@@ -393,9 +484,6 @@ def upsert_table(
     stage = "_incoming_build_batch"
     keys = TABLE_KEYS[table]
 
-    def quote(name: str) -> str:
-        return '"' + name.replace('"', '""') + '"'
-
     connection.execute(f"CREATE TEMP TABLE {stage} AS {source_query}")
     try:
         source_columns = [row[:2] for row in connection.execute(f"DESCRIBE {stage}").fetchall()]
@@ -403,11 +491,11 @@ def upsert_table(
         if not set(keys).issubset(names):
             raise ValueError(f"{table}: source is missing key columns {set(keys) - set(names)}")
 
-        null_check = " OR ".join(f"{quote(key)} IS NULL" for key in keys)
+        null_check = " OR ".join(f"{quote_identifier(key)} IS NULL" for key in keys)
         if connection.execute(f"SELECT 1 FROM {stage} WHERE {null_check} LIMIT 1").fetchone():
             raise ValueError(f"{table}: incoming data has a null key; existing data was not changed")
 
-        key_columns = ", ".join(quote(key) for key in keys)
+        key_columns = ", ".join(quote_identifier(key) for key in keys)
         if connection.execute(
             f"SELECT 1 FROM {stage} GROUP BY {key_columns} HAVING COUNT(*) > 1 LIMIT 1"
         ).fetchone():
@@ -421,6 +509,7 @@ def upsert_table(
 
         if not exists:
             connection.execute(f"CREATE TABLE {table} AS SELECT * FROM {stage}")
+            ensure_table_primary_key(connection, table)
             inserted = connection.execute(f"SELECT COUNT(*) FROM {stage}").fetchone()[0]
             LOGGER.info("Table initialized | table=%s | inserted=%d", table, inserted)
         else:
@@ -435,21 +524,33 @@ def upsert_table(
             ).fetchone():
                 raise ValueError(f"{table}: existing data has duplicate keys; merge is unsafe")
 
+            existing_null_check = " OR ".join(
+                f"{quote_identifier(key)} IS NULL" for key in keys
+            )
+            if connection.execute(
+                f"SELECT 1 FROM {table} WHERE {existing_null_check} LIMIT 1"
+            ).fetchone():
+                raise ValueError(
+                    f"{table}: existing data has a null key; merge is unsafe"
+                )
+
+            ensure_table_primary_key(connection, table)
+
             join = " AND ".join(
-                f"target.{quote(key)} = source.{quote(key)}" for key in keys
+                f"target.{quote_identifier(key)} = source.{quote_identifier(key)}" for key in keys
             )
             nonkeys = [column for column in names if column not in keys]
             changed = " OR ".join(
-                f"target.{quote(column)} IS DISTINCT FROM source.{quote(column)}"
+                f"target.{quote_identifier(column)} IS DISTINCT FROM source.{quote_identifier(column)}"
                 for column in nonkeys
             )
             assignments = ", ".join(
-                f"{quote(column)} = source.{quote(column)}" for column in nonkeys
+                f"{quote_identifier(column)} = source.{quote_identifier(column)}" for column in nonkeys
             )
             inserted, updated = connection.execute(f"""
                 SELECT
-                    COUNT(*) FILTER (WHERE target.{quote(keys[0])} IS NULL),
-                    COUNT(*) FILTER (WHERE target.{quote(keys[0])} IS NOT NULL AND ({changed}))
+                    COUNT(*) FILTER (WHERE target.{quote_identifier(keys[0])} IS NULL),
+                    COUNT(*) FILTER (WHERE target.{quote_identifier(keys[0])} IS NOT NULL AND ({changed}))
                 FROM {stage} AS source
                 LEFT JOIN {table} AS target ON {join}
             """).fetchone()
@@ -467,6 +568,56 @@ def upsert_table(
         return connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
     finally:
         connection.execute(f"DROP TABLE {stage}")
+
+
+def migrate_legacy_release_dates(
+    connection: duckdb.DuckDBPyConnection,
+) -> None:
+    """Fill legacy missing release dates before installing primary keys.
+
+    A release date is mandatory in the new observation identity. Historical
+    rows that predate this rule use their base date as the conservative
+    fallback. No non-null value is changed.
+    """
+
+    for table, keys in TABLE_KEYS.items():
+        if "release_date" not in keys:
+            continue
+
+        schema, name = table.split(".", 1)
+        exists = connection.execute(
+            """
+            SELECT 1
+            FROM information_schema.tables
+            WHERE table_schema = ? AND table_name = ?
+            """,
+            [schema, name],
+        ).fetchone()
+        if not exists:
+            continue
+
+        updated = connection.execute(
+            f"""
+            SELECT COUNT(*)
+            FROM {table}
+            WHERE release_date IS NULL AND base_date IS NOT NULL
+            """
+        ).fetchone()[0]
+        if not updated:
+            continue
+
+        connection.execute(
+            f"""
+            UPDATE {table}
+            SET release_date = base_date
+            WHERE release_date IS NULL AND base_date IS NOT NULL
+            """
+        )
+        LOGGER.warning(
+            "Legacy release dates normalized | table=%s | updated=%d",
+            table,
+            updated,
+        )
 
 
 # ============================================================
@@ -605,7 +756,7 @@ def create_index_table(
     query = f"""
         SELECT
             CAST(base_date AS DATE) AS base_date,
-            CAST(release_date AS DATE) AS release_date,
+            CAST(COALESCE(release_date, base_date) AS DATE) AS release_date,
             CAST(time AS TIME) AS time,
             CAST(time_zone AS VARCHAR) AS time_zone,
             CAST(symbol AS VARCHAR) AS symbol,
@@ -635,6 +786,40 @@ def create_index_table(
     return row_count
 
 
+def create_commodity_table(
+    connection: duckdb.DuckDBPyConnection,
+    parquet_files: list[Path],
+) -> int:
+    """Merge commodity OHLCV observations into market.commodity_data."""
+
+    parquet_paths = build_parquet_path_list(parquet_files)
+    query = f"""
+        SELECT
+            CAST(base_date AS DATE) AS base_date,
+            CAST(COALESCE(release_date, base_date) AS DATE) AS release_date,
+            CAST(time AS TIME) AS time,
+            CAST(time_zone AS VARCHAR) AS time_zone,
+            CAST(symbol AS VARCHAR) AS symbol,
+            CAST(exchange AS VARCHAR) AS exchange,
+            CAST(country AS VARCHAR) AS country,
+            CAST(open AS DOUBLE) AS open,
+            CAST(high AS DOUBLE) AS high,
+            CAST(low AS DOUBLE) AS low,
+            CAST(close AS DOUBLE) AS close,
+            CAST(volume AS DOUBLE) AS volume
+        FROM read_parquet({parquet_paths}, union_by_name = TRUE)
+    """
+
+    row_count = upsert_table(connection, COMMODITY_TABLE, query)
+    LOGGER.info(
+        "Commodity table synchronized | table=%s | files=%d | rows=%d",
+        COMMODITY_TABLE,
+        len(parquet_files),
+        row_count,
+    )
+    return row_count
+
+
 def create_macro_table(
     connection: duckdb.DuckDBPyConnection,
     parquet_files: list[Path],
@@ -650,7 +835,7 @@ def create_macro_table(
     query = f"""
         SELECT
             CAST(base_date AS DATE) AS base_date,
-            CAST(release_date AS DATE) AS release_date,
+            CAST(COALESCE(release_date, base_date) AS DATE) AS release_date,
             CAST(time AS TIME) AS time,
             CAST(time_zone AS VARCHAR) AS time_zone,
             CAST(symbol AS VARCHAR) AS symbol,
@@ -694,7 +879,7 @@ def create_freight_table(
     query = f"""
         SELECT
             CAST(base_date AS DATE) AS base_date,
-            CAST(release_date AS DATE) AS release_date,
+            CAST(COALESCE(release_date, base_date) AS DATE) AS release_date,
             CAST(time AS TIME) AS time,
             CAST(time_zone AS VARCHAR) AS time_zone,
             CAST(symbol AS VARCHAR) AS symbol,
@@ -734,7 +919,7 @@ def create_volatility_table(
     query = f"""
         SELECT
             CAST(base_date AS DATE) AS base_date,
-            CAST(release_date AS DATE) AS release_date,
+            CAST(COALESCE(release_date, base_date) AS DATE) AS release_date,
             CAST(time AS TIME) AS time,
             CAST(time_zone AS VARCHAR) AS time_zone,
             CAST(symbol AS VARCHAR) AS symbol,
@@ -780,7 +965,7 @@ def create_industry_table(
     query = f"""
         SELECT
             CAST(base_date AS DATE) AS base_date,
-            CAST(release_date AS DATE) AS release_date,
+            CAST(COALESCE(release_date, base_date) AS DATE) AS release_date,
             CAST(time AS TIME) AS time,
             CAST(time_zone AS VARCHAR) AS time_zone,
             CAST(symbol AS VARCHAR) AS symbol,
@@ -821,7 +1006,7 @@ def create_industry_index_table(
     query = f"""
         SELECT
             CAST(base_date AS DATE) AS base_date,
-            CAST(release_date AS DATE) AS release_date,
+            CAST(COALESCE(release_date, base_date) AS DATE) AS release_date,
             CAST(time AS TIME) AS time,
             CAST(time_zone AS VARCHAR) AS time_zone,
             CAST(symbol AS VARCHAR) AS symbol,
@@ -861,7 +1046,7 @@ def create_fx_table(
     query = f"""
         SELECT
             CAST(base_date AS DATE) AS base_date,
-            CAST(release_date AS DATE) AS release_date,
+            CAST(COALESCE(release_date, base_date) AS DATE) AS release_date,
             CAST(time AS TIME) AS time,
             CAST(time_zone AS VARCHAR) AS time_zone,
             CAST(symbol AS VARCHAR) AS symbol,
@@ -905,7 +1090,7 @@ def create_fixed_income_table(
     query = f"""
         SELECT
             CAST(base_date AS DATE) AS base_date,
-            CAST(release_date AS DATE) AS release_date,
+            CAST(COALESCE(release_date, base_date) AS DATE) AS release_date,
             CAST(time AS TIME) AS time,
             CAST(time_zone AS VARCHAR) AS time_zone,
             CAST(symbol AS VARCHAR) AS symbol,
@@ -940,7 +1125,7 @@ def create_fixed_income_index_table(
     query = f"""
         SELECT
             CAST(base_date AS DATE) AS base_date,
-            CAST(release_date AS DATE) AS release_date,
+            CAST(COALESCE(release_date, base_date) AS DATE) AS release_date,
             CAST(time AS TIME) AS time,
             CAST(time_zone AS VARCHAR) AS time_zone,
             CAST(symbol AS VARCHAR) AS symbol,
@@ -973,7 +1158,7 @@ def create_behavior_table(
     query = f"""
         SELECT
             CAST(base_date AS DATE) AS base_date,
-            CAST(release_date AS DATE) AS release_date,
+            CAST(COALESCE(release_date, base_date) AS DATE) AS release_date,
             CAST(time AS TIME) AS time,
             CAST(time_zone AS VARCHAR) AS time_zone,
             CAST(symbol AS VARCHAR) AS symbol,
@@ -1009,265 +1194,52 @@ def validate_database(
     Performs basic data_lake-quality validation after table creation.
     """
 
-    index_null_keys = connection.execute(
-        f"""
-        SELECT COUNT(*)
-        FROM {INDEX_TABLE}
-        WHERE base_date IS NULL
-           OR symbol IS NULL
-        """
-    ).fetchone()[0]
-
-    macro_null_keys = connection.execute(
-        f"""
-        SELECT COUNT(*)
-        FROM {MACRO_TABLE}
-        WHERE base_date IS NULL
-           OR release_date IS NULL
-           OR symbol IS NULL
-        """
-    ).fetchone()[0]
-
-    freight_null_keys = connection.execute(
-        f"""
-        SELECT COUNT(*)
-        FROM {FREIGHT_TABLE}
-        WHERE base_date IS NULL
-           OR release_date IS NULL
-           OR symbol IS NULL
-        """
-    ).fetchone()[0]
-
-    volatility_null_keys = connection.execute(
-        f"""
-            SELECT COUNT(*)
-            FROM {VOLATILITY_TABLE}
-            WHERE base_date IS NULL
-               OR symbol IS NULL
-            """
-    ).fetchone()[0]
-
-    # add codes from here (null keys)
-
-    industry_null_keys = connection.execute(
-        f"""
-            SELECT COUNT(*)
-            FROM {INDUSTRY_TABLE}
-            WHERE base_date IS NULL
-               OR symbol IS NULL
-            """
-    ).fetchone()[0]
-
-    industry_index_null_keys = connection.execute(
-        f"""
-                SELECT COUNT(*)
-                FROM {INDUSTRY_INDEX_TABLE}
-                WHERE base_date IS NULL
-                   OR symbol IS NULL
-            """
-    ).fetchone()[0]
-
-    fx_null_keys = connection.execute(
-        f"""
-                    SELECT COUNT(*)
-                    FROM {FX_TABLE}
-                    WHERE base_date IS NULL
-                       OR symbol IS NULL
-                """
-    ).fetchone()[0]
-
-    fixed_income_null_keys = connection.execute(
-        f"""
-                    SELECT COUNT(*)
-                    FROM {FIXED_INCOME_TABLE}
-                    WHERE base_date IS NULL
-                       OR symbol IS NULL
-                """
-    ).fetchone()[0]
-
-    behavior_null_keys = connection.execute(
-        f"""
-                        SELECT COUNT(*)
-                        FROM {BEHAVIOR_TABLE}
-                        WHERE base_date IS NULL
-                           OR symbol IS NULL
-                    """
-    ).fetchone()[0]
-
-    index_duplicates = connection.execute(
-        f"""
-        SELECT COUNT(*)
-        FROM (
-            SELECT
-                base_date,
-                symbol,
-                exchange,
-                COUNT(*) AS row_count
-            FROM {INDEX_TABLE}
-            GROUP BY
-                base_date,
-                symbol,
-                exchange
-            HAVING COUNT(*) > 1
+    def key_issue_counts(table: str) -> tuple[int, int]:
+        keys = TABLE_KEYS[table]
+        null_check = " OR ".join(
+            f"{quote_identifier(key)} IS NULL" for key in keys
         )
-        """
-    ).fetchone()[0]
-
-    macro_duplicates = connection.execute(
-        f"""
-        SELECT COUNT(*)
-        FROM (
-            SELECT
-                base_date,
-                release_date,
-                time,
-                symbol,
-                exchange,
-                COUNT(*) AS row_count
-            FROM {MACRO_TABLE}
-            GROUP BY
-                base_date,
-                release_date,
-                time,
-                symbol,
-                exchange
-            HAVING COUNT(*) > 1
+        key_columns = ", ".join(
+            quote_identifier(key) for key in keys
         )
-        """
-    ).fetchone()[0]
-
-    freight_duplicates = connection.execute(
-        f"""
-        SELECT COUNT(*)
-        FROM (
-            SELECT
-                base_date,
-                release_date,
-                time,
-                symbol,
-                exchange,
-                COUNT(*) AS row_count
-            FROM {FREIGHT_TABLE}
-            GROUP BY
-                base_date,
-                release_date,
-                time,
-                symbol,
-                exchange
-            HAVING COUNT(*) > 1
-        )
-        """
-    ).fetchone()[0]
-
-    volatility_duplicates = connection.execute(
-        f"""
+        null_count = connection.execute(
+            f"SELECT COUNT(*) FROM {table} WHERE {null_check}"
+        ).fetchone()[0]
+        duplicate_count = connection.execute(
+            f"""
             SELECT COUNT(*)
             FROM (
-                SELECT
-                    base_date,
-                    symbol,
-                    exchange,
-                    COUNT(*) AS row_count
-                FROM {VOLATILITY_TABLE}
-                GROUP BY
-                    base_date,
-                    symbol,
-                    exchange
+                SELECT {key_columns}, COUNT(*) AS row_count
+                FROM {table}
+                GROUP BY {key_columns}
                 HAVING COUNT(*) > 1
             )
             """
-    ).fetchone()[0]
+        ).fetchone()[0]
+        return null_count, duplicate_count
 
-    # add codes from here (duplicates)
-
-    industry_duplicates = connection.execute(
-        f"""
-                SELECT COUNT(*)
-                FROM (
-                    SELECT
-                        base_date,
-                        release_date,
-                        time,
-                        symbol,
-                        exchange,
-                        item,
-                        COUNT(*) AS row_count
-                    FROM {INDUSTRY_TABLE}
-                    GROUP BY
-                        base_date,
-                        release_date,
-                        time,
-                        symbol,
-                        exchange,
-                        item
-                    HAVING COUNT(*) > 1
-                )
-                """
-    ).fetchone()[0]
-
-    industry_index_duplicates = connection.execute(
-        f"""
-            select count(*)
-            from (
-                select base_date, symbol, exchange,
-                count(*) as row_count
-                from {INDUSTRY_INDEX_TABLE}
-                group by base_date, symbol, exchange
-                having count(*) > 1
-            )
-        """
-    ).fetchone()[0]
-
-    fx_duplicates = connection.execute(
-        f"""
-                SELECT COUNT(*)
-                FROM (
-                    SELECT
-                        base_date,
-                        symbol,
-                        exchange,
-                        COUNT(*) AS row_count
-                    FROM {FX_TABLE}
-                    GROUP BY
-                        base_date,
-                        symbol,
-                        exchange
-                    HAVING COUNT(*) > 1
-                )
-                """
-    ).fetchone()[0]
-
-    fixed_income_duplicates = connection.execute(
-        f"""
-                select count(*)
-                from (
-                    select base_date, symbol, exchange,
-                    count(*) as row_count
-                    from {FIXED_INCOME_TABLE}
-                    group by base_date, symbol, exchange
-                    having count(*) > 1
-                )
-            """
-    ).fetchone()[0]
-
-    behavior_duplicates = connection.execute(
-        f"""
-                    select count(*)
-                    from (
-                    select base_date, release_date, time, symbol, exchange,
-                        count(*) as row_count
-                        from {BEHAVIOR_TABLE}
-                    group by base_date, release_date, time, symbol, exchange
-                        having count(*) > 1
-                    )
-                """
-    ).fetchone()[0]
+    index_null_keys, index_duplicates = key_issue_counts(INDEX_TABLE)
+    commodity_null_keys, commodity_duplicates = key_issue_counts(COMMODITY_TABLE)
+    macro_null_keys, macro_duplicates = key_issue_counts(MACRO_TABLE)
+    freight_null_keys, freight_duplicates = key_issue_counts(FREIGHT_TABLE)
+    volatility_null_keys, volatility_duplicates = key_issue_counts(VOLATILITY_TABLE)
+    industry_null_keys, industry_duplicates = key_issue_counts(INDUSTRY_TABLE)
+    industry_index_null_keys, industry_index_duplicates = key_issue_counts(INDUSTRY_INDEX_TABLE)
+    fx_null_keys, fx_duplicates = key_issue_counts(FX_TABLE)
+    fixed_income_null_keys, fixed_income_duplicates = key_issue_counts(FIXED_INCOME_TABLE)
+    behavior_null_keys, behavior_duplicates = key_issue_counts(BEHAVIOR_TABLE)
 
     if index_null_keys > 0:
         raise ValueError(
             "The index table contains "
             f"{index_null_keys:,} rows with a null "
             "base_date or symbol."
+        )
+
+    if commodity_null_keys > 0:
+        raise ValueError(
+            "The commodity table contains "
+            f"{commodity_null_keys:,} rows with a null primary-key value."
         )
 
     if macro_null_keys > 0:
@@ -1349,6 +1321,12 @@ def validate_database(
             index_duplicates,
         )
 
+    if commodity_duplicates > 0:
+        LOGGER.warning(
+            "Duplicate commodity keys detected | duplicate_groups=%d",
+            commodity_duplicates,
+        )
+
     if macro_duplicates > 0:
         LOGGER.warning(
             "Duplicate macro keys detected | "
@@ -1412,6 +1390,7 @@ def validate_database(
     LOGGER.info(
         "Database validation completed | "
         "index_null_keys=%d | "
+        "commodity_null_keys=%d | "
         "macro_null_keys=%d | "
         "freight_null_keys=%d | "
         "volatility_null_keys=%d | "
@@ -1421,6 +1400,7 @@ def validate_database(
         'fixed_income_null_key=%d | '
         'behavior_null_keys=%d | '
         "index_duplicate_groups=%d | "
+        "commodity_duplicate_groups=%d | "
         "macro_duplicate_groups=%d | "
         "freight_duplicate_groups=%d"
         "volatility_duplicate_groups=%d | "
@@ -1430,6 +1410,7 @@ def validate_database(
         'fixed_income_duplicates_groups=%d | '
         'behavior_duplicates_groups=%d | ',
         index_null_keys,
+        commodity_null_keys,
         macro_null_keys,
         freight_null_keys,
         volatility_null_keys,
@@ -1439,6 +1420,7 @@ def validate_database(
         fixed_income_null_keys,
         behavior_null_keys,
         index_duplicates,
+        commodity_duplicates,
         macro_duplicates,
         freight_duplicates,
         volatility_duplicates,
@@ -1474,6 +1456,10 @@ def build_duckdb() -> None:
     try:
         index_files = get_parquet_files(
             INDEX_DATA_PATH
+        )
+
+        commodity_files = get_parquet_files(
+            COMMODITY_DATA_PATH
         )
 
         macro_files = get_parquet_files(
@@ -1517,8 +1503,10 @@ def build_duckdb() -> None:
 
         LOGGER.info(
             "Parquet file discovery completed | "
-            "index_files=%d | macro_files=%d | freight_files=%d | fixed_income_index_files=%d",
+            "index_files=%d | commodity_files=%d | macro_files=%d | "
+            "freight_files=%d | fixed_income_index_files=%d",
             len(index_files),
+            len(commodity_files),
             len(macro_files),
             len(freight_files),
             len(fixed_income_index_files),
@@ -1528,6 +1516,12 @@ def build_duckdb() -> None:
             parquet_files=index_files,
             required_columns=INDEX_COLUMNS,
             data_type_name="index",
+        )
+
+        validate_parquet_columns(
+            parquet_files=commodity_files,
+            required_columns=COMMODITY_COLUMNS,
+            data_type_name="commodity",
         )
 
         validate_parquet_columns(
@@ -1595,13 +1589,23 @@ def build_duckdb() -> None:
             DATABASE_PATH,
         )
 
-        connection.execute(
-            "BEGIN TRANSACTION"
-        )
-
         create_schemas(
             connection
         )
+
+        connection.execute("BEGIN TRANSACTION")
+        migrate_legacy_release_dates(
+            connection
+        )
+        connection.execute("COMMIT")
+
+        connection.execute("BEGIN TRANSACTION")
+        ensure_existing_primary_keys(
+            connection
+        )
+        connection.execute("COMMIT")
+
+        connection.execute("BEGIN TRANSACTION")
 
         metadata_rows = create_metadata_table(
             connection
@@ -1610,6 +1614,11 @@ def build_duckdb() -> None:
         index_rows = create_index_table(
             connection,
             parquet_files=index_files,
+        )
+
+        commodity_rows = create_commodity_table(
+            connection,
+            parquet_files=commodity_files,
         )
 
         macro_rows = create_macro_table(
@@ -1670,22 +1679,24 @@ def build_duckdb() -> None:
             "DuckDB build job completed successfully | "
             "metadata_rows=%d | "
             "index_rows=%d | "
+            "commodity_rows=%d | "
             "macro_rows=%d | "
             "freight_rows=%d | "
             "volatility_rows=%d | "
             "industry_rows=%d | "
             "industry_index_rows=%d | "
             'fx_index_rows=%d | fixed_income_rows=%d | '
-            'behavior_rows=%d | behavior_rows=%d | '
+            'fixed_income_index_rows=%d | behavior_rows=%d | '
             ,
             metadata_rows,
             index_rows,
+            commodity_rows,
             macro_rows,
             freight_rows,
             volatility_rows,
             industry_rows,
             industry_index_rows,
-            fx_rows, fixed_income_rows, behavior_rows, behavior_rows,
+            fx_rows, fixed_income_rows, fixed_income_index_rows, behavior_rows,
         )
 
     except Exception:
