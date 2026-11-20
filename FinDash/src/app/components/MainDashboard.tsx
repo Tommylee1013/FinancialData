@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TrendingUp, TrendingDown, ChevronRight } from "lucide-react";
+import { TrendingUp, TrendingDown } from "lucide-react";
 import { MiniLineChart, CandlestickChart } from "./CandlestickChart";
 import {
   generateOHLC, marketIndices, volatilityIndices, macroVariables,
@@ -24,15 +24,14 @@ function SectionHeader({ title, subtitle, onViewAll, onViewAllLabel = 'View All'
   title: string; subtitle?: string; onViewAll?: () => void; onViewAllLabel?: string;
 }) {
   return (
-    <div className="flex items-center justify-between mb-3">
-      <div className="flex items-center gap-2">
-        <div className="w-0.5 h-4 bg-primary rounded-full" />
-        <h2 className="text-sm font-bold text-foreground tracking-wide" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>{title}</h2>
-        {subtitle && <span className="text-xs text-muted-foreground">{subtitle}</span>}
+    <div className="mb-3 flex items-end justify-between">
+      <div>
+        <h2 className="text-sm font-semibold text-foreground tracking-tight">{title}</h2>
+        {subtitle && <div className="mt-0.5 text-xs text-muted-foreground">{subtitle}</div>}
       </div>
       {onViewAll && (
-        <button onClick={onViewAll} className="text-xs text-primary flex items-center gap-0.5 hover:underline">
-          {onViewAllLabel} <ChevronRight size={12} />
+        <button onClick={onViewAll} className="rounded-md px-2 py-1 text-xs font-medium text-muted-foreground hover:bg-secondary hover:text-foreground">
+          {onViewAllLabel}
         </button>
       )}
     </div>
@@ -240,8 +239,34 @@ function MarketPulse() {
   const advances = marketIndices.filter(item => item.changePct >= 0).length;
   const average = marketIndices.reduce((sum, item) => sum + item.changePct, 0) / marketIndices.length;
   const vix = volatilityIndices.find(item => item.id === 'vix') ?? volatilityIndices[0];
-  return <section className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-    {[{ label: 'Global Breadth', value: `${advances} / ${marketIndices.length}`, note: 'Indices advancing', tone: advances >= marketIndices.length / 2 ? 'text-up' : 'text-down' }, { label: 'Equal-weight Move', value: `${average >= 0 ? '+' : ''}${fmt(average)}%`, note: 'Global index basket', tone: average >= 0 ? 'text-up' : 'text-down' }, { label: 'Session Leader', value: ranked[0].name, note: `+${fmt(ranked[0].changePct)}%`, tone: 'text-up' }, { label: 'Risk Gauge', value: `VIX ${fmt(vix.value)}`, note: vix.value < 15 ? 'Low volatility' : vix.value < 25 ? 'Moderate volatility' : 'High volatility', tone: vix.value < 15 ? 'text-up' : vix.value < 25 ? 'text-yellow-500' : 'text-down' }].map(stat => <div key={stat.label} className="bg-card border border-border rounded p-3"><div className="text-[10px] uppercase tracking-wider text-muted-foreground">{stat.label}</div><div className={`text-base font-semibold mt-1 truncate ${stat.tone}`}>{stat.value}</div><div className="text-[10px] text-muted-foreground mt-0.5">{stat.note}</div></div>)}
+  return <section className="grid grid-cols-2 overflow-hidden rounded-lg border border-border bg-card shadow-sm lg:grid-cols-4">
+    {[{ label: 'Global breadth', value: `${advances} of ${marketIndices.length}`, note: 'indices advancing', tone: advances >= marketIndices.length / 2 ? 'text-up' : 'text-down' }, { label: 'Equal-weight move', value: `${average >= 0 ? '+' : ''}${fmt(average)}%`, note: 'global index basket', tone: average >= 0 ? 'text-up' : 'text-down' }, { label: 'Session leader', value: ranked[0].name, note: `+${fmt(ranked[0].changePct)}% today`, tone: 'text-foreground' }, { label: 'Volatility', value: `VIX ${fmt(vix.value)}`, note: vix.value < 15 ? 'low regime' : vix.value < 25 ? 'moderate regime' : 'high regime', tone: 'text-foreground' }].map((stat,index) => <div key={stat.label} className={`p-4 ${index % 2 ? 'border-l border-border':''} ${index >= 2 ? 'border-t border-border lg:border-t-0': ''} ${index === 2 ? 'lg:border-l':''}`}><div className="text-xs text-muted-foreground">{stat.label}</div><div className={`mt-2 truncate text-lg font-semibold tracking-tight ${stat.tone}`}>{stat.value}</div><div className="mt-1 text-xs text-muted-foreground">{stat.note}</div></div>)}
+  </section>;
+}
+
+function RepresentativeMarkets() {
+  const equity = marketIndices.find(item => item.id === 'sp500') ?? marketIndices[0];
+  const bond = globalBenchmarks.find(item => item.id === 'bond' || /bond|aggregate/i.test(`${item.name} ${item.desc}`)) ?? globalBenchmarks[2] ?? globalBenchmarks[0];
+  const commodity = globalBenchmarks.find(item => item.id === 'djci' || /commodity|gsci|crb/i.test(`${item.name} ${item.desc}`)) ?? globalBenchmarks[3] ?? globalBenchmarks[0];
+  const volatility = volatilityIndices.find(item => item.id === 'vix') ?? volatilityIndices[0];
+  const items = [
+    { label: 'Equities', name: equity.name, value: equity.value, changePct: equity.changePct, trend: equity.trend, detail: () => openDetail('market', equity.id) },
+    { label: 'Fixed income', name: bond.name, value: bond.value, changePct: bond.changePct, trend: bond.trend, detail: () => openDetail('benchmark', bond.id) },
+    { label: 'Commodities', name: commodity.name, value: commodity.value, changePct: commodity.changePct, trend: commodity.trend, detail: () => openDetail('benchmark', commodity.id) },
+    { label: 'Volatility', name: volatility.name, value: volatility.value, changePct: volatility.changePct, trend: volatility.trend, detail: () => openDetail('volatility', volatility.id) },
+  ];
+  return <section>
+    <SectionHeader title="Cross-asset markets" subtitle="Representative indices across major asset classes" />
+    <div className="grid grid-cols-1 overflow-hidden rounded-lg border border-border bg-card shadow-sm sm:grid-cols-2 xl:grid-cols-4">
+      {items.map((item,index) => {
+        const up = item.changePct >= 0;
+        return <button key={item.label} onClick={item.detail} className={`min-w-0 p-4 text-left hover:bg-secondary/40 ${index ? 'border-t border-border sm:border-t-0 sm:border-l':''} ${index === 2 ? 'sm:border-l-0 sm:border-t xl:border-l xl:border-t-0':''}`}>
+          <div className="flex items-start justify-between gap-3"><div><div className="text-[11px] font-medium text-muted-foreground">{item.label}</div><div className="mt-1 text-sm font-semibold">{item.name}</div></div><span className={`text-xs font-semibold tabular-nums ${up?'text-up':'text-down'}`}>{up?'+':''}{fmt(item.changePct)}%</span></div>
+          <div className="mt-3 text-xl font-semibold tracking-tight tabular-nums">{fmt(item.value)}</div>
+          <div className="mt-3 overflow-hidden"><MiniLineChart data={item.trend.slice(-45)} width={240} height={54} color={up?'#2563EB':'#DC2626'} fill={false}/></div>
+        </button>;
+      })}
+    </div>
   </section>;
 }
 
@@ -271,7 +296,7 @@ function MarketQuoteBoard({ groups }: { groups: Array<{ label: string; items: ty
       <span>Index</span><span className="text-right">Last</span><span className="text-right">Change</span><span className="text-right">Change %</span><span className="text-right">High</span><span className="text-right">Low</span><span className="text-right">Volume</span><span className="text-right">30D Trend</span>
     </div>
     <div className="max-h-[443px] overflow-y-auto">{groups.map(group => <React.Fragment key={group.label}>
-      <div className="px-4 py-1.5 bg-secondary/40 border-t first:border-t-0 border-border text-[9px] font-bold tracking-[0.14em] uppercase text-muted-foreground">{group.label}</div>
+      <div className="px-4 py-2 bg-secondary/40 border-t first:border-t-0 border-border text-[10px] font-semibold text-muted-foreground">{group.label}</div>
       {group.items.map(idx => {
         const up = idx.changePct >= 0;
         return <button key={idx.id} onClick={() => openDetail('market', idx.id)} className="w-full md:grid md:grid-cols-[minmax(170px,1.4fr)_115px_105px_105px_105px_105px_105px_minmax(100px,1fr)] flex items-center justify-between px-4 py-2.5 border-t border-border hover:bg-accent transition-colors text-xs text-left group">
@@ -289,6 +314,29 @@ function MarketQuoteBoard({ groups }: { groups: Array<{ label: string; items: ty
   </div>;
 }
 
+function MarketSignals() {
+  return <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
+    <div className="border-b border-border px-4 py-3"><h2 className="text-sm font-semibold">Market signals</h2><p className="mt-0.5 text-xs text-muted-foreground">Volatility and macro releases</p></div>
+    <div className="px-4 py-2">{volatilityIndices.slice(0,4).map(v => {
+      const up = v.change >= 0;
+      return <button key={v.id} onClick={() => openDetail('volatility', v.id)} className="flex w-full items-center justify-between border-b border-border py-3 text-left last:border-0 hover:text-primary"><span><span className="block text-xs font-medium">{v.name}</span><span className="mt-0.5 block text-[11px] text-muted-foreground">{v.desc}</span></span><span className="text-right"><b className="block text-sm tabular-nums">{fmt(v.value)}</b><span className={`text-[11px] tabular-nums ${up ? 'text-up':'text-down'}`}>{up?'+':''}{fmt(v.changePct)}%</span></span></button>;
+    })}</div>
+    <div className="border-y border-border bg-secondary/35 px-4 py-2 text-[11px] font-medium text-muted-foreground">Latest macro releases</div>
+    <div className="px-4 py-1">{macroVariables.slice(0,4).map(m => <button key={m.id} onClick={() => openDetail('macro',m.id)} className="flex w-full items-center justify-between border-b border-border py-2.5 text-left last:border-0"><span><span className="block text-xs font-medium">{m.name}</span><span className="text-[11px] text-muted-foreground">{m.period}</span></span><span className="text-right"><b className="block text-xs tabular-nums">{fmt(m.value)}{m.unit}</b><span className="text-[10px] text-muted-foreground">Est. {fmt(m.forecast)}{m.unit}</span></span></button>)}</div>
+  </div>;
+}
+
+function CompactOverviewList({ type }: { type: 'macro' | 'commodities' }) {
+  const isMacro = type === 'macro';
+  return <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
+    <div className="grid grid-cols-[1fr_90px_90px_90px] border-b border-border bg-secondary/45 px-4 py-2 text-[10px] font-medium text-muted-foreground"><span>{isMacro ? 'Indicator':'Commodity'}</span><span className="text-right">Last</span><span className="text-right">Previous</span><span className="text-right">Change</span></div>
+    {isMacro ? macroVariables.slice(0,6).map(m => {
+      const delta = m.value - m.prev;
+      return <button key={m.id} onClick={() => openDetail('macro',m.id)} className="grid w-full grid-cols-[1fr_90px_90px_90px] items-center border-b border-border px-4 py-3 text-left text-xs last:border-0 hover:bg-secondary/50"><span><b className="block font-medium">{m.name}</b><span className="text-[11px] text-muted-foreground">{m.period}</span></span><span className="text-right tabular-nums">{fmt(m.value)}{m.unit}</span><span className="text-right tabular-nums text-muted-foreground">{fmt(m.prev)}{m.unit}</span><span className={`text-right tabular-nums ${delta >= 0?'text-up':'text-down'}`}>{delta>=0?'+':''}{fmt(delta)}{m.unit}</span></button>;
+    }) : commodities.slice(0,6).map(c => <button key={c.id} onClick={() => openDetail('commodity',c.id)} className="grid w-full grid-cols-[1fr_90px_90px_90px] items-center border-b border-border px-4 py-3 text-left text-xs last:border-0 hover:bg-secondary/50"><span><b className="block font-medium">{c.name}</b><span className="text-[11px] text-muted-foreground">{c.unit}</span></span><span className="text-right tabular-nums">{fmt(c.value)}</span><span className="text-right tabular-nums text-muted-foreground">{fmt(c.prev)}</span><span className={`text-right tabular-nums ${c.changePct>=0?'text-up':'text-down'}`}>{c.changePct>=0?'+':''}{fmt(c.changePct)}%</span></button>)}
+  </div>;
+}
+
 // ─── Main ─────────────────────────────────────────────────────────────────────
 export function MainDashboard({ setActiveTab }: { setActiveTab: (tab: Tab) => void }) {
   const usIdx   = marketIndices.filter(i => i.country === 'US');
@@ -298,82 +346,39 @@ export function MainDashboard({ setActiveTab }: { setActiveTab: (tab: Tab) => vo
   const asiaIdx = marketIndices.filter(i => ['HK','CN'].includes(i.country));
 
   return (
-    <div className="p-4 space-y-6 max-w-screen-2xl mx-auto">
+    <div className="mx-auto max-w-screen-2xl space-y-6 p-4 sm:p-6">
 
       <MarketPulse />
 
-      {/* ── MSCI & Global Benchmarks 2×2 ── */}
+      <RepresentativeMarkets />
+
+      <section className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1fr)_320px]">
+        <div>
+        <SectionHeader
+          title="Markets"
+          subtitle="Major indices by region"
+          onViewAll={() => setActiveTab('market')}
+          onViewAllLabel="View market"
+        />
+        <MarketQuoteBoard groups={[
+          { label: 'United States', items: usIdx },
+          { label: 'South Korea', items: krIdx },
+          { label: 'Japan', items: jpIdx },
+          { label: 'Europe', items: euIdx },
+          { label: 'Greater China', items: asiaIdx },
+        ]} />
+        </div>
+        <div><div className="mb-3"><h2 className="text-sm font-semibold">Today</h2><div className="mt-0.5 text-xs text-muted-foreground">Risk and economic context</div></div><MarketSignals /></div>
+      </section>
+
       <section>
-        <SectionHeader title="Global Benchmarks" subtitle="Equity · Fixed Income · Commodities" />
+        <SectionHeader title="Global benchmarks" subtitle="Equity, fixed income and commodity baskets" />
         <BenchmarkBoard />
       </section>
 
-      {/* ── Market Indices ── */}
-      <section>
-        <SectionHeader
-          title="Global Market Indices"
-          subtitle="By Country · Candlestick"
-          onViewAll={() => setActiveTab('market')}
-          onViewAllLabel="Market Tab →"
-        />
-        <MarketQuoteBoard groups={[
-          { label: '🇺🇸 United States', items: usIdx },
-          { label: '🇰🇷 South Korea', items: krIdx },
-          { label: '🇯🇵 Japan', items: jpIdx },
-          { label: '🇪🇺 Europe', items: euIdx },
-          { label: '🌏 Greater China', items: asiaIdx },
-        ]} />
-      </section>
-
-      {/* ── Volatility ── */}
-      <section>
-        <SectionHeader
-          title="Volatility Indices"
-          subtitle="By Country"
-          onViewAll={() => setActiveTab('market')}
-          onViewAllLabel="Market Tab →"
-        />
-        <div className="grid gap-2" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))' }}>
-          {volatilityIndices.map(v => (
-            <div key={v.id}>
-              <VolCard v={v} />
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── Macro Variables ── */}
-      <section>
-        <SectionHeader
-          title="Macro Variables"
-          subtitle="CPI · PPI · PMI"
-          onViewAll={() => setActiveTab('macro')}
-          onViewAllLabel="Macro Tab →"
-        />
-        <div className="grid gap-2" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
-          {macroVariables.map(m => (
-            <div key={m.id}>
-              <MacroCard m={m} />
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── Commodities ── */}
-      <section>
-        <SectionHeader
-          title="Commodity Prices"
-          subtitle="Energy · Precious Metals · Base Metals"
-          onViewAll={() => setActiveTab('commodities')}
-          onViewAllLabel="Commodities Tab →"
-        />
-        <div className="grid gap-2" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))' }}>
-          {commodities.map(c => (
-            <div key={c.id}>
-              <CommodityCard c={c} />
-            </div>
-          ))}
-        </div>
+      <section className="grid grid-cols-1 gap-5 xl:grid-cols-2">
+        <div><SectionHeader title="Macro monitor" subtitle="Latest releases against previous readings" onViewAll={() => setActiveTab('macro')} onViewAllLabel="View macro"/><CompactOverviewList type="macro"/></div>
+        <div><SectionHeader title="Commodities" subtitle="Energy, metals and agricultural markets" onViewAll={() => setActiveTab('commodities')} onViewAllLabel="View commodities"/><CompactOverviewList type="commodities"/></div>
       </section>
 
     </div>

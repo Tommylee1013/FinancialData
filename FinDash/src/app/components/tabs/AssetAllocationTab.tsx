@@ -411,7 +411,7 @@ function CorrelationHeatmap({ activeIds, matrix, assets }: { activeIds: string[]
       <div className="text-xs font-bold text-foreground mb-1">Asset Correlation Heatmap</div>
       <div className="text-[10px] text-muted-foreground mb-3">Blue: Positive Correlation · Red: Negative Correlation</div>
       <div className="overflow-x-auto">
-        <svg width={svgW} height={svgH} style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+        <svg width={svgW} height={svgH} style={{ fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif' }}>
           {active.map((a, i) => {
             return active.map((b, j) => {
               const val  = matrix[i]?.[j] ?? 0;
@@ -495,7 +495,7 @@ function CorrelationTreeMap({ activeIds, matrix, assets }: { activeIds: string[]
       <div className="text-xs font-bold text-foreground mb-1">Correlation Distance Tree</div>
       <div className="text-[10px] text-muted-foreground mb-3">Minimum-spanning tree · d = √(2(1−ρ)) · Shorter links indicate stronger co-movement</div>
       <div className="overflow-x-auto">
-        <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-[240px]" style={{ fontFamily: 'JetBrains Mono, monospace' }}>
+        <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-[240px]" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif' }}>
           {edges.map((edge, index) => {
             const from = points[edge.from]; const to = points[edge.to];
             return <line key={index} x1={from.x} y1={from.y} x2={to.x} y2={to.y}
@@ -607,7 +607,7 @@ export function AssetAllocationTab() {
   const methodColor = METHOD_META[method].color;
 
   return (
-    <div className="p-4 space-y-4 max-w-screen-2xl mx-auto">
+    <div className="mx-auto max-w-screen-2xl space-y-4 p-4 sm:p-6">
 
       {/* Method Selector */}
       <div className="flex items-start gap-3 flex-wrap">

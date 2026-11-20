@@ -244,7 +244,7 @@ export function FixedIncomeTab() {
   const [country, setCountry] = useState<'GLOBAL' | 'US' | 'KR'>('GLOBAL');
   const countries = [{ id: 'GLOBAL' as const, flag: '🌐', name: 'Global Indices' }, { id: 'US' as const, flag: '🇺🇸', name: 'United States' }, { id: 'KR' as const, flag: '🇰🇷', name: 'South Korea' }];
   return (
-    <div className="p-4 space-y-4 max-w-screen-2xl mx-auto">
+    <div className="mx-auto max-w-screen-2xl space-y-4 p-4 sm:p-6">
       <div className="flex items-center gap-2 flex-wrap">{countries.map(item => <button key={item.id} onClick={() => setCountry(item.id)} className={`text-xs px-3 py-1.5 rounded transition-colors ${country === item.id ? 'bg-primary text-white' : 'bg-card border border-border text-muted-foreground hover:text-foreground'}`}>{item.flag} {item.name}</button>)}</div>
       {country === 'GLOBAL' ? <GlobalBondIndices /> :
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">

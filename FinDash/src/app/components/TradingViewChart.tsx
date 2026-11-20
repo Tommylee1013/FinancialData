@@ -15,7 +15,7 @@ export function TradingViewChart({ data, height = 440, initialMonths = 3 }: { da
     const background = styles.getPropertyValue('--card').trim() || '#FFFFFF';
     const chart = createChart(container, {
       width: container.clientWidth, height,
-      layout: { background: { type: ColorType.Solid, color: background }, textColor: foreground, fontFamily: 'JetBrains Mono, monospace', fontSize: 10 },
+      layout: { background: { type: ColorType.Solid, color: background }, textColor: foreground, fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif', fontSize: 10 },
       grid: { vertLines: { color: border, style: 1 }, horzLines: { color: border, style: 1 } },
       crosshair: { mode: 1 },
       rightPriceScale: { borderColor: border, scaleMargins: { top: 0.12, bottom: 0.12 } },

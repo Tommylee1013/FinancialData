@@ -68,7 +68,7 @@ export function FreightWorldMap({ markers }: FreightMapProps) {
                 y={-11}
                 style={{
                   fontSize: '9px',
-                  fontFamily: 'Inter, sans-serif',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif',
                   fontWeight: 600,
                   fill: 'var(--foreground)',
                   pointerEvents: 'none',
@@ -201,7 +201,7 @@ export function MacroWorldMap({ markers, countryData }: MacroWorldMapProps) {
                   y={4}
                   style={{
                     fontSize: '8px',
-                    fontFamily: 'JetBrains Mono, monospace',
+                    fontFamily: '-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif',
                     fontWeight: 700,
                     fill: 'white',
                     pointerEvents: 'none',

@@ -164,7 +164,7 @@ export function IndustryTab() {
   }), [rows, categoryFilter, subCategoryFilter, countryFilter, search]);
 
   return (
-    <div className="p-4 space-y-4 max-w-screen-2xl mx-auto">
+    <div className="mx-auto max-w-screen-2xl space-y-4 p-4 sm:p-6">
       <section className="bg-card border border-border rounded overflow-hidden">
         <div className="p-4 border-b border-border bg-secondary/40">
           <div className="flex flex-wrap items-start justify-between gap-3">

@@ -45,7 +45,7 @@ export function CandlestickChart({ data, width = 320, height = 160, showAxes = f
             return (
               <g key={t}>
                 <line x1={xOffset} y1={y} x2={width} y2={y} stroke="currentColor" strokeOpacity={0.08} strokeWidth={1} />
-                <text x={xOffset - 4} y={y + 3} textAnchor="end" fontSize={9} fill="currentColor" fillOpacity={0.45} fontFamily="JetBrains Mono, monospace">
+                <text x={xOffset - 4} y={y + 3} textAnchor="end" fontSize={9} fill="currentColor" fillOpacity={0.45} fontFamily="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
                   {val.toFixed(0)}
                 </text>
               </g>

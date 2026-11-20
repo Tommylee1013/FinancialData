@@ -63,7 +63,7 @@ export function MarketTab() {
   const ohlcData = (selectedIdx as any).ohlc?.length ? (selectedIdx as any).ohlc : generateOHLC(selectedIdx.value * 0.92, 60, selectedIdx.value * 0.01);
 
   return (
-    <div className="p-4 space-y-4 max-w-screen-2xl mx-auto">
+    <div className="mx-auto max-w-screen-2xl space-y-4 p-4 sm:p-6">
       <div className="bg-card border border-border rounded p-1 flex gap-1 overflow-x-auto">
         {countries.map(item => <button key={item.id} onClick={() => selectCountry(item)} className={`px-4 py-2 rounded text-xs font-semibold whitespace-nowrap transition-colors ${country === item.id ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:bg-secondary hover:text-foreground'}`}>
           <span className="mr-1.5">{item.flag}</span>{item.label}

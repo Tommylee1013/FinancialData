@@ -39,7 +39,7 @@ export function FedWatchTab() {
   const rateDomain = paddedDomain((data?.series || []).flatMap(row => [row.impliedRate, row.effectiveRate]), 0.08);
 
   if (loading && !data) return <div className="p-12 text-center text-sm text-muted-foreground">Loading Fed funds futures model…</div>;
-  return <div className="p-4 space-y-4 max-w-screen-2xl mx-auto">
+  return <div className="mx-auto max-w-screen-2xl space-y-4 p-4 sm:p-6">
     <div className="bg-card border border-border rounded p-4 flex flex-wrap items-center gap-3">
       <div className="mr-auto"><div className="flex items-center gap-2"><Gauge size={17} className="text-primary"/><h2 className="text-base font-bold">Fed Policy Probability Monitor</h2></div><p className="text-[10px] text-muted-foreground mt-1">FedWatch-style estimate from CBOT 30-Day Fed Funds Futures and EFFR</p></div>
       <button onClick={() => load()} className="flex items-center gap-1.5 px-3 py-2 rounded border border-border text-xs hover:bg-secondary"><RefreshCw size={12} className={loading ? 'animate-spin' : ''}/>Refresh</button>
@@ -50,7 +50,7 @@ export function FedWatchTab() {
         {data.meetings.map(item => <button key={item.meetingDate} onClick={() => { setMeeting(String(item.meetingDate)); load(String(item.meetingDate)); }} className={`shrink-0 rounded px-3 py-2 text-left border ${String(item.meetingDate) === meeting ? 'bg-primary text-primary-foreground border-primary' : 'border-border hover:bg-secondary'}`}><div className="text-[9px] opacity-70">FOMC DECISION</div><div className="text-xs font-mono font-bold mt-0.5">{String(item.meetingDate)}</div><div className="text-[9px] opacity-70 mt-0.5">{item.contract}</div></button>)}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        {[['Rate Cut',aggregate.cut,'text-primary','#2563EB'],['No Change',aggregate.hold,'text-foreground','#64748B'],['Rate Hike',aggregate.hike,'text-down','#DC2626']].map(([label,value,tone,color]) => <div key={String(label)} className="bg-card border border-border rounded p-4"><div className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</div><div className={`text-3xl font-mono font-bold mt-2 ${tone}`}>{Number(value).toFixed(1)}%</div><div className="h-1.5 bg-secondary rounded mt-3 overflow-hidden"><div className="h-full rounded" style={{width:`${value}%`,background:String(color)}}/></div></div>)}
+        {[['Rate Cut',aggregate.cut,'text-primary','#2563EB'],['No Change',aggregate.hold,'text-foreground','#64748B'],['Rate Hike',aggregate.hike,'text-down','#DC2626']].map(([label,value,tone,color]) => <div key={String(label)} className="bg-card border border-border rounded p-4"><div className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</div><div className={`mt-2 text-3xl font-semibold tracking-tight tabular-nums ${tone}`}>{Number(value).toFixed(1)}%</div><div className="h-1.5 bg-secondary rounded mt-3 overflow-hidden"><div className="h-full rounded" style={{width:`${value}%`,background:String(color)}}/></div></div>)}
       </div>
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
         <div className="xl:col-span-2 bg-card border border-border rounded p-4">

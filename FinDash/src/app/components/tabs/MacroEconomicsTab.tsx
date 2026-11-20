@@ -181,7 +181,7 @@ function MacroTrendCharts() {
 
 export function MacroEconomicsTab() {
   return (
-    <div className="p-4 space-y-4 max-w-screen-2xl mx-auto">
+    <div className="mx-auto max-w-screen-2xl space-y-4 p-4 sm:p-6">
       <CountryIndicatorSections />
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
         <div className="xl:col-span-2 space-y-4">
@@ -197,7 +197,7 @@ export function MacroEconomicsTab() {
       <div>
         <div className="flex items-center gap-2 mb-2">
           <div className="w-0.5 h-4 bg-primary rounded-full" />
-          <h2 className="text-sm font-bold text-foreground" style={{ fontFamily: 'Roboto Condensed, sans-serif' }}>Global Macro Overview Map</h2>
+          <h2 className="text-sm font-semibold tracking-tight text-foreground">Global Macro Overview Map</h2>
           <span className="text-xs text-muted-foreground">· Click markers for country details</span>
         </div>
         <MacroWorldMap markers={countryMarkers} countryData={countryMacroData} />

@@ -120,7 +120,7 @@ export function CommoditiesTab() {
   );
 
   return (
-    <div className="p-4 space-y-4 max-w-screen-2xl mx-auto">
+    <div className="mx-auto max-w-screen-2xl space-y-4 p-4 sm:p-6">
       <div className="flex items-center gap-2 flex-wrap">
         <div className="flex items-center bg-card border border-border rounded px-2 gap-1">
           <Search size={12} className="text-muted-foreground" />

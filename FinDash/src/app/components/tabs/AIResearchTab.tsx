@@ -77,7 +77,7 @@ export function AIResearchTab() {
     if (active?.id === id) list.length ? await openConversation(list[0].id) : await createConversation();
   };
 
-  return <div className="max-w-screen-2xl mx-auto p-4 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-4 min-h-[calc(100vh-8rem)]">
+  return <div className="mx-auto grid min-h-[calc(100vh-8rem)] max-w-screen-2xl grid-cols-1 gap-4 p-4 sm:p-6 lg:grid-cols-[280px_1fr]">
     <aside className="bg-card border border-border rounded-lg overflow-hidden flex flex-col">
       <div className="p-3 border-b border-border"><button onClick={createConversation} className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground rounded px-3 py-2 text-xs font-semibold"><MessageSquarePlus size={14}/>New research</button></div>
       <div className="max-h-[520px] flex-1 overflow-y-auto divide-y divide-border">
