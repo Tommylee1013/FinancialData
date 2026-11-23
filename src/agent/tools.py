@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import duckdb
+import numpy as np
 
 
 SERIES_TABLES = [
@@ -64,6 +65,33 @@ class FinancialTools:
             else:
                 results.append({"symbol": symbol.upper(), "error": "Series not found"})
         return results
+
+    def quantify_risk(self, symbol, limit=250, confidence=0.95, window=20):
+        series = self.get_financial_series(symbol, min(max(int(limit), 30), 1000))
+        observations = series.get("observations", [])
+        values = np.asarray([float(row["value"]) for row in observations], dtype=float)
+        values = values[np.isfinite(values)]
+        if len(values) < 30:
+            return {"symbol": symbol.upper(), "error": "At least 31 valid observations are required"}
+        returns = np.diff(values) / values[:-1]
+        returns = returns[np.isfinite(returns)]
+        confidence = min(max(float(confidence), 0.90), 0.99)
+        window = min(max(int(window), 5), len(returns))
+        threshold = np.quantile(returns, 1 - confidence)
+        tail = returns[returns <= threshold]
+        wealth = np.cumprod(1 + returns)
+        drawdown = wealth / np.maximum.accumulate(wealth) - 1
+        rolling_std = np.asarray([np.std(returns[max(0, i-window+1):i+1], ddof=1)
+                                  for i in range(window-1, len(returns))])
+        return {"symbol": symbol.upper(), "source": series.get("table"),
+                "start": observations[0]["date"], "end": observations[-1]["date"],
+                "observations": int(len(returns)), "confidence": confidence,
+                "dailyVolatilityPct": float(np.std(returns, ddof=1) * 100),
+                "annualizedVolatilityPct": float(np.std(returns, ddof=1) * np.sqrt(252) * 100),
+                "rollingStdLatestPct": float(rolling_std[-1] * 100) if len(rolling_std) else None,
+                "historicalVaRPct": float(-threshold * 100),
+                "historicalCVaRPct": float(-np.mean(tail) * 100) if len(tail) else float(-threshold * 100),
+                "maxDrawdownPct": float(np.min(drawdown) * 100)}
 
     def execute(self, name, arguments):
         if name == "search_instruments": return self.search_instruments(**arguments)

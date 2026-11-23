@@ -26,8 +26,8 @@ DB_PATH = Path(os.environ.get("FINDASH_DB_PATH", ROOT.parent / "database" / "alt
 COMMODITY_PARQUET = PROJECT_ROOT / "data_warehouse" / "raw" / "commodity" / "index" / "commodity_index.parquet"
 HOST = os.environ.get("FINDASH_API_HOST", "127.0.0.1")
 PORT = int(os.environ.get("FINDASH_API_PORT", "8787"))
-AGENT = AgentService(finance_db=DB_PATH)
 ALLOCATION = AllocationService(DB_PATH)
+AGENT = AgentService(finance_db=DB_PATH, allocation_service=ALLOCATION)
 BACKTEST = WalkForwardBacktester(DB_PATH)
 
 
@@ -668,6 +668,13 @@ class Handler(BaseHTTPRequestHandler):
                 self._send(200, fedwatch_payload((query.get("meeting") or [None])[0]))
             elif path == "/api/agent/status":
                 self._send(200, AGENT.status())
+            elif path == "/api/agent/events":
+                run_id = (query.get("runId") or [""])[0]
+                if not run_id:
+                    self._send(400, {"error": "runId is required"})
+                else:
+                    after = int((query.get("after") or ["0"])[0])
+                    self._send(200, AGENT.get_run_events(run_id, after))
             elif path == "/api/agent/conversations":
                 self._send(200, {"conversations": AGENT.list_conversations()})
             elif path == "/api/allocation/universe":
@@ -695,7 +702,8 @@ class Handler(BaseHTTPRequestHandler):
                 if not body.get("conversationId") or not body.get("message", "").strip():
                     self._send(400, {"error": "conversationId and message are required"})
                     return
-                self._send(200, AGENT.chat(body["conversationId"], body["message"].strip(), body.get("context")))
+                self._send(200, AGENT.chat(body["conversationId"], body["message"].strip(),
+                                           body.get("context"), body.get("agentId"), body.get("runId")))
             elif path == "/api/allocation/optimize":
                 self._send(200, ALLOCATION.optimize(body))
             elif path == "/api/backtest/walk-forward":

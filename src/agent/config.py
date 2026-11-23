@@ -25,4 +25,4 @@ def load_openai_api_key() -> str | None:
 
 
 def agent_model() -> str:
-    return os.environ.get("FINDASH_AGENT_MODEL", "gpt-4.1-mini")
+    return os.environ.get("FINDASH_AGENT_MODEL", "gpt-6-luna")
