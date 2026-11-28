@@ -244,3 +244,6 @@
 2026-11-24 02:50:35 | INFO | src.jobs_xlsx.freight.get_baltic_air_freight_index | Baltic air freight data_lake job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/freight/Baltic air freight index.xlsx
 2026-11-24 02:50:35 | INFO | src.jobs_xlsx.freight.get_baltic_air_freight_index | Excel file loaded | rows=464 | columns=11
 2026-11-24 02:50:35 | INFO | src.jobs_xlsx.freight.get_baltic_air_freight_index | Baltic air freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_warehouse/raw/freight/baltic_air_freight_index.parquet | rows=3248
+2026-11-28 12:53:43 | INFO | src.jobs_xlsx.freight.get_baltic_air_freight_index | Baltic air freight data_lake job started | input_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/freight/Baltic air freight index.xlsx
+2026-11-28 12:53:43 | INFO | src.jobs_xlsx.freight.get_baltic_air_freight_index | Excel file loaded | rows=464 | columns=11
+2026-11-28 12:53:43 | INFO | src.jobs_xlsx.freight.get_baltic_air_freight_index | Baltic air freight Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_warehouse/raw/freight/baltic_air_freight_index.parquet | rows=3248

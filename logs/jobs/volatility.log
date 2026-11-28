@@ -287,3 +287,8 @@
 2026-11-24 02:49:33 | INFO | src.jobs_api.risk.get_volatility_index | TradingView request prepared | tickers=24
 2026-11-24 02:50:31 | INFO | src.jobs_api.risk.get_volatility_index | TradingView data_lake collected | rows=9442 | columns=115
 2026-11-24 02:50:31 | INFO | src.jobs_api.risk.get_volatility_index | Volatility Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_warehouse/raw/risk/volatility.parquet | rows=99821
+2026-11-28 12:52:43 | INFO | src.jobs_api.risk.get_volatility_index | Volatility data_lake job started | metadata_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_lake/metadata.xlsx
+2026-11-28 12:52:43 | INFO | src.jobs_api.risk.get_volatility_index | Volatility metadata loaded | symbols=24 | excluded_countries=['Europe', 'Japan']
+2026-11-28 12:52:43 | INFO | src.jobs_api.risk.get_volatility_index | TradingView request prepared | tickers=24
+2026-11-28 12:53:39 | INFO | src.jobs_api.risk.get_volatility_index | TradingView data_lake collected | rows=9446 | columns=115
+2026-11-28 12:53:40 | INFO | src.jobs_api.risk.get_volatility_index | Volatility Parquet saved | output_path=/Users/tommy/Desktop/Pycharm/FinancialData/data_warehouse/raw/risk/volatility.parquet | rows=99896
